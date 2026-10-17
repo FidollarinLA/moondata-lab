@@ -1,0 +1,17 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "FidollarinLA/moonmotor_lab/api"
+
+// Values
+pub fn parse_csv(String) -> String
+
+pub fn step_json(String) -> String
+
+pub fn summarize_json(String) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

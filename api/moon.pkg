@@ -1,0 +1,11 @@
+import {
+  "moonbitlang/core/json",
+  "FidollarinLA/moonmotor_lab/csv",
+  "FidollarinLA/moonmotor_lab/analysis",
+}
+
+pkgtype(kind: "foreign_library")
+
+options(
+  link: { "js": { "format": "esm" } },
+)

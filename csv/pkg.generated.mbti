@@ -1,0 +1,34 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "FidollarinLA/moonmotor_lab/csv"
+
+// Values
+pub fn describe(Table) -> Array[Column]
+
+pub fn number(String) -> Double?
+
+pub fn parse(String) -> Table raise CsvError
+
+// Errors
+pub(all) suberror CsvError {
+  CsvError(String)
+}
+pub fn CsvError::to_string(Self) -> String
+
+// Types and methods
+pub(all) struct Column {
+  name : String
+  numeric : Int
+  missing : Int
+  invalid : Int
+} derive(ToJson)
+pub fn Column::to_json(Self) -> Json
+
+pub(all) struct Table {
+  headers : Array[String]
+  rows : Array[Array[String]]
+} derive(ToJson)
+pub fn Table::to_json(Self) -> Json
+
+// Type aliases
+
+// Traits

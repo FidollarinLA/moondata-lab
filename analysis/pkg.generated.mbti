@@ -1,0 +1,64 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "FidollarinLA/moonmotor_lab/analysis"
+
+import {
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn step(Array[Double], Array[Double], StepConfig) -> StepMetrics raise AnalysisError
+
+pub fn summarize(Array[Double]) -> Summary raise AnalysisError
+
+// Errors
+pub(all) suberror AnalysisError {
+  AnalysisError(String)
+}
+pub fn AnalysisError::to_string(Self) -> String
+
+// Types and methods
+pub(all) struct StepConfig {
+  target : Double
+  initial : Double
+  step_time : Double
+  band_percent : Double
+  tail_percent : Double
+} derive(ToJson, @json.FromJson)
+pub fn StepConfig::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn StepConfig::to_json(Self) -> Json
+
+pub(all) struct StepMetrics {
+  samples : Int
+  duration : Double
+  amplitude : Double
+  band_absolute : Double
+  overshoot_percent : Double
+  peak_value : Double
+  peak_time : Double
+  rise_time : Double?
+  settling_time : Double?
+  settling_status : String
+  tail_samples : Int
+  tail_start : Double
+  tail_mean : Double
+  steady_error : Double
+  steady_error_percent : Double
+  iae : Double
+  warnings : Array[String]
+}
+pub fn StepMetrics::to_json(Self) -> Json
+pub impl ToJson for StepMetrics
+
+pub(all) struct Summary {
+  count : Int
+  min : Double
+  max : Double
+  mean : Double
+  stddev : Double
+  rms : Double
+} derive(ToJson)
+pub fn Summary::to_json(Self) -> Json
+
+// Type aliases
+
+// Traits
