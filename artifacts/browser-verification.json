@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-17T19:17:02.478Z",
+  "passed": true,
+  "browser": "155.0.4283.45",
+  "viewport": [
+    1440,
+    1050
+  ],
+  "mobileViewport": [
+    390,
+    844
+  ],
+  "checks": [
+    "empty state labels builtin mode and disables analysis without data",
+    "synthetic demo loads two experiments and computes independent response comparison",
+    "downloads JSON Markdown SVG and full selected CSV",
+    "single analysis inside comparison mode exports exactly the displayed experiment",
+    "parameter edits invalidate prior results and unequal conditions show comparison caveat",
+    "390px viewport has no page overflow and chart uses readable responsive coordinates",
+    "changing physical response signal requires fresh initial target and unit confirmation",
+    "real upload preserves BOM Unicode checksum and milliseconds while treating filenames as text",
+    "malformed CSV is rejected without replacing existing experiment",
+    "duplicate timestamp fails visibly and cannot retain stale result exports",
+    "mobile users can open methods and remove selected data without the hidden sidebar",
+    "browser model mode completes actual HTTP tool-call loop against a local protocol stub",
+    "provider errors stay visible sanitized and recover controls",
+    "stop aborts model request releases busy session and permits a subsequent analysis",
+    "no uncaught browser errors"
+  ],
+  "errors": [],
+  "externalModelValidated": false,
+  "modelEvidence": "Local HTTP protocol stub, not a paid or external model."
+}
