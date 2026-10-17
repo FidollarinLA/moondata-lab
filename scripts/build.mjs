@@ -1,0 +1,11 @@
+import { spawnSync } from 'node:child_process';
+import { copyFile, mkdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { findMoon, root } from './toolchain.mjs';
+const moon = await findMoon();
+const built = spawnSync(moon, ['build', '--target', 'js', '--release', '--deny-warn'], { cwd: root, stdio: 'inherit' });
+if (built.error) console.error(`MoonBit build failed: ${built.error.message}. Set MOON to your moon executable.`);
+if (built.status !== 0) process.exit(built.status || 1);
+await mkdir(resolve(root, 'web'), { recursive: true });
+await copyFile(resolve(root, '_build/js/release/build/api/api.js'), resolve(root, 'web/engine.js'));
+console.log('MoonMotor Lab: MoonBit core compiled to web/engine.js');

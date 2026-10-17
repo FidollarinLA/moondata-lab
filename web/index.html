@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="MoonMotor Lab：用自然语言探索电机实验数据，核对波形与分析结果。">
+  <title>MoonMotor Lab · 实验数据工作台</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到实验工作区</a>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="MoonMotor Lab 首页"><img src="/favicon.svg" alt="" width="38" height="38"><span>MoonMotor<span class="brand-lab">LAB / 实验室</span></span></a>
+  <div class="sidebar-heading">工作空间 <span class="version">V0.1</span></div>
+  <nav aria-label="主导航"><a href="#main" class="nav-link active"><span aria-hidden="true">▦</span> 实验工作台 <span class="nav-count" id="dataset-count">0</span></a><button id="help-button" class="nav-link"><span aria-hidden="true">⌘</span> 分析方法与说明</button></nav>
+  <div class="sidebar-heading data-heading">实验数据 <button id="sidebar-upload" class="icon-button" title="导入 CSV" aria-label="导入 CSV">＋</button></div>
+  <div id="dataset-list" class="dataset-list"><div class="sidebar-empty">把实验放在这里。<br>每份数据，都有自己的依据。</div></div>
+  <button id="add-data" class="add-data">＋ 导入实验 CSV</button>
+  <div class="sidebar-footer"><span class="local-dot"></span><div>本机工作空间<small>数据暂存内存 · 重启后清空</small></div><span class="lock-icon" aria-hidden="true">⌑</span></div>
+</aside>
+<main id="main" class="main">
+  <header class="topbar"><div><span class="breadcrumb">工作空间</span><span class="slash">/</span><span>实验分析</span></div><span class="engine-badge"><span></span> MoonBit 计算引擎</span></header>
+  <section class="workspace">
+    <div class="page-heading"><div><p class="eyebrow">EXPERIMENTS, UNDERSTOOD.</p><h1>从波形，到结论<span>。</span></h1><p class="subtitle">让数据说清楚，让每一次实验都有据可循。</p></div><div class="heading-actions"><button id="demo-button" class="button secondary"><span aria-hidden="true">◈</span> 体验合成示例</button><button id="upload-button" class="button primary"><span aria-hidden="true">＋</span> 导入 CSV</button></div></div>
+    <input id="file-input" type="file" accept=".csv,text/csv" multiple hidden>
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+    <div class="workspace-grid">
+      <div class="analysis-column">
+        <section class="card experiment-bar" aria-label="选择实验"><div class="field experiment-select"><label for="primary-dataset">当前实验</label><select id="primary-dataset" disabled><option value="">请先导入数据</option></select></div><div class="compare-control"><label class="toggle-label"><input type="checkbox" id="compare-toggle"> 对比实验</label><select id="secondary-dataset" aria-label="对比实验" hidden></select></div><span id="source-type" class="source-tag">等待数据</span></section>
+        <div id="metrics" class="metrics-grid" aria-label="实验指标">
+          <div class="metric"><span>超调量</span><strong>—<small>%</small></strong><p>峰值相对阶跃幅值</p></div>
+          <div class="metric"><span>上升时间</span><strong>—<small>s</small></strong><p>首次穿越 10% → 90%</p></div>
+          <div class="metric"><span>调节时间</span><strong>—<small>s</small></strong><p>观察窗内进入误差带</p></div>
+          <div class="metric"><span>末段误差</span><strong>—</strong><p>目标值减末段平均值</p></div>
+        </div>
+        <section class="card chart-card" aria-labelledby="chart-title">
+          <div class="card-heading"><div><h2 id="chart-title">响应曲线 <span class="tiny-tag">SIGNAL VIEW</span></h2><p id="chart-description">导入数据，开始探索你的实验。</p></div><button id="svg-button" class="text-button" disabled>导出 SVG ↗</button></div>
+          <div id="chart" class="chart"><div class="chart-empty"><svg aria-hidden="true" viewBox="0 0 480 140"><path class="ghost-grid" d="M0 35H480M0 70H480M0 105H480M80 0V140M160 0V140M240 0V140M320 0V140M400 0V140"/><path class="ghost-wave" d="M0 113H80C110 113 116 20 149 24S187 71 215 57S248 41 277 49S330 48 360 49H480"/></svg><strong>你的下一次发现，从一份数据开始</strong><p>上传 CSV，或载入两组电机阶跃响应示例</p><button id="empty-demo" class="text-button">体验示例 <span aria-hidden="true">→</span></button></div></div>
+          <div class="chart-footer"><div id="chart-legend" class="legend"><span><i class="legend-line"></i> 响应信号</span><span><i class="legend-line target"></i> 目标值</span></div><span id="sample-count">尚无数据</span></div>
+        </section>
+        <section class="card config-card"><details open><summary><span>分析设置 <span class="tiny-tag">PARAMETERS</span></span><span class="summary-hint">确认信号、单位与单阶跃条件 <span aria-hidden="true">⌄</span></span></summary><form id="analysis-form"><fieldset id="config-fields" disabled>
+          <div class="form-grid"><div class="field"><label for="time-column">时间列</label><select id="time-column" required></select></div><div class="field"><label for="value-column">响应列</label><select id="value-column" required></select></div><div class="field"><label for="time-unit">原始时间单位</label><select id="time-unit"><option value="s">秒 · s</option><option value="ms">毫秒 · ms</option><option value="us">微秒 · μs</option></select></div><div class="field"><label for="value-unit">响应单位</label><input id="value-unit" placeholder="例如 rpm、A、℃" maxlength="30"></div>
+          <div class="field"><label for="initial">阶跃初始值</label><input id="initial" type="number" step="any" required placeholder="例如 0"></div><div class="field"><label for="target">阶跃目标值</label><input id="target" type="number" step="any" required placeholder="例如 1000"></div><div class="field"><label for="step-time">阶跃时刻 / s</label><input id="step-time" type="number" step="any" value="0" required></div><div class="field"><label for="band-percent">调节误差带 / %</label><input id="band-percent" type="number" min="0.000001" max="50" step="any" value="2" required></div>
+          <div class="field"><label for="tail-percent">末段窗口 / % 时长</label><input id="tail-percent" type="number" min="0.000001" max="50" step="any" value="10" required></div><div class="field"><label for="range-start">区间起点 / s <span>可选</span></label><input id="range-start" type="number" step="any" placeholder="全部数据"></div><div class="field"><label for="range-end">区间终点 / s <span>可选</span></label><input id="range-end" type="number" step="any" placeholder="全部数据"></div><div class="field submit-field"><button id="analyze-button" type="submit" class="button primary">计算并绘图 <span aria-hidden="true">→</span></button></div></div>
+          <p class="field-note">参数属于当前实验。比较时会分别使用两份实验各自保存的设置；先切换到另一份实验确认参数。</p>
+        </fieldset></form></details></section>
+        <section class="card evidence-card" id="evidence-card" hidden><div class="card-heading"><div><h2>结果与依据</h2><p>由原始样本计算，可回到输入核对。</p></div><div class="export-actions"><button id="report-button" class="text-button">报告 .md ↓</button><button id="json-button" class="text-button">结果 .json ↓</button><button id="csv-button" class="text-button">区间 .csv ↓</button></div></div><div id="evidence"></div></section>
+        <footer class="workspace-footer"><span>MOONMOTOR LAB</span><span>每一个数值，都应该有来处。</span></footer>
+      </div>
+      <aside class="card assistant" aria-labelledby="assistant-title"><div class="assistant-header"><div class="assistant-avatar" aria-hidden="true">✳</div><div><h2 id="assistant-title">实验助手</h2><p id="model-label">正在检查连接…</p></div><span id="model-dot" class="model-dot"></span></div><div class="assistant-body" id="chat-messages" aria-live="polite" aria-relevant="additions"><div class="assistant-intro"><p class="intro-label">MEET YOUR EXPERIMENT ASSISTANT</p><h3>把问题交给我，<br>把依据留给你。</h3><p>选择实验与参数后，我会调用分析工具，帮你查看曲线、理解指标和比较结果。</p></div><div class="suggestions"><button data-prompt="分析当前实验的阶跃响应，说明超调量、上升时间和调节时间。">分析这组阶跃响应 <span>↗</span></button><button data-prompt="比较这两组实验的超调量、调节时间和末段误差。">比较两组实验结果 <span>↗</span></button><button data-prompt="解释当前实验的末段误差和分析限制。">这些指标说明了什么 <span>↗</span></button></div><div class="tool-principle"><span aria-hidden="true">⌁</span><p>先计算，再解释。<br><small>数值来自工具，解释附带限制。</small></p></div></div><form id="chat-form" class="chat-form"><label class="sr-only" for="question">向实验助手提问</label><textarea id="question" rows="3" maxlength="4000" placeholder="例如：这次响应的超调有多大？" disabled></textarea><div class="composer-bottom"><span id="composer-mode">内置分析 · 无外部发送</span><button id="stop-button" class="text-button" type="button" hidden>停止</button><button id="send-button" class="send-button" type="submit" aria-label="发送问题" disabled>↑</button></div><p id="data-policy" class="data-policy">原始数据保留在本机。</p></form></aside>
+    </div>
+  </section>
+</main>
+<dialog id="help-dialog"><div class="dialog-header"><h2>分析方法与使用说明</h2><button id="close-help" class="icon-button" aria-label="关闭说明">×</button></div><div class="help-content"><p>MoonMotor Lab 第一版分析<strong>单次阶跃响应</strong>。上传含时间列与数值响应列的 CSV，确认列名、单位、初始值、目标值和阶跃时刻，再计算或提问。</p><h3>这些指标怎样计算？</h3><p>超调量按阶跃方向、相对阶跃幅值计算。上升时间取 10% 和 90% 首次穿越的线性插值。调节时间取最后一次离开误差带之后的样本时刻，至少需要两个末尾带内样本。误差带相对于阶跃幅值。</p><p>末段窗口按阶跃后时长选择，末段误差是目标值减去末段样本均值。它只代表所选窗口，不证明系统最终稳态或闭环稳定性。IAE 是对分段线性误差绝对值的积分。</p><h3>数据与模型</h3><p>未配置模型时，内置模式只支持已有分析和比较。设置服务端 LAB_MODEL_URL、LAB_MODEL_NAME 和可选 LAB_MODEL_KEY 后重启，可连接支持工具调用的模型。模型地址填写 API 基础地址，如含 /v1 的地址。</p><p>模型模式在提问后发送当前问题、所选实验的元数据和计算摘要，不发送原始 CSV。模型文字解释需核对，准确数值以工具结果为准。当前数据暂存内存，重启服务后清空；请自行保存报告与源文件。</p><h3>范围与限制</h3><p>支持 UTF-8、逗号分隔、带表头的 CSV，含引号和多行字段。单文件最多 10 MiB、10 万行、128 列；当前会话最多 12 份数据、100 万单元格。时间必须严格递增，缺失或无效响应不会自动补零。</p><p>图表可为显示降采样，指标始终使用原始分析样本。本版未实现 FFT、CAN 实时接入、参数辨识或神经网络训练。示例由二阶响应公式生成，属于合成数据。</p></div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body></html>
