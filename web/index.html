@@ -19,14 +19,14 @@
   <div class="sidebar-footer"><span class="local-dot"></span><div>本机工作空间<small>数据暂存内存 · 重启后清空</small></div><span class="lock-icon" aria-hidden="true">⌑</span></div>
 </aside>
 <main id="main" class="main">
-  <header class="topbar"><div><span class="breadcrumb">工作空间</span><span class="slash">/</span><span>实验分析</span></div><span class="engine-badge"><span></span> MoonBit 计算引擎</span></header>
+  <header class="topbar"><div><span class="breadcrumb">工作空间</span><span class="slash">/</span><span>实验分析</span></div><div class="topbar-actions"><button id="mobile-help" class="text-button mobile-only" type="button">使用说明</button><span class="engine-badge"><span></span> MoonBit 计算引擎</span></div></header>
   <section class="workspace">
     <div class="page-heading"><div><p class="eyebrow">EXPERIMENTS, UNDERSTOOD.</p><h1>从波形，到结论<span>。</span></h1><p class="subtitle">让数据说清楚，让每一次实验都有据可循。</p></div><div class="heading-actions"><button id="demo-button" class="button secondary"><span aria-hidden="true">◈</span> 体验合成示例</button><button id="upload-button" class="button primary"><span aria-hidden="true">＋</span> 导入 CSV</button></div></div>
     <input id="file-input" type="file" accept=".csv,text/csv" multiple hidden>
     <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
     <div class="workspace-grid">
       <div class="analysis-column">
-        <section class="card experiment-bar" aria-label="选择实验"><div class="field experiment-select"><label for="primary-dataset">当前实验</label><select id="primary-dataset" disabled><option value="">请先导入数据</option></select></div><div class="compare-control"><label class="toggle-label"><input type="checkbox" id="compare-toggle"> 对比实验</label><select id="secondary-dataset" aria-label="对比实验" hidden></select></div><span id="source-type" class="source-tag">等待数据</span></section>
+        <section class="card experiment-bar" aria-label="选择实验"><div class="field experiment-select"><label for="primary-dataset">当前实验</label><select id="primary-dataset" disabled><option value="">请先导入数据</option></select></div><div class="compare-control"><label class="toggle-label"><input type="checkbox" id="compare-toggle"> 对比实验</label><select id="secondary-dataset" aria-label="对比实验" hidden></select></div><span id="source-type" class="source-tag">等待数据</span><button id="mobile-remove" class="text-button mobile-only" type="button" disabled>移除</button></section>
         <div id="metrics" class="metrics-grid" aria-label="实验指标">
           <div class="metric"><span>超调量</span><strong>—<small>%</small></strong><p>峰值相对阶跃幅值</p></div>
           <div class="metric"><span>上升时间</span><strong>—<small>s</small></strong><p>首次穿越 10% → 90%</p></div>

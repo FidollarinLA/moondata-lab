@@ -83,6 +83,7 @@ function renderDatasets() {
     const info = node('span'); info.append(node('span', 'dataset-name', d.name), node('span', 'dataset-info', `${d.rowCount.toLocaleString()} 行 · ${d.synthetic ? '合成示例' : '已导入'}`)); pick.append(info);
     pick.addEventListener('click', () => selectPrimary(d.id));
     const remove = node('button', 'dataset-delete', '×'); remove.disabled = state.busy; remove.setAttribute('aria-label', `删除 ${d.name}`);
+    remove.dataset.id = d.id;
     remove.addEventListener('click', async () => {
       try {
         await api(`/api/datasets/${d.id}`, undefined, { method: 'DELETE' });
@@ -103,6 +104,7 @@ function renderDatasets() {
   $('secondary-dataset').hidden = !state.comparing;
   $('compare-toggle').checked = state.comparing;
   $('compare-toggle').disabled = state.datasets.length < 2 || state.busy;
+  $('mobile-remove').disabled = !state.primary || state.busy;
   $('source-type').textContent = state.datasets.find(d => d.id === state.primary)?.synthetic ? '合成示例' : state.primary ? '用户数据' : '等待数据';
   $('question').disabled = !state.primary || state.busy;
   $('send-button').disabled = !state.primary || state.busy;
@@ -307,6 +309,8 @@ $('json-button').addEventListener('click', () => exportReport('json'));
 $('csv-button').addEventListener('click', async () => { try { download(await api('/api/export-csv', state.results[0].selection, { raw: true }), 'moonmotor-selection.csv', 'text/csv;charset=utf-8'); } catch (e) { notify(e.message, true); } });
 $('svg-button').addEventListener('click', () => { const svg = exportSvg($('chart')); if (svg) download(svg, 'moonmotor-response.svg', 'image/svg+xml;charset=utf-8'); });
 $('help-button').addEventListener('click', () => $('help-dialog').showModal()); $('close-help').addEventListener('click', () => $('help-dialog').close());
+$('mobile-help').addEventListener('click', () => $('help-dialog').showModal());
+$('mobile-remove').addEventListener('click', () => [...document.querySelectorAll('.dataset-delete')].find(button => button.dataset.id === state.primary)?.click());
 let dragCount = 0;
 document.addEventListener('dragenter', event => { if (event.dataTransfer?.types.includes('Files')) { event.preventDefault(); dragCount++; document.body.classList.add('drag-active'); } });
 document.addEventListener('dragover', event => { if (event.dataTransfer?.types.includes('Files')) event.preventDefault(); });

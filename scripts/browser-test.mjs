@@ -101,6 +101,14 @@ try {
   await page.locator('#analyze-button').click(); await page.locator('#notice.error').waitFor();
   assert.match(await page.locator('#notice').innerText(), /不严格递增/); assert.equal(await page.locator('#evidence-card').isHidden(), true);
   record('duplicate timestamp fails visibly and cannot retain stale result exports');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.locator('#mobile-help').click();
+  await page.locator('#help-dialog').waitFor({ state: 'visible' });
+  await page.locator('#close-help').click();
+  await page.locator('#mobile-remove').click();
+  await page.waitForFunction(() => document.querySelectorAll('.dataset-item').length === 3);
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  record('mobile users can open methods and remove selected data without the hidden sidebar');
 
   let mode = 'normal'; let requests = 0; let rawLeaked = false;
   const provider = http.createServer(async (req, res) => {
