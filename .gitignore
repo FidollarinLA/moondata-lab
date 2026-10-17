@@ -1,0 +1,12 @@
+_build/
+.mooncakes/
+node_modules/
+.local/
+.env
+.env.*
+!.env.example
+web/engine.js
+*.log
+artifacts/browser-*.png
+artifacts/verification.json
+artifacts/benchmark.json
