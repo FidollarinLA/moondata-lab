@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- Added explicit other/custom template and free X/multiple-Y chart builder.
+- Added actual numeric/date axis spacing, per-series missing-pair handling and grouped bars.
+- Integrated checksum-verified local Qwen 0.6B CPU chart planning, owned process lifecycle and structured output validation.
+- Added real local inference/browser acceptance alongside existing provider protocol stubs.
+- Preserved axes and aggregation for style-only edits; rejected missing explicitly requested X fields.
+
 ## 0.2.0
 
 - General-purpose synthetic data generation and uploaded-data analysis, confirmed as two product flows.

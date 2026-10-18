@@ -18,6 +18,8 @@
 
 ## 运行与开发依赖
 
+v0.3可选本地依赖：Qwen官方Qwen3-0.6B-GGUF Q8_0预训练模型（Apache-2.0）与llama.cpp b11718（MIT）Windows CPU便携发行版。setup只下载到忽略的.local目录，固定来源/摘要见docs/LOCAL_MODEL.md；源码包不捆绑权重或运行器。这是应用集成，不能宣称模型由本项目训练或推理引擎由MoonBit实现。
+
 - MoonBit 工具链和标准库用于编译运行，按其自身许可证分发；本仓库不捆绑工具链。
 - Node.js 运行时按其自身许可证分发；本仓库不捆绑 Node.js。
 - Playwright 1.62.1（Apache-2.0）仅用于开发验收，锁定版本与完整性见 pnpm-lock.yaml。其浏览器发行版遵循各自许可证。

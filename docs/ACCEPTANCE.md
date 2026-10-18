@@ -1,4 +1,4 @@
-# v0.2 通用版验收
+# v0.3 通用版验收
 
 日期：2026-10-18，Windows x64 / Node 24.19.0 / MoonBit 0.10.15 / Playwright 1.62.1 / Microsoft Edge。此记录对应通用数据生成与分析；旧电机记录见 archive/MOTOR_V0_ACCEPTANCE.md。
 
@@ -6,11 +6,12 @@
 | --- | --- | --- |
 | 生成与分析两条流程 | 已实现 | web 默认入口、server/data、generator、explore |
 | 数学与核心 | JS 15/15、WasmGC 15/15 | scripts/check.mjs；独立预期值 |
-| Node 数值/服务/工具 | 56/56 | test/*.test.mjs（含历史回归） |
-| 浏览器端到端 | 18 场景通过 | artifacts/browser-acceptance.json |
-| 通用示例 | 4 领域 | examples/*-synthetic.csv/json，含方案与标识 |
+| Node 数值/服务/工具 | 64/64 | test/*.test.mjs（含历史回归） |
+| 浏览器端到端 | 21 场景通过 | artifacts/browser-acceptance.json |
+| 通用示例 | 4 领域 + 其他/自定义 | examples/*-synthetic.csv/json，含方案与标识 |
 | 模型工具协议 | 模拟服务通过 | 方案提出→用户生成→模型调用相关工具；取消中止上游 |
-| 外部模型效果 | 未实测 | 当前没有调用真实模型服务，不据此承诺提供商兼容性 |
+| 远程模型提供商 | 未实测 | 当前没有调用真实远程模型，不据此承诺提供商兼容性 |
+| 本地小模型实际推理 | 8项流程检查通过 | artifacts/local-model-acceptance.json；真实Qwen CPU推理与浏览器，含字段校验检查 |
 | 截图 | 新生成/分析/390px | artifacts/moondata-generation/analysis/mobile.png |
 | 本地 Git | 分阶段提交 | codex/initial-workbench |
 | GitHub 推送 | 待登录，未完成 | gh 未登录；连接器目标查询不可访问；发布脚本已准备 |
@@ -33,7 +34,11 @@
 
 桌面视口1440×1100、移动390×844。没有以本机检查代替 Linux/macOS 或 Firefox/Safari 验证。CI 使用 Chromium，远端结果需推送后确认。
 
-## 本机性能检查
+v0.3新增显式自定义入口、X与多Y选择、实际数值/日期间隔、多曲线、点击切换图型与报告失效、一键字段推荐。真实本地模型单独执行：中文双纵轴折线、保留选择换图型、类别金额求和、散点、纯文本计数、缺失字段校验及两条实际浏览器对话路径。
+
+模型测试使用固定小组合成数据；没有据此报告开放域准确率。图表规划可失败或误解，用户应核对回填的字段与聚合方式。明确字段不存在时不绘制替代列。
+
+## v0.2 历史本机性能检查
 
 `node scripts/benchmark.mjs` 对10万行合成类别/数值表导入与相关分析，确认10万对参与统计、图只显示1500点；再生成1万行四字段实验模板。一次耗时记录在忽略的 artifacts/benchmark.json。不是峰值内存、多用户负载或跨平台性能保证。
 
@@ -43,4 +48,4 @@
 
 GitHub 身份登录后执行 `node scripts/publish-github.mjs`。默认私有 FidollarinLA/moondata-lab，推送 codex 分支并比对 SHA。成功后核对远端 CI，再更新此记录。没有收到登录条件前，不把本地提交报告为已上传。
 
-真实模型服务验证与用户真实数据反馈属于后续验收；当前合成示例不能证明行业业务有效性或隐私合成能力。
+远程模型服务验证与用户真实数据反馈属于后续验收；本地Qwen已单独实测。当前合成示例不能证明行业业务有效性或隐私合成能力。

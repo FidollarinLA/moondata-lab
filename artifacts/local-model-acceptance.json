@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-18T08:27:21.109Z",
+  "passed": true,
+  "model": "Qwen3-0.6B-Q8_0",
+  "runtime": "llama.cpp b11718 Windows CPU",
+  "modelSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+  "syntheticOnly": true,
+  "checks": [
+    "real Qwen maps Chinese request to date X and two Y series",
+    "style-only conversation retains user axes and aggregation",
+    "real Qwen chooses categorical sum and MoonBit computes 300 and 150",
+    "real Qwen changes explicit axes to numeric scatter",
+    "field validation prevents missing-axis substitution before inference",
+    "real Qwen handles text-only data through count chart",
+    "real browser selection and dialog produce two lines and a source-backed report",
+    "real browser follow-up changes axes and redraws scatter without script errors"
+  ],
+  "caveat": "Small synthetic acceptance set, not a general language-understanding benchmark."
+}

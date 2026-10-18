@@ -1,4 +1,12 @@
-# 架构与接口 v0.2
+# 架构与接口 v0.3
+
+新增自由画图：Query mode=plot，`{datasetId,x,yColumns:[...],kind:auto/line/scatter/bar,reducer:mean/sum/min/max}`。最多8个Y，返回多个series、每列统计与缺失数、实际X轴类型。UI点击和模型都走同一受限计算链，默认推荐只依据字段类型。
+
+新增本地模型：setup脚本下载固定版本权重与运行器到忽略目录并校验摘要；start-with-model先构建，再启动只监听loopback的llama.cpp子进程，健康检查通过后启动应用。启动终端关闭时清理所创建的模型进程。
+
+LAB_LOCAL_MODEL_URL仅允许本机HTTP并选择local-planner模式；此模式以字段元数据、当前选择和问题构造JSON Schema请求，不发送原始行。模型只生成图表配置，由server/plot校验并调用MoonBit统计/聚合。风格变更保留用户参数。明确模板和概览操作直接使用工具，不伪称模型推理。
+
+本地模型一次只接收优先挑选的16个候选字段，所有列仍可手动选择。模型没有文件、代码、shell或任意网络工具。当前是现成预训练模型的本地应用集成，不是MoonBit训练或实现了LLM推理引擎。
 
 生成：字段方案 → Node 参数验证 → MoonBit generator → 类型化记录 / 合成标识 → 会话数据 → 三种下载。
 
@@ -41,6 +49,8 @@ Query：datasetId 与 mode；group 模式附 group、reducer、可选 value；di
 ## 模型边界
 
 工具名单：profile_dataset、explore_dataset、propose_generation。分析绑定到当前选中 ID，模型自填其他 ID 不能切换数据。仅方案生成工具无需已有数据。工具参数错误反馈模型，不运行任意代码。
+
+远程工具名单另新增plot_dataset，传X和Y列表即可多曲线绘图；精简结果剔除series绘图点与结果点表，避免新增模式绕过原始行策略。
 
 模型可见字段结构、摘要和有限分组结果，不可见原始预览、散点/折线采样行、任意导入 provenance 或原始文件。类别名称可能出现在分组结果。问题与历史本身由用户输入，可能包含用户主动给出的数据。
 

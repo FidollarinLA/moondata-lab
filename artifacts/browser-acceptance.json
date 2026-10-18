@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-18T07:51:04.182Z",
+  "checkedAt": "2026-10-18T08:27:08.427Z",
   "passed": true,
   "checks": [
-    "general workbench exposes four domain templates and honestly labels offline mode",
+    "general workbench exposes other/custom option and four domain templates",
     "schema generation and three full dataset downloads preserve types and synthetic marks",
     "same schema and seed reproduce exact dataset hash through UI",
     "generated sales ledger groups and renders an exportable bar chart",
@@ -11,6 +11,9 @@
     "histogram frequencies and interpolated median are correct",
     "scatter uses complete numeric pairs and exact correlation",
     "date line preserves source row order without motor assumptions",
+    "free plot builder renders selected X with multiple Y series and actual numeric spacing",
+    "chart style selection invalidates exports and redraws both scatter series",
+    "one-click field recommendation creates chart without claiming model inference",
     "JSON and JSONL preserve scalar types union headers and text IDs",
     "nested unsupported data yields actionable error and keeps prior data",
     "untrusted headers and cells render as text",
