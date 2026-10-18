@@ -12,7 +12,7 @@
 | 模型工具协议 | 模拟服务通过 | 方案提出→用户生成→模型调用相关工具；取消中止上游 |
 | 远程模型提供商 | 未实测 | 当前没有调用真实远程模型，不据此承诺提供商兼容性 |
 | 本地小模型实际推理 | 8项流程检查通过 | artifacts/local-model-acceptance.json；真实Qwen CPU推理与浏览器，含字段校验检查 |
-| 截图 | 新生成/分析/390px | artifacts/moondata-generation/analysis/mobile.png |
+| 截图 | 生成/分析/390px/本地模型 | artifacts/moondata-*.png |
 | 本地 Git | 分阶段提交 | codex/initial-workbench |
 | GitHub 推送 | 待登录，未完成 | gh 未登录；连接器目标查询不可访问；发布脚本已准备 |
 | 远端 CI | 配置完成，未运行 | .github/workflows/ci.yml；需先推送 |
