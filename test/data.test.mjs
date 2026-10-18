@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import { DatasetStore } from '../server/datasets.mjs';
 import { distribution, correlation, generateRows } from '../server/core.mjs';
 import { normalizePlan, templates, generateDataset, importDataset, explore, profile, dataReport, downloadDataset } from '../server/data.mjs';
@@ -46,6 +47,13 @@ test('synthetic status survives all export import formats while imported provena
     const store = new DatasetStore(), d = generateDataset(store, { ...templates[0], rows: 3 });
     const imported = importDataset(store, { name: `roundtrip.${format}`, format, content: downloadDataset(store, d.id, format).content });
     assert.equal(imported.synthetic, true); assert.equal(imported.provenance.imported, true);
+  }
+});
+test('distributed domain CSV bytes match JSON provenance fingerprints', async () => {
+  for (const t of templates) {
+    const csv = await readFile(new URL(`../examples/${t.id}-synthetic.csv`, import.meta.url));
+    const data = JSON.parse(await readFile(new URL(`../examples/${t.id}-synthetic.json`, import.meta.url), 'utf8'));
+    assert.equal(createHash('sha256').update(csv).digest('hex'), data.sourceSha256);
   }
 });
 test('generic profile needs neither monotonic time nor target; missing is distinct from text', () => {

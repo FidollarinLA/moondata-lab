@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 生成与分析两条流程 | 已实现 | web 默认入口、server/data、generator、explore |
 | 数学与核心 | JS 15/15、WasmGC 15/15 | scripts/check.mjs；独立预期值 |
-| Node 数值/服务/工具 | 55/55 | test/*.test.mjs（含历史回归） |
+| Node 数值/服务/工具 | 56/56 | test/*.test.mjs（含历史回归） |
 | 浏览器端到端 | 18 场景通过 | artifacts/browser-acceptance.json |
 | 通用示例 | 4 领域 | examples/*-synthetic.csv/json，含方案与标识 |
 | 模型工具协议 | 模拟服务通过 | 方案提出→用户生成→模型调用相关工具；取消中止上游 |
