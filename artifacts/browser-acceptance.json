@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-18T07:51:04.182Z",
+  "passed": true,
+  "checks": [
+    "general workbench exposes four domain templates and honestly labels offline mode",
+    "schema generation and three full dataset downloads preserve types and synthetic marks",
+    "same schema and seed reproduce exact dataset hash through UI",
+    "generated sales ledger groups and renders an exportable bar chart",
+    "non-time ledger imports and group sums agree with independent expected values",
+    "changed queries disable stale reports and recalculate",
+    "histogram frequencies and interpolated median are correct",
+    "scatter uses complete numeric pairs and exact correlation",
+    "date line preserves source row order without motor assumptions",
+    "JSON and JSONL preserve scalar types union headers and text IDs",
+    "nested unsupported data yields actionable error and keeps prior data",
+    "untrusted headers and cells render as text",
+    "offline assistant proposes a template and never creates data silently",
+    "offline unsupported prompts do not fabricate model reasoning",
+    "390px layouts keep dataset switching and forms reachable without page overflow",
+    "model protocol stub proposes schema then calls bounded MoonBit analysis without raw sample transfer",
+    "cancel stops UI request and aborts model upstream",
+    "all browser paths complete without uncaught JavaScript errors"
+  ],
+  "errors": [],
+  "modelValidation": "Protocol stubs only, not an external model service."
+}

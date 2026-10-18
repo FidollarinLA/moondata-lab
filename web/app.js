@@ -1,326 +1,164 @@
-import { drawChart, exportSvg } from './chart.js';
-
+import { drawChart } from './chart.js';
 const $ = id => document.getElementById(id);
-const state = { datasets: [], configs: new Map(), primary: '', secondary: '', comparing: false, results: [], history: [], status: null, busy: false, controller: null, operation: 0 };
-const fields = { timeColumn: 'time-column', valueColumn: 'value-column', timeUnit: 'time-unit', valueUnit: 'value-unit', initial: 'initial', target: 'target', stepTime: 'step-time', bandPercent: 'band-percent', tailPercent: 'tail-percent', rangeStart: 'range-start', rangeEnd: 'range-end' };
-const numberFields = new Set(['initial', 'target', 'stepTime', 'bandPercent', 'tailPercent', 'rangeStart', 'rangeEnd']);
-const metricDefs = [
-  ['超调量', 'overshoot_percent', '%', '峰值相对阶跃幅值'],
-  ['上升时间', 'rise_time', 's', '首次穿越 10% → 90%'],
-  ['调节时间', 'settling_time', 's', '观察窗内进入误差带'],
-  ['末段误差', 'steady_error', '', '目标值减末段平均值'],
-];
-function node(tag, className, content) { const n = document.createElement(tag); if (className) n.className = className; if (content !== undefined) n.textContent = content; return n; }
-function format(value, digits = 3) { if (value == null) return '未观察到'; if (Math.abs(value) < 0.00001 && value !== 0) return value.toExponential(2); return Number(value.toFixed(digits)).toLocaleString('en-US', { maximumFractionDigits: digits }); }
-function notify(message, error = false) { $('notice').hidden = false; $('notice').className = `notice${error ? ' error' : ''}`; $('notice').textContent = message; }
-let toastTimer;
-function toast(message) { $('toast').textContent = message; $('toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { $('toast').hidden = true; }, 3500); }
-async function api(path, data, options = {}) {
-  const response = await fetch(path, {
-    method: options.method ?? (data === undefined ? 'GET' : 'POST'),
-    headers: { 'Content-Type': 'application/json', 'X-Lab-Client': '1' },
-    ...(data !== undefined ? { body: JSON.stringify(data) } : {}), signal: options.signal,
+const state = { datasets: [], id: '', plan: null, templates: [], result: null, controller: null, revision: 0, planRevision: 0, history: [] };
+const kinds = { text: '文本编号', sequence: '数值序列', integer: '随机整数', number: '随机小数', category: '类别', boolean: '是 / 否', date: '日期', linear: '线性关联' };
+function el(tag, text, cls) { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (cls) n.className = cls; return n; }
+const fmt = v => v === null || v === undefined ? '不可用' : typeof v === 'number' ? Number(v.toPrecision(7)).toLocaleString('zh-CN', { maximumFractionDigits: 7 }) : String(v);
+function notice(message, error = false) { $('notice').textContent = message; $('notice').className = error ? 'error' : ''; $('notice').hidden = false; }
+async function api(path, data, signal) {
+  const response = await fetch(`/api/${path}`, { method: data === undefined ? 'GET' : 'POST', headers: data === undefined ? {} : { 'Content-Type': 'application/json', 'X-Lab-Client': '1' }, body: data === undefined ? undefined : JSON.stringify(data), signal });
+  if (!response.ok) { let msg; try { msg = (await response.json()).error; } catch {} throw new Error(msg || `请求失败：${response.status}`); }
+  return response;
+}
+async function json(path, data, signal) { return (await api(path, data, signal)).json(); }
+function switchTab(tab) {
+  for (const t of ['generate', 'analyze']) { $(`${t}-panel`).hidden = t !== tab; $(`tab-${t}`).classList.toggle('active', t === tab); $(`tab-${t}`).setAttribute('aria-pressed', String(t === tab)); }
+}
+function invalidate() {
+  state.revision++; state.result = null;
+  for (const id of ['report-button', 'json-report-button', 'svg-button']) $(id).disabled = true;
+  $('stale-label').hidden = false; $('chart-wrap').hidden = true; $('result-table').replaceChildren(); $('warnings').replaceChildren();
+}
+function options(select, values, value) { select.replaceChildren(...values.map(v => { const o = el('option', typeof v === 'string' ? v : v.label); o.value = typeof v === 'string' ? v : v.value; return o; })); if (values.some(v => (typeof v === 'string' ? v : v.value) === value)) select.value = value; }
+function setPlan(plan) {
+  state.plan = structuredClone(plan); $('plan-name').value = plan.name ?? '自定义数据集'; $('rows').value = plan.rows ?? 300; $('seed').value = plan.seed ?? 42;
+  for (const b of document.querySelectorAll('.template')) b.classList.toggle('active', b.dataset.template === plan.id);
+  renderFields();
+}
+function renderFields() {
+  state.planRevision++;
+  $('field-editor').replaceChildren();
+  state.plan.columns.forEach((c, i) => {
+    const card = el('div', undefined, 'field'), top = el('div', undefined, 'field-top');
+    const name = el('input'); name.value = c.name; name.maxLength = 100; name.setAttribute('aria-label', `字段 ${i + 1} 名称`); name.addEventListener('input', () => { c.name = name.value; });
+    const kind = el('select'); kind.setAttribute('aria-label', `字段 ${i + 1} 类型`); options(kind, Object.entries(kinds).map(([value, label]) => ({ value, label })), c.kind);
+    kind.addEventListener('change', () => { c.kind = kind.value; renderFields(); });
+    const remove = el('button', '×', 'field-remove'); remove.setAttribute('aria-label', `删除字段 ${i + 1}`); remove.addEventListener('click', () => { state.plan.columns.splice(i, 1); renderFields(); });
+    top.append(name, kind, remove); card.append(top);
+    const params = el('div', undefined, 'field-params');
+    function param(key, labelText, fallback, type = 'number') {
+      const label = el('label', labelText), input = el('input'); input.type = type; input.setAttribute('aria-label', `字段 ${i + 1} ${labelText}`);
+      input.value = key === 'choices' ? (c.choices ?? ['类别A', '类别B']).join('，') : key === 'startDate' ? c.startDate ?? (Number.isInteger(c.start_day) ? new Date(c.start_day * 86400000).toISOString().slice(0, 10) : fallback) : c[key] ?? fallback;
+      if (c[key] === undefined) c[key] = type === 'number' ? Number(input.value) : key === 'choices' ? input.value.split(/[，,]/).map(s => s.trim()).filter(Boolean) : input.value;
+      if (type === 'number') input.step = 'any';
+      input.addEventListener('input', () => { c[key] = type === 'number' ? Number(input.value) : key === 'choices' ? input.value.split(/[，,]/).map(s => s.trim()).filter(Boolean) : input.value; });
+      label.append(input); params.append(label);
+    }
+    if (['number', 'integer'].includes(c.kind)) { param('min', '最小值', 0); param('max', '最大值', 100); }
+    if (['sequence', 'text'].includes(c.kind)) { param('start', '起始值', 1); param('step', '步长', 1); param('prefix', '前缀', '', 'text'); }
+    if (c.kind === 'category') param('choices', '选项（逗号分隔）', '', 'text');
+    if (c.kind === 'boolean') param('probability', '为是的概率', .5);
+    if (c.kind === 'date') { param('startDate', '起始日期', '2026-01-01', 'date'); param('step', '间隔天数', 1); }
+    if (c.kind === 'linear') { param('source', '前面数值字段的名称', '', 'text'); param('slope', '系数', 1); param('intercept', '常数项', 0); param('noise', '均匀噪声 ±', 0); }
+    if (['number', 'linear'].includes(c.kind)) param('decimals', '小数位数', 2);
+    param('missing', '缺失概率（0–0.8）', 0);
+    card.append(params); $('field-editor').append(card);
   });
-  if (!response.ok) { const payload = await response.json().catch(() => ({})); throw new Error(payload.error || `请求失败 ${response.status}`); }
-  return options.raw ? response.text() : response.json();
+  $('add-field').disabled = state.plan.columns.length >= 32;
 }
-function defaultConfig(d) {
-  return { datasetId: d.id, timeColumn: d.suggestedTime, valueColumn: d.suggestedValue,
-    timeUnit: /(?:_|\[|\()ms(?:\]|\))?$/i.test(d.suggestedTime) ? 'ms' : /(?:_|\[|\()us(?:\]|\))?$/i.test(d.suggestedTime) ? 'us' : 's',
-    valueUnit: /rpm/i.test(d.suggestedValue) ? 'rpm' : '',
-    initial: d.synthetic ? 0 : '', target: d.synthetic ? 1000 : '', stepTime: d.synthetic ? .5 : 0,
-    bandPercent: 2, tailPercent: 10, rangeStart: null, rangeEnd: null };
+function query() {
+  return { datasetId: state.id, mode: $('mode').value, group: $('group').value, value: $('value').value, reducer: $('reducer').value, bins: Number($('bins').value), x: $('x').value, y: $('y').value };
 }
-function readForm() {
-  if (!state.primary) return;
-  const c = state.configs.get(state.primary);
-  for (const [key, id] of Object.entries(fields)) {
-    const value = $(id).value;
-    c[key] = numberFields.has(key) ? (value === '' ? (key.startsWith('range') ? null : '') : Number(value)) : value;
+function queryFields() {
+  const m = $('mode').value;
+  for (const field of ['group', 'value', 'reducer', 'bins', 'x', 'y']) {
+    const visible = field === 'group' || field === 'reducer' ? m === 'group' : field === 'value' ? m === 'distribution' || (m === 'group' && $('reducer').value !== 'count') : field === 'bins' ? m === 'distribution' : ['scatter', 'line'].includes(m);
+    $(`${field}-field`).hidden = !visible;
   }
 }
-function writeForm() {
-  const d = state.datasets.find(d => d.id === state.primary);
-  $('config-fields').disabled = !d || state.busy;
-  if (!d) return;
-  const config = state.configs.get(d.id);
-  for (const id of ['time-column', 'value-column']) {
-    $(id).replaceChildren(...d.columns.map(c => { const option = node('option', '', `${c.name}${c.invalid || c.missing ? ' · 含无效/缺失' : ''}`); option.value = c.name; return option; }));
-  }
-  for (const [key, id] of Object.entries(fields)) $(id).value = config[key] ?? '';
-}
-function selections() {
-  readForm();
-  const ids = state.comparing ? [state.primary, state.secondary] : [state.primary];
-  if (ids.some(id => !id)) throw new Error('请先导入并选择实验');
-  return ids.map(id => {
-    const c = state.configs.get(id);
-    if (!c || ['initial', 'target', 'stepTime', 'bandPercent', 'tailPercent'].some(k => typeof c[k] !== 'number' || !Number.isFinite(c[k]))) throw new Error(`请先为 ${state.datasets.find(d => d.id === id)?.name || '实验'} 确认初始值、目标值与分析参数`);
-    return { ...c };
-  });
-}
-function clearResults(message) {
-  if (state.history.length) addMessage('assistant', '分析条件已变更。上方对话属于先前条件，后续问题将使用新的选择与参数。');
-  state.results = []; state.history = [];
-  $('evidence-card').hidden = true; $('svg-button').disabled = true;
-  renderMetrics([]);
-  $('chart').replaceChildren(node('div', 'chart-empty', message || '参数已更新，请重新计算并绘图。'));
-  $('chart-description').textContent = '当前设置尚未生成分析结果。';
-  $('sample-count').textContent = '等待重新计算';
-}
-function datasetOptions(select, datasets, value) {
-  select.replaceChildren(...datasets.map(d => { const option = node('option', '', d.name); option.value = d.id; return option; }));
-  if (!datasets.length) { const option = node('option', '', '请先导入数据'); option.value = ''; select.append(option); }
-  select.value = value; select.disabled = !datasets.length || state.busy;
-}
-function renderDatasets() {
-  $('dataset-count').textContent = state.datasets.length;
-  const list = $('dataset-list'); list.replaceChildren();
-  for (const d of state.datasets) {
-    const item = node('div', `dataset-item${d.id === state.primary ? ' selected' : ''}`);
-    const pick = node('button', 'dataset-pick'); pick.disabled = state.busy; pick.title = d.name;
-    pick.append(node('span', 'dataset-icon', '▤'));
-    const info = node('span'); info.append(node('span', 'dataset-name', d.name), node('span', 'dataset-info', `${d.rowCount.toLocaleString()} 行 · ${d.synthetic ? '合成示例' : '已导入'}`)); pick.append(info);
-    pick.addEventListener('click', () => selectPrimary(d.id));
-    const remove = node('button', 'dataset-delete', '×'); remove.disabled = state.busy; remove.setAttribute('aria-label', `删除 ${d.name}`);
-    remove.dataset.id = d.id;
-    remove.addEventListener('click', async () => {
-      try {
-        await api(`/api/datasets/${d.id}`, undefined, { method: 'DELETE' });
-        state.datasets = state.datasets.filter(x => x.id !== d.id); state.configs.delete(d.id);
-        if (state.primary === d.id) state.primary = state.datasets[0]?.id || '';
-        if (state.secondary === d.id || state.secondary === state.primary) state.secondary = state.datasets.find(x => x.id !== state.primary)?.id || '';
-        state.comparing = state.comparing && !!state.secondary;
-        clearResults('数据已移除，请选择实验后重新分析。'); renderDatasets(); writeForm(); toast('已从当前会话移除数据');
-      } catch (e) { notify(e.message, true); }
-    });
-    item.append(pick, remove); list.append(item);
-  }
-  if (!state.datasets.length) list.append(node('div', 'sidebar-empty', '把实验放在这里。\n每份数据，都有自己的依据。'));
-  datasetOptions($('primary-dataset'), state.datasets, state.primary);
-  const others = state.datasets.filter(d => d.id !== state.primary);
-  if (!others.some(d => d.id === state.secondary)) state.secondary = others[0]?.id || '';
-  datasetOptions($('secondary-dataset'), others, state.secondary);
-  $('secondary-dataset').hidden = !state.comparing;
-  $('compare-toggle').checked = state.comparing;
-  $('compare-toggle').disabled = state.datasets.length < 2 || state.busy;
-  $('mobile-remove').disabled = !state.primary || state.busy;
-  $('source-type').textContent = state.datasets.find(d => d.id === state.primary)?.synthetic ? '合成示例' : state.primary ? '用户数据' : '等待数据';
-  $('question').disabled = !state.primary || state.busy;
-  $('send-button').disabled = !state.primary || state.busy;
-  for (const id of ['upload-button', 'demo-button', 'sidebar-upload', 'add-data']) $(id).disabled = state.busy;
-}
-function selectPrimary(id) {
-  if (state.busy || id === state.primary) return;
-  readForm(); state.primary = id;
-  if (state.secondary === id) state.secondary = state.datasets.find(d => d.id !== id)?.id || '';
-  clearResults(); renderDatasets(); writeForm();
-}
-function renderMetrics(results) {
-  $('metrics').replaceChildren(...metricDefs.map(([label, key, unit, explanation]) => {
-    const card = node('div', 'metric'); card.append(node('span', '', label));
-    const first = results[0]?.metrics[key];
-    const value = node('strong', '', results.length ? first == null ? '—' : format(first, key === 'overshoot_percent' ? 2 : 3) : '—');
-    value.append(node('small', '', key === 'steady_error' ? results[0]?.selection.valueUnit || '' : unit)); card.append(value);
-    card.append(node('p', results.length > 1 ? 'comparison-value' : '', results.length > 1 ? `对比：${format(results[1].metrics[key])} ${key === 'steady_error' ? results[1].selection.valueUnit : unit}` : results.length && first == null ? '当前观察窗内不可用' : explanation));
-    return card;
-  }));
-}
-function renderEvidence(results, warnings) {
-  const container = $('evidence'); container.replaceChildren();
-  const wrapper = node('div', 'evidence-table-wrap'); const table = node('table', 'evidence-table');
-  const head = node('thead'); const tr = node('tr'); tr.append(node('th', '', '指标 / 定义')); for (const r of results) tr.append(node('th', '', r.dataset.name)); head.append(tr); table.append(head);
-  const body = node('tbody');
-  const rows = [...metricDefs.map(([name, key, unit]) => [name, r => `${format(r.metrics[key])}${r.metrics[key] == null ? '' : ` ${key === 'steady_error' ? r.selection.valueUnit : unit}`}`]),
-    ['末段均值', r => `${format(r.metrics.tail_mean)} ${r.selection.valueUnit}`], ['绝对误差积分 IAE', r => `${format(r.metrics.iae)} ${r.selection.valueUnit || '响应单位'}·s`],
-    ['原始分析样本', r => r.summary.count.toLocaleString()], ['调节误差带', r => `±${r.selection.bandPercent}%（幅值）`],
-    ['初始值 → 目标值', r => `${format(r.selection.initial)} → ${format(r.selection.target)} ${r.selection.valueUnit}`], ['阶跃时刻', r => `${format(r.selection.stepTime)} s`],
-    ['末段窗口', r => `末 ${r.selection.tailPercent}% 时长 · ${r.metrics.tail_samples} 样本`]];
-  for (const [label, getter] of rows) { const row = node('tr'); row.append(node('td', '', label)); for (const r of results) row.append(node('td', '', getter(r))); body.append(row); }
-  table.append(body); wrapper.append(table); container.append(wrapper);
-  const provenance = node('div', 'provenance');
-  for (const r of results) {
-    provenance.append(node('p', '', `${r.dataset.name} · ${r.dataset.synthetic ? '合成数据，非实测' : '用户上传'} · ${r.selection.timeColumn} / ${r.selection.valueColumn} · 时间 ${r.selection.timeUnit} → s`));
-    const p = node('p', '', 'SHA-256 '); p.append(node('code', '', r.dataset.sha256)); provenance.append(p);
-    for (const warning of r.metrics.warnings) provenance.append(node('p', 'warning', `${r.dataset.name}：${translateWarning(warning)}`));
-  }
-  for (const warning of warnings) provenance.append(node('p', 'warning', warning));
-  provenance.append(node('p', '', '调节时间仅描述观察窗；末段误差为窗口估计。指标使用原始样本，图表可能降采样。'));
-  container.append(provenance);
-  const d = state.datasets.find(d => d.id === results[0].dataset.id);
-  if (d) {
-    const details = node('details', 'preview-details'); details.append(node('summary', '', `查看输入预览与列质量 · ${d.rowCount.toLocaleString()} 行`));
-    const scroll = node('div', 'evidence-table-wrap'), preview = node('table'), header = node('tr');
-    for (const c of d.columns) header.append(node('th', '', `${c.name} · 缺失 ${c.missing} / 无效 ${c.invalid}`)); preview.append(header);
-    for (const row of d.preview) { const tr = node('tr'); for (const cell of row) tr.append(node('td', '', cell)); preview.append(tr); }
-    scroll.append(preview); details.append(scroll); container.append(details);
-  }
-  $('evidence-card').hidden = false;
-}
-function translateWarning(text) {
-  if (text.startsWith('10–90%')) return '10–90% 上升过程未完整观察到，无法给出上升时间。';
-  if (text.startsWith('Settling')) return '未观察到至少两个末尾带内样本，无法确认调节时间。';
-  if (text.startsWith('Tail mean')) return '末段少于三个样本，均值估计较弱。'; return text;
+function table(target, headers, rows) {
+  const t = el('table'), head = el('thead'), tr = el('tr'); for (const h of headers) tr.append(el('th', h)); head.append(tr); t.append(head);
+  const body = el('tbody'); for (const r of rows) { const row = el('tr'); for (const v of r) { const cell = el('td', fmt(v)); cell.title = fmt(v); row.append(cell); } body.append(row); } t.append(body); target.replaceChildren(t);
 }
 function showResult(result) {
-  const results = result.results ?? [result];
-  if (!results[0]?.metrics) return;
-  state.results = results; renderMetrics(results); drawChart($('chart'), results);
-  $('chart-description').textContent = `${results[0].selection.valueColumn} · 相对阶跃对齐 · 阴影为调节误差带`;
-  $('sample-count').textContent = `${results.map(r => r.summary.count.toLocaleString()).join(' / ')} 个原始样本${results.some(r => r.chart.sampled) ? ' · 曲线已降采样' : ''}`;
-  const legend = $('chart-legend'); legend.replaceChildren();
-  results.forEach((r, i) => { const span = node('span'); span.append(node('i', `legend-line${i ? ' second' : ''}`), document.createTextNode(r.dataset.name)); legend.append(span); });
-  const target = node('span'); target.append(node('i', 'legend-line target'), document.createTextNode('目标值')); legend.append(target);
-  $('svg-button').disabled = false; renderEvidence(results, result.warnings ?? []);
+  state.result = result; $('stale-label').hidden = true;
+  for (const id of ['report-button', 'json-report-button']) $(id).disabled = false;
+  $('svg-button').disabled = !result.chart; $('chart-wrap').hidden = !result.chart;
+  drawChart($('chart'), result.chart);
+  $('statistics').textContent = result.statistics?.pearson !== undefined ? `Pearson r：${fmt(result.statistics.pearson)}　有效配对：${fmt(result.statistics.count)}` : result.statistics?.median !== undefined ? `中位数 ${fmt(result.statistics.median)}　Q1 ${fmt(result.statistics.q1)}　Q3 ${fmt(result.statistics.q3)}` : '';
+  $('chart-caption').textContent = result.chart ? `${result.chart.totalPoints ? `显示 ${result.chart.points.length} / ${result.chart.totalPoints} 个有效点。` : ''}排除 ${result.excludedRows} 行。悬停查看点或柱的数值；报告保留计算依据。` : '';
+  const headers = Object.keys(result.table[0] ?? {}); table($('result-table'), headers, result.table.map(r => headers.map(h => r[h])));
+  $('warnings').replaceChildren(...result.warnings.map(w => el('p', w)));
 }
-function setBusy(busy) {
-  state.busy = busy; renderDatasets(); $('config-fields').disabled = !state.primary || busy;
-  $('stop-button').hidden = !busy || !state.controller;
-  for (const id of ['svg-button', 'report-button', 'json-button', 'csv-button']) $(id).disabled = busy || !state.results.length;
+async function selectDataset(id) {
+  invalidate(); state.id = id; state.history = []; renderDatasets();
+  $('empty-state').hidden = !!id; $('analysis-content').hidden = !id; $('delete-button').disabled = !id;
+  if (!id) { $('source-label').textContent = '未选择'; return; }
+  const revision = state.revision;
+  const { profile: p } = await json('profile', { datasetId: id }); if (revision !== state.revision) return;
+  $('source-label').textContent = p.synthetic ? '合成数据' : '用户导入';
+  $('metrics').replaceChildren(...[['数据行', p.rowCount, '全部记录'], ['字段', p.columns.length, '含标识字段'], ['数值字段', p.columns.filter(c => c.type === 'number').length, '非空均可解析'], ['缺失单元格', p.missingCells, '空白视为缺失']].map(([label, value, note]) => { const d = el('div', undefined, 'metric'); d.append(el('span', label), el('strong', fmt(value)), el('small', note)); return d; }));
+  const all = p.columns.map(c => c.name), numeric = p.columns.filter(c => c.numeric > 0).map(c => c.name);
+  options($('group'), all, p.columns.find(c => ['text', 'boolean'].includes(c.type) && c.distinct <= 30)?.name ?? all[0]);
+  options($('value'), numeric, numeric.at(-1)); options($('x'), all, numeric[0] ?? all[0]); options($('y'), numeric, numeric.at(-1));
+  $('fingerprint').textContent = `来源：${p.name} · ${p.sourceFormat} · SHA-256 ${p.sha256}`;
+  table($('preview'), all, p.preview); $('mode').value = 'overview'; queryFields(); await analyze();
 }
-async function calculate() {
-  if (state.busy) return;
+function renderDatasets() {
+  $('dataset-count').textContent = `${state.datasets.length} / 12`;
+  options($('dataset-select'), state.datasets.length ? state.datasets.map(d => ({ value: d.id, label: `${d.name} · ${d.rowCount} 行` })) : [{ value: '', label: '请生成或导入数据' }], state.id);
+  $('dataset-list').replaceChildren(...state.datasets.map(d => { const button = el('button', d.name, `dataset-item${d.id === state.id ? ' selected' : ''}`); button.append(el('small', `${d.rowCount} 行 · ${d.synthetic ? '合成' : '导入'}`)); button.addEventListener('click', () => attempt(async () => { switchTab('analyze'); await selectDataset(d.id); })); return button; }));
+  if (!state.datasets.length) $('dataset-list').append(el('p', '还没有数据。生成一份，或上传已有文件。'));
+}
+async function analyze() {
+  if (!state.id) return;
+  const revision = state.revision;
+  const { result } = await json('explore', query());
+  if (revision === state.revision) showResult(result);
+}
+async function attempt(fn) { try { await fn(); } catch (e) { notice(e.name === 'AbortError' ? '已停止本次请求。' : e.message, true); } }
+function save(content, name, type = 'text/plain;charset=utf-8') { const url = URL.createObjectURL(new Blob([content], { type })); const a = el('a'); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
+function chatMessage(message, cls) { const n = el('div', message, `message ${cls}`); $('messages').append(n); n.scrollIntoView({ block: 'nearest' }); }
+async function chat(message) {
+  if (state.controller || !message.trim()) return;
+  const controller = new AbortController(); state.controller = controller;
+  const revision = state.revision; const planRevision = state.planRevision; const activeId = state.id;
+  $('send-button').disabled = true; $('stop-button').hidden = false; $('chat-status').textContent = '助手正在处理…'; chatMessage(message, 'user');
   try {
-    if (!$('analysis-form').reportValidity()) return;
-    const chosen = selections(); setBusy(true);
-    const response = chosen.length === 2 ? await api('/api/compare', { selections: chosen }) : await api('/api/analyze', chosen[0]);
-    showResult(response.result); $('notice').hidden = true;
-  } catch (e) { clearResults('本次分析未完成，请检查参数或输入数据。'); notify(e.message, true); }
-  finally { setBusy(false); }
+    const response = await json('workbench-chat', { datasetId: state.id || undefined, query: query(), message, history: state.history.slice(-10) }, controller.signal);
+    for (const trace of response.trace) { const d = el('details', undefined, 'trace'); d.append(el('summary', `${trace.ok ? '✓' : '×'} ${trace.tool}`), el('pre', JSON.stringify(trace.result, null, 2))); $('messages').append(d); }
+    chatMessage(response.answer + (response.caveat ? `\n${response.caveat}` : ''), 'assistant-message');
+    if (revision === state.revision && planRevision === state.planRevision && activeId === state.id) {
+      for (const artifact of response.artifacts) {
+        if (artifact.kind === 'generation-plan') { setPlan(artifact.plan); switchTab('generate'); notice('助手已提出方案。检查字段与参数后，点击“生成数据集”。'); }
+        else if (artifact.contract === 'moondata.explore/1') { for (const [k, v] of Object.entries(artifact.query)) if ($(k)) $(k).value = v; queryFields(); showResult(artifact); switchTab('analyze'); }
+      }
+      state.history.push({ role: 'user', content: message }, { role: 'assistant', content: response.answer.slice(0, 6000) });
+    } else notice('数据或方案已改变，本次助手结果保留在对话中，未覆盖当前视图。');
+  } finally { if (state.controller === controller) state.controller = null; $('send-button').disabled = false; $('stop-button').hidden = true; $('chat-status').textContent = '工具有边界，计算可追溯'; }
 }
-async function demo() {
-  if (state.busy) return;
+for (const tab of ['generate', 'analyze']) $(`tab-${tab}`).addEventListener('click', () => switchTab(tab));
+$('back-generate').addEventListener('click', () => switchTab('generate'));
+$('generate-panel').addEventListener('input', () => { state.planRevision++; });
+$('add-field').addEventListener('click', () => { state.plan.columns.push({ name: `字段${state.plan.columns.length + 1}`, kind: 'number' }); renderFields(); });
+$('generate-button').addEventListener('click', () => attempt(async () => {
+  $('generate-button').disabled = true;
+  try { const { dataset } = await json('generate', { ...state.plan, name: $('plan-name').value, rows: Number($('rows').value), seed: Number($('seed').value) }); state.datasets.push(dataset); switchTab('analyze'); await selectDataset(dataset.id); notice(`已生成 ${dataset.rowCount} 行合成数据，可继续分析或下载。`); }
+  finally { $('generate-button').disabled = false; }
+}));
+$('upload').addEventListener('change', () => attempt(async () => {
+  const file = $('upload').files[0]; if (!file) return;
   try {
-    readForm(); state.history = []; setBusy(true); const data = await api('/api/demo', {});
-    state.datasets.push(...data.datasets); for (const d of data.datasets) state.configs.set(d.id, defaultConfig(d));
-    state.primary = data.datasets[0].id; state.secondary = data.datasets[1].id; state.comparing = true;
-    renderDatasets(); writeForm();
-    const result = await api('/api/compare', { selections: data.datasets.map(d => state.configs.get(d.id)) });
-    showResult(result.result);
-    notify('已载入两组二阶系统合成响应。示例参数：0 → 1000 rpm，阶跃发生在 0.5 s；这些数据不代表实测。');
-  } catch (e) { notify(e.message, true); }
-  finally { setBusy(false); }
-}
-async function upload(files) {
-  if (state.busy || !files.length) return;
-  let added = 0;
-  try {
-    readForm(); setBusy(true);
-    for (const file of files) {
-      if (!file.name.toLowerCase().endsWith('.csv')) throw new Error('请导入 .csv 文件');
-      if (file.size > 10 * 1024 * 1024) throw new Error('单个 CSV 不能超过 10 MiB');
-      const decoded = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(await file.arrayBuffer());
-      const { dataset } = await api('/api/datasets', { name: file.name, csv: decoded });
-      state.datasets.push(dataset); state.configs.set(dataset.id, defaultConfig(dataset));
-      state.primary = dataset.id; state.comparing = false; added++;
-    }
-    notify(`已导入 ${added} 份数据。请确认列、时间单位、阶跃初始值与目标值，然后计算或提问。`);
-  } catch (e) { notify(`${added ? `已导入 ${added} 份；` : ''}${e instanceof TypeError ? '文件不是有效 UTF-8 文本，请转换编码后再导入' : e.message}`, true); }
-  finally {
-    if (added) clearResults('数据已准备好，请确认分析参数。');
-    setBusy(false); renderDatasets(); writeForm(); $('file-input').value = '';
-  }
-}
-function addMessage(role, content, error = false) {
-  const message = node('div', `message ${role === 'user' ? 'user' : 'assistant-message'}${error ? ' error' : ''}`);
-  if (role !== 'user') message.append(node('span', 'message-label', state.status?.model.mode === 'model' ? '实验助手 · 模型解释' : '实验助手 · 内置分析'));
-  message.append(document.createTextNode(content)); $('chat-messages').append(message); message.scrollIntoView({ block: 'nearest' });
-}
-function addTrace(trace) {
-  if (!trace.length) return;
-  const details = node('details', 'tool-trace'); details.append(node('summary', '', `调用 ${trace.length} 个分析工具 · ${trace.filter(t => t.ok).length} 个成功`));
-  for (const entry of trace) { const item = node('div', 'trace-item'); item.append(node('div', '', `${entry.ok ? '✓' : '×'} ${entry.tool} · ${entry.elapsedMs} ms`), node('pre', '', JSON.stringify({ args: entry.args, result: entry.result }, null, 2))); details.append(item); }
-  $('chat-messages').append(details);
-}
-async function ask(prompt) {
-  if (state.busy) return;
-  const message = (prompt ?? $('question').value).trim(); if (!message) return;
-  let pending;
-  try {
-    const chosen = selections();
-    if (state.status?.model.mode === 'unavailable') throw new Error(state.status.model.error);
-    if (state.comparing === false && /两组|两份|比较|对比/.test(message) && state.datasets.length > 1) throw new Error('请先勾选“对比实验”，选择另一份数据并确认两份实验的参数。');
-    addMessage('user', message); $('question').value = '';
-    const operation = ++state.operation; state.controller = new AbortController(); setBusy(true);
-    pending = node('p', 'pending-message', state.status?.model.mode === 'model' ? '正在调用模型与分析工具…' : '正在运行内置分析工具…'); $('chat-messages').append(pending);
-    const result = await api('/api/chat', { selections: chosen, message, history: state.history.slice(-10) }, { signal: state.controller.signal });
-    if (operation !== state.operation) return;
-    pending.remove(); addTrace(result.trace);
-    const computed = result.artifacts.filter(a => a.metrics || a.results);
-    const comparison = computed.findLast(a => a.results);
-    if (comparison) showResult(comparison);
-    else if (computed.length) {
-      const latest = new Map(computed.map(a => [a.dataset.id, a]));
-      const results = chosen.map(c => latest.get(c.datasetId)).filter(Boolean);
-      showResult({ results, warnings: results.length === 2 && (results[0].selection.target !== results[1].selection.target || results[0].selection.initial !== results[1].selection.initial) ? ['初始值或目标值不同，比较时请注意工况差异。'] : [] });
-    }
-    addMessage('assistant', result.answer + (result.caveat ? `\n\n${result.caveat}` : ''));
-    state.history.push({ role: 'user', content: message }, { role: 'assistant', content: result.answer.slice(0, 6000) });
-    state.history = state.history.slice(-10);
-  } catch (e) {
-    pending?.remove();
-    if (e.name === 'AbortError') addMessage('assistant', '已停止本次请求。已完成的结果保留，未完成的分析不会被标记为成功。');
-    else { addMessage('assistant', e.message, true); notify(e.message, true); }
-  } finally { state.controller = null; setBusy(false); }
-}
-function download(content, filename, type) {
-  const blob = new Blob([content], { type }); const url = URL.createObjectURL(blob);
-  const link = document.createElement('a'); link.href = url; link.download = filename; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast(`已导出 ${filename}`);
-}
-async function exportReport(kind) {
-  try { const report = await api('/api/report', { selections: state.results.map(r => r.selection) }); download(kind === 'json' ? JSON.stringify(report.json, null, 2) : report.markdown, `moonmotor-report.${kind}`, kind === 'json' ? 'application/json' : 'text/markdown;charset=utf-8'); }
-  catch (e) { notify(e.message, true); }
-}
-function renderStatus() {
-  const model = state.status?.model;
-  if (model?.mode === 'model') {
-    $('model-label').textContent = `模型 · ${model.model}`; $('model-dot').classList.add('connected');
-    $('composer-mode').textContent = '模型分析 · 有工具调用限制';
-    $('data-policy').textContent = `提问会将所选实验的元数据、摘要和工具结果发送至 ${model.origin}，不发送原始 CSV。`;
-  } else {
-    $('model-label').textContent = model?.mode === 'unavailable' ? '模型配置异常' : '内置分析模式 · 未连接模型';
-    $('composer-mode').textContent = '内置分析 · 无外部发送';
-    $('data-policy').textContent = '原始数据保留在本机。配置模型后可启用自然语言工具调用。';
-  }
-}
-
-$('analysis-form').addEventListener('submit', event => { event.preventDefault(); calculate(); });
-$('chat-form').addEventListener('submit', event => { event.preventDefault(); ask(); });
-$('question').addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); ask(); } });
-for (const id of Object.values(fields)) $(id).addEventListener('input', () => {
-  if (!state.busy) {
-    if (id === 'value-column') {
-      $('initial').value = ''; $('target').value = ''; $('value-unit').value = '';
-      notify('响应列已更改，请重新确认响应单位、阶跃初始值和目标值。');
-    }
-    readForm(); clearResults();
-  }
-});
-$('primary-dataset').addEventListener('change', event => selectPrimary(event.target.value));
-$('secondary-dataset').addEventListener('change', event => { state.secondary = event.target.value; clearResults(); });
-$('compare-toggle').addEventListener('change', event => { state.comparing = event.target.checked; clearResults(); renderDatasets(); });
-for (const id of ['upload-button', 'sidebar-upload', 'add-data']) $(id).addEventListener('click', () => $('file-input').click());
-$('file-input').addEventListener('change', event => upload([...event.target.files]));
-for (const id of ['demo-button', 'empty-demo']) $(id).addEventListener('click', demo);
-for (const button of document.querySelectorAll('[data-prompt]')) button.addEventListener('click', () => ask(button.dataset.prompt));
+    if (file.size > 10 * 1024 * 1024) throw new Error('文件不能超过 10 MiB');
+    const format = /\.(jsonl|ndjson)$/i.test(file.name) ? 'jsonl' : /\.json$/i.test(file.name) ? 'json' : 'csv';
+    const { dataset } = await json('import', { name: file.name, content: await file.text(), format }); state.datasets.push(dataset); switchTab('analyze'); await selectDataset(dataset.id); notice(`已导入 ${file.name}`);
+  } finally { $('upload').value = ''; }
+}));
+$('dataset-select').addEventListener('change', () => attempt(() => selectDataset($('dataset-select').value)));
+$('delete-button').addEventListener('click', () => attempt(async () => { const id = state.id; const r = await fetch(`/api/datasets/${id}`, { method: 'DELETE', headers: { 'X-Lab-Client': '1' } }); if (!r.ok) throw new Error((await r.json()).error); state.datasets = state.datasets.filter(d => d.id !== id); await selectDataset(state.datasets[0]?.id ?? ''); }));
+$('analysis-form').addEventListener('input', () => { invalidate(); queryFields(); });
+$('analysis-form').addEventListener('submit', e => { e.preventDefault(); attempt(analyze); });
+for (const button of document.querySelectorAll('[data-download]')) button.addEventListener('click', () => attempt(async () => { const format = button.dataset.download; const r = await api('download', { datasetId: state.id, format }); save(await r.text(), `moondata-${state.id.slice(0, 8)}.${format}`, r.headers.get('Content-Type')); }));
+for (const [id, format] of [['report-button', 'markdown'], ['json-report-button', 'json']]) $(id).addEventListener('click', () => attempt(async () => { if (!state.result) return; const revision = state.revision; const report = await json('data-report', state.result.query); if (revision === state.revision && state.result) save(report[format], `moondata-report.${format === 'markdown' ? 'md' : 'json'}`); }));
+$('svg-button').addEventListener('click', () => { if (!state.result?.chart) return; const svg = $('chart').cloneNode(true); svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); save(new XMLSerializer().serializeToString(svg), 'moondata-chart.svg', 'image/svg+xml'); });
+$('chat-form').addEventListener('submit', e => { e.preventDefault(); const message = $('message').value; $('message').value = ''; attempt(() => chat(message)); });
+for (const b of document.querySelectorAll('[data-prompt]')) b.addEventListener('click', () => attempt(() => chat(b.dataset.prompt)));
 $('stop-button').addEventListener('click', () => state.controller?.abort());
-$('report-button').addEventListener('click', () => exportReport('md'));
-$('json-button').addEventListener('click', () => exportReport('json'));
-$('csv-button').addEventListener('click', async () => { try { download(await api('/api/export-csv', state.results[0].selection, { raw: true }), 'moonmotor-selection.csv', 'text/csv;charset=utf-8'); } catch (e) { notify(e.message, true); } });
-$('svg-button').addEventListener('click', () => { const svg = exportSvg($('chart')); if (svg) download(svg, 'moonmotor-response.svg', 'image/svg+xml;charset=utf-8'); });
-$('help-button').addEventListener('click', () => $('help-dialog').showModal()); $('close-help').addEventListener('click', () => $('help-dialog').close());
-$('mobile-help').addEventListener('click', () => $('help-dialog').showModal());
-$('mobile-remove').addEventListener('click', () => [...document.querySelectorAll('.dataset-delete')].find(button => button.dataset.id === state.primary)?.click());
-let dragCount = 0;
-document.addEventListener('dragenter', event => { if (event.dataTransfer?.types.includes('Files')) { event.preventDefault(); dragCount++; document.body.classList.add('drag-active'); } });
-document.addEventListener('dragover', event => { if (event.dataTransfer?.types.includes('Files')) event.preventDefault(); });
-document.addEventListener('dragleave', () => { dragCount = Math.max(0, dragCount - 1); if (!dragCount) document.body.classList.remove('drag-active'); });
-document.addEventListener('drop', event => { if (event.dataTransfer?.files.length) { event.preventDefault(); dragCount = 0; document.body.classList.remove('drag-active'); upload([...event.dataTransfer.files]); } });
-new ResizeObserver(() => { if (state.results.length) drawChart($('chart'), state.results); }).observe($('chart'));
-
-try {
-  state.status = await api('/api/status'); renderStatus();
-  const data = await api('/api/datasets'); state.datasets = data.datasets;
-  for (const d of state.datasets) state.configs.set(d.id, defaultConfig(d));
-  state.primary = state.datasets[0]?.id || ''; renderDatasets(); writeForm();
-} catch (e) { notify(`服务连接失败：${e.message}`, true); $('model-label').textContent = '本机服务未连接'; }
+await attempt(async () => {
+  const [status, templateResponse, data] = await Promise.all([json('status'), json('templates'), json('datasets')]);
+  $('model-label').textContent = status.model.mode === 'model' ? `模型已连接配置 · ${status.model.model}（请求时验证）` : status.model.mode === 'unavailable' ? `模型配置有误：${status.model.error}` : '内置模板与分析 · 未连接大模型';
+  $('data-policy').textContent = status.dataPolicy;
+  state.templates = templateResponse.templates;
+  $('templates').replaceChildren(...state.templates.map(t => { const b = el('button', t.name, 'template'); b.dataset.template = t.id; b.append(el('small', t.description)); b.addEventListener('click', () => setPlan(t)); return b; }));
+  setPlan(state.templates[0]); state.datasets = data.datasets; renderDatasets(); if (state.datasets.length) await selectDataset(state.datasets[0].id);
+});

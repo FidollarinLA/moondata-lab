@@ -41,6 +41,13 @@ test('JSON and JSONL import preserve union headers types leading zeros and exact
   const l = importDataset(s, { name: 'b.jsonl', format: 'jsonl', content: downloadDataset(s, d.id, 'jsonl').content }); assert.equal(l.rowCount, 2);
   for (const bad of ['[{"x":[]}]', '[{"x":{}}]', '[null]', '[]', '[{" ":1}]']) assert.throws(() => importDataset(s, { name: 'bad.json', content: bad, format: 'json' }));
 });
+test('synthetic status survives all export import formats while imported provenance stays unverified', () => {
+  for (const format of ['csv', 'json', 'jsonl']) {
+    const store = new DatasetStore(), d = generateDataset(store, { ...templates[0], rows: 3 });
+    const imported = importDataset(store, { name: `roundtrip.${format}`, format, content: downloadDataset(store, d.id, format).content });
+    assert.equal(imported.synthetic, true); assert.equal(imported.provenance.imported, true);
+  }
+});
 test('generic profile needs neither monotonic time nor target; missing is distinct from text', () => {
   const { store, d } = fixture(), p = profile(store, d.id);
   assert.equal(p.rowCount, 5); assert.equal(p.missingCells, 3); assert.equal(p.columns[0].type, 'text'); assert.equal(p.columns[1].type, 'number'); assert.equal(p.columns[4].type, 'date'); close(p.columns[1].summary.mean, 25);

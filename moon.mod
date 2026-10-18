@@ -8,7 +8,13 @@ repository = "https://github.com/FidollarinLA/moondata-lab"
 
 license = "Apache-2.0"
 
-keywords = [ "synthetic-data", "data-analysis", "csv", "agent", "visualization" ]
+keywords = [
+  "synthetic-data",
+  "data-analysis",
+  "csv",
+  "agent",
+  "visualization",
+]
 
 preferred_target = "js"
 

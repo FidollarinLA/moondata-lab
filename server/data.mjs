@@ -177,7 +177,7 @@ export function explore(store, input) {
 export function fmt(v) { return v === null || v === undefined ? '不可用' : typeof v === 'number' ? Number(v.toPrecision(7)).toString() : String(v); }
 export function dataReport(store, query) {
   const result = explore(store, query);
-  const clean = v => fmt(v).replaceAll('|', '\\|').replace(/[\r\n]/g, ' ').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  const clean = v => fmt(v).replace(/[\\`*_[\]{}()!#]/g, '\\$&').replaceAll('|', '\\|').replace(/[\r\n]/g, ' ').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
   const headers = Object.keys(result.table[0] ?? {});
   const md = [`# MoonData Lab 数据报告`, '', `来源：${clean(result.dataset.name)}`, ``, `SHA-256：${result.dataset.sha256}`, '', `数据性质：${result.dataset.synthetic ? '合成数据，不代表实测' : '用户导入；真实性未验证'}`, '', `计算核心：MoonBit；契约：${result.contract}`, '', `查询：${clean(JSON.stringify(result.query))}`, '', `总行数：${result.dataset.rowCount}；排除行数：${result.excludedRows}`, '', ...(result.statistics ? [`统计结果：${clean(JSON.stringify(result.statistics))}`, ''] : []), ...result.warnings.map(w => `- ${w}`), '', `| ${headers.join(' | ')} |`, `| ${headers.map(() => '---').join(' | ')} |`, ...result.table.map(r => `| ${headers.map(h => clean(r[h])).join(' | ')} |`)].join('\n');
   return { result, markdown: md, json: JSON.stringify(result, null, 2) };
