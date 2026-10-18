@@ -1,4 +1,4 @@
-name: Verify MoonMotor Lab
+name: Verify MoonData Lab
 on:
   push:
   pull_request:

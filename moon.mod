@@ -1,10 +1,10 @@
-name = "FidollarinLA/moonmotor_lab"
+name = "FidollarinLA/moondata_lab"
 
 version = "0.1.0"
 
 readme = "README.md"
 
-repository = "https://github.com/FidollarinLA/moonmotor-lab"
+repository = "https://github.com/FidollarinLA/moondata-lab"
 
 license = "Apache-2.0"
 

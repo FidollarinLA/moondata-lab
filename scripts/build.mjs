@@ -8,4 +8,4 @@ if (built.error) console.error(`MoonBit build failed: ${built.error.message}. Se
 if (built.status !== 0) process.exit(built.status || 1);
 await mkdir(resolve(root, 'web'), { recursive: true });
 await copyFile(resolve(root, '_build/js/release/build/api/api.js'), resolve(root, 'web/engine.js'));
-console.log('MoonMotor Lab: MoonBit core compiled to web/engine.js');
+console.log('MoonData Lab: MoonBit core compiled to web/engine.js');

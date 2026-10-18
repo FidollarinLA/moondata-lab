@@ -1,4 +1,4 @@
-# MoonMotor Lab 开发约定
+# MoonData Lab 开发约定
 
 - Keep the numerical core in MoonBit. JavaScript may orchestrate it but must not silently replace its calculations.
 - Read docs/PLAN.md and docs/METHODS.md before changing analysis behavior.

@@ -61,4 +61,4 @@
 node scripts/publish-github.mjs
 ```
 
-默认创建当前账号下的私有 `FidollarinLA/moonmotor-lab` 仓库，推送 `codex/initial-workbench` 并核对远端 SHA。已有其他仓库可显式传 `owner/repository`。脚本不强推、不覆盖其他分支、不改全局 Git 配置。成功后应更新本记录的推送与 CI 状态。
+默认创建当前账号下的私有 `FidollarinLA/moondata-lab` 仓库，推送 `codex/initial-workbench` 并核对远端 SHA。已有其他仓库可显式传 `owner/repository`。脚本不强推、不覆盖其他分支、不改全局 Git 配置。成功后应更新本记录的推送与 CI 状态。

@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "FidollarinLA/moonmotor_lab/csv"
+package "FidollarinLA/moondata_lab/csv"
 
 // Values
 pub fn describe(Table) -> Array[Column]

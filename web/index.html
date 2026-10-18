@@ -2,15 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="MoonMotor Lab：用自然语言探索电机实验数据，核对波形与分析结果。">
-  <title>MoonMotor Lab · 实验数据工作台</title>
+  <meta name="description" content="MoonData Lab：用自然语言探索电机实验数据，核对波形与分析结果。">
+  <title>MoonData Lab · 实验数据工作台</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css">
   <script type="module" src="/app.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到实验工作区</a>
 <aside class="sidebar">
-  <a class="brand" href="/" aria-label="MoonMotor Lab 首页"><img src="/favicon.svg" alt="" width="38" height="38"><span>MoonMotor<span class="brand-lab">LAB / 实验室</span></span></a>
+  <a class="brand" href="/" aria-label="MoonData Lab 首页"><img src="/favicon.svg" alt="" width="38" height="38"><span>MoonData<span class="brand-lab">LAB / 实验室</span></span></a>
   <div class="sidebar-heading">工作空间 <span class="version">V0.1</span></div>
   <nav aria-label="主导航"><a href="#main" class="nav-link active"><span aria-hidden="true">▦</span> 实验工作台 <span class="nav-count" id="dataset-count">0</span></a><button id="help-button" class="nav-link"><span aria-hidden="true">⌘</span> 分析方法与说明</button></nav>
   <div class="sidebar-heading data-heading">实验数据 <button id="sidebar-upload" class="icon-button" title="导入 CSV" aria-label="导入 CSV">＋</button></div>
@@ -51,6 +51,6 @@
     </div>
   </section>
 </main>
-<dialog id="help-dialog"><div class="dialog-header"><h2>分析方法与使用说明</h2><button id="close-help" class="icon-button" aria-label="关闭说明">×</button></div><div class="help-content"><p>MoonMotor Lab 第一版分析<strong>单次阶跃响应</strong>。上传含时间列与数值响应列的 CSV，确认列名、单位、初始值、目标值和阶跃时刻，再计算或提问。</p><h3>这些指标怎样计算？</h3><p>超调量按阶跃方向、相对阶跃幅值计算。上升时间取 10% 和 90% 首次穿越的线性插值。调节时间取最后一次离开误差带之后的样本时刻，至少需要两个末尾带内样本。误差带相对于阶跃幅值。</p><p>末段窗口按阶跃后时长选择，末段误差是目标值减去末段样本均值。它只代表所选窗口，不证明系统最终稳态或闭环稳定性。IAE 是对分段线性误差绝对值的积分。</p><h3>数据与模型</h3><p>未配置模型时，内置模式只支持已有分析和比较。设置服务端 LAB_MODEL_URL、LAB_MODEL_NAME 和可选 LAB_MODEL_KEY 后重启，可连接支持工具调用的模型。模型地址填写 API 基础地址，如含 /v1 的地址。</p><p>模型模式在提问后发送当前问题、所选实验的元数据和计算摘要，不发送原始 CSV。模型文字解释需核对，准确数值以工具结果为准。当前数据暂存内存，重启服务后清空；请自行保存报告与源文件。</p><h3>范围与限制</h3><p>支持 UTF-8、逗号分隔、带表头的 CSV，含引号和多行字段。单文件最多 10 MiB、10 万行、128 列；当前会话最多 12 份数据、100 万单元格。时间必须严格递增，缺失或无效响应不会自动补零。</p><p>图表可为显示降采样，指标始终使用原始分析样本。本版未实现 FFT、CAN 实时接入、参数辨识或神经网络训练。示例由二阶响应公式生成，属于合成数据。</p></div></dialog>
+<dialog id="help-dialog"><div class="dialog-header"><h2>分析方法与使用说明</h2><button id="close-help" class="icon-button" aria-label="关闭说明">×</button></div><div class="help-content"><p>MoonData Lab 第一版分析<strong>单次阶跃响应</strong>。上传含时间列与数值响应列的 CSV，确认列名、单位、初始值、目标值和阶跃时刻，再计算或提问。</p><h3>这些指标怎样计算？</h3><p>超调量按阶跃方向、相对阶跃幅值计算。上升时间取 10% 和 90% 首次穿越的线性插值。调节时间取最后一次离开误差带之后的样本时刻，至少需要两个末尾带内样本。误差带相对于阶跃幅值。</p><p>末段窗口按阶跃后时长选择，末段误差是目标值减去末段样本均值。它只代表所选窗口，不证明系统最终稳态或闭环稳定性。IAE 是对分段线性误差绝对值的积分。</p><h3>数据与模型</h3><p>未配置模型时，内置模式只支持已有分析和比较。设置服务端 LAB_MODEL_URL、LAB_MODEL_NAME 和可选 LAB_MODEL_KEY 后重启，可连接支持工具调用的模型。模型地址填写 API 基础地址，如含 /v1 的地址。</p><p>模型模式在提问后发送当前问题、所选实验的元数据和计算摘要，不发送原始 CSV。模型文字解释需核对，准确数值以工具结果为准。当前数据暂存内存，重启服务后清空；请自行保存报告与源文件。</p><h3>范围与限制</h3><p>支持 UTF-8、逗号分隔、带表头的 CSV，含引号和多行字段。单文件最多 10 MiB、10 万行、128 列；当前会话最多 12 份数据、100 万单元格。时间必须严格递增，缺失或无效响应不会自动补零。</p><p>图表可为显示降采样，指标始终使用原始分析样本。本版未实现 FFT、CAN 实时接入、参数辨识或神经网络训练。示例由二阶响应公式生成，属于合成数据。</p></div></dialog>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 </body></html>

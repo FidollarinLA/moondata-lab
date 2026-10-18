@@ -1,7 +1,7 @@
 import {
   "moonbitlang/core/json",
-  "FidollarinLA/moonmotor_lab/csv",
-  "FidollarinLA/moonmotor_lab/analysis",
+  "FidollarinLA/moondata_lab/csv",
+  "FidollarinLA/moondata_lab/analysis",
 }
 
 pkgtype(kind: "foreign_library")

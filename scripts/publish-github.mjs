@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { root } from './toolchain.mjs';
 
-const target = process.argv[2] || 'FidollarinLA/moonmotor-lab';
+const target = process.argv[2] || 'FidollarinLA/moondata-lab';
 if (!/^[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+$/.test(target)) throw new Error('Use an owner/repository name.');
 function command(program, args, optional = false) {
   const r = spawnSync(program, args, { cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024 });

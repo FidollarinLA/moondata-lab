@@ -57,7 +57,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
         if (req.headers.origin && req.headers.origin !== `http://${req.headers.host}`) throw new AppError('拒绝跨站请求', 403);
       }
       if (url.pathname === '/api/status' && req.method === 'GET') {
-        send(res, 200, { name: 'MoonMotor Lab', version: '0.1.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本机内存；模型模式仅在提问时发送已选实验的元数据、摘要和工具结果，不发送原始 CSV。' }); return;
+        send(res, 200, { name: 'MoonData Lab', version: '0.1.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本机内存；模型模式仅在提问时发送已选实验的元数据、摘要和工具结果，不发送原始 CSV。' }); return;
       }
       const now = Date.now();
       for (const [key, session] of sessions) if (now - session.lastUsed > 2 * 60 * 60 * 1000 && !session.busy) sessions.delete(key);
@@ -141,6 +141,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   const port = Number(process.env.PORT || 4321);
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT 必须为 1–65535');
   const server = createServer();
-  server.listen(port, '127.0.0.1', () => console.log(`MoonMotor Lab http://127.0.0.1:${server.address().port}`));
+  server.listen(port, '127.0.0.1', () => console.log(`MoonData Lab http://127.0.0.1:${server.address().port}`));
   server.on('error', e => { console.error(`服务启动失败：${e.code || 'unknown'}`); process.exitCode = 1; });
 }

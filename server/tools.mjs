@@ -76,7 +76,7 @@ export function analyze(store, input) {
     band_percent: selection.bandPercent, tail_percent: selection.tailPercent,
   });
   return {
-    contract: 'moonmotor.step-response/1', engine: 'MoonBit',
+    contract: 'moondata.step-response/1', engine: 'MoonBit',
     dataset: { id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic },
     selection, summary, metrics, excludedRows: excluded,
     chart: { points: downsample(times, values), rawSamples: times.length, sampled: times.length > 1800 },
@@ -95,7 +95,7 @@ export function compare(store, selections) {
   if (a.selection.bandPercent !== b.selection.bandPercent) warnings.push('两份实验的调节误差带不同，调节时间不能直接比较');
   if (a.selection.tailPercent !== b.selection.tailPercent) warnings.push('两份实验的末段窗口比例不同，末段均值和误差的观察条件不同');
   if (Math.abs(a.metrics.duration - b.metrics.duration) > 1e-9 * Math.max(1, a.metrics.duration, b.metrics.duration)) warnings.push('阶跃后的观察时长不同，IAE、末段误差和是否已调节会受窗口影响');
-  return { contract: 'moonmotor.comparison/1', results,
+  return { contract: 'moondata.comparison/1', results,
     comparableStep: a.selection.target === b.selection.target && a.selection.initial === b.selection.initial,
     warnings,
   };

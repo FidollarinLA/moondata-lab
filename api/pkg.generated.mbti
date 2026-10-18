@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "FidollarinLA/moonmotor_lab/api"
+package "FidollarinLA/moondata_lab/api"
 
 // Values
 pub fn parse_csv(String) -> String

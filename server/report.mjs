@@ -2,7 +2,7 @@ const clean = value => String(value ?? '').replace(/[\r\n|]/g, ' ').replaceAll('
 const n = (v, unit = '') => v == null ? '未观察到 / 不可用' : `${Number(v).toPrecision(6)}${unit ? ` ${unit}` : ''}`;
 export function makeReport(results, comparison = null) {
   const createdAt = new Date().toISOString();
-  const lines = ['# MoonMotor Lab 实验分析报告', '', `生成时间：${createdAt}`, '',
+  const lines = ['# MoonData Lab 实验分析报告', '', `生成时间：${createdAt}`, '',
     '计算引擎：MoonBit。以下指标由数值工具生成，未包含模型自行计算的数值。', ''];
   for (const r of results) {
     const m = r.metrics, s = r.selection;
@@ -35,5 +35,5 @@ export function makeReport(results, comparison = null) {
     '- IAE 对分段线性误差的绝对值积分，包含穿越零点时的分段面积。',
     '- 图表可降采样显示；指标始终使用区间内全部原始样本。',
     '- 不根据比较自动证明因果、闭环稳定性或电机故障。', '');
-  return { markdown: lines.join('\n'), json: { contract: 'moonmotor.report/1', createdAt, results, comparisonWarnings: comparison?.warnings ?? [] } };
+  return { markdown: lines.join('\n'), json: { contract: 'moondata.report/1', createdAt, results, comparisonWarnings: comparison?.warnings ?? [] } };
 }
