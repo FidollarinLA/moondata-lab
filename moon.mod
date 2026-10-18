@@ -1,6 +1,6 @@
 name = "FidollarinLA/moondata_lab"
 
-version = "0.1.0"
+version = "0.2.0"
 
 readme = "README.md"
 
@@ -8,8 +8,8 @@ repository = "https://github.com/FidollarinLA/moondata-lab"
 
 license = "Apache-2.0"
 
-keywords = [ "motor", "experiment", "csv", "agent", "step-response" ]
+keywords = [ "synthetic-data", "data-analysis", "csv", "agent", "visualization" ]
 
 preferred_target = "js"
 
-description = "A MoonBit numerical core and AI workbench for motor experiment analysis."
+description = "A reproducible synthetic-data generator and general analysis workbench powered by MoonBit."

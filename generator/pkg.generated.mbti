@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "FidollarinLA/moondata_lab/generator"
+
+import {
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn generate(Array[ColumnSpec], Int, Int) -> Array[Array[Json]] raise
+
+pub fn random_sequence(Int, Int) -> Array[Double] raise
+
+// Errors
+
+// Types and methods
+pub(all) struct ColumnSpec {
+  name : String
+  kind : String
+  min : Double
+  max : Double
+  start : Double
+  step : Double
+  decimals : Int
+  prefix : String
+  choices : Array[String]
+  probability : Double
+  missing : Double
+  start_day : Int
+  source : String
+  slope : Double
+  intercept : Double
+  noise : Double
+} derive(@json.FromJson)
+pub fn ColumnSpec::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+
+// Type aliases
+
+// Traits

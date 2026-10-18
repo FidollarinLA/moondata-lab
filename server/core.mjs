@@ -1,4 +1,4 @@
-import { parse_csv, summarize_json, step_json } from '../web/engine.js';
+import { parse_csv, summarize_json, step_json, generate_json, distribution_json, aggregate_json, correlation_json } from '../web/engine.js';
 
 export class AppError extends Error {
   constructor(message, status = 400) { super(message); this.status = status; }
@@ -11,6 +11,10 @@ function decode(text) {
 export const parseCsv = text => decode(parse_csv(text));
 export const summarize = values => decode(summarize_json(JSON.stringify({ values }))).summary;
 export const step = (times, values, config) => decode(step_json(JSON.stringify({ times, values, config }))).metrics;
+export const generateRows = spec => decode(generate_json(JSON.stringify(spec)));
+export const distribution = (values, bins = 10) => decode(distribution_json(JSON.stringify({ values, bins }))).result;
+export const aggregate = (groups, values, reducer) => decode(aggregate_json(JSON.stringify({ groups, values, reducer }))).result;
+export const correlation = (x, y) => decode(correlation_json(JSON.stringify({ x, y }))).result;
 
 export function finite(value, name, fallback) {
   const result = value === undefined ? fallback : value;

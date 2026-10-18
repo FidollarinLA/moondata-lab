@@ -8,6 +8,8 @@ import { DatasetStore } from './datasets.mjs';
 import { analyze, compare, normalizeSelection, series } from './tools.mjs';
 import { modelConfig, modelStatus, runAgent } from './agent.mjs';
 import { makeReport } from './report.mjs';
+import { templates, generateDataset, importDataset, profile, explore, dataReport, downloadDataset } from './data.mjs';
+import { workbenchAgent } from './workbench-agent.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const staticFiles = new Map([
@@ -57,7 +59,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
         if (req.headers.origin && req.headers.origin !== `http://${req.headers.host}`) throw new AppError('拒绝跨站请求', 403);
       }
       if (url.pathname === '/api/status' && req.method === 'GET') {
-        send(res, 200, { name: 'MoonData Lab', version: '0.1.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本机内存；模型模式仅在提问时发送已选实验的元数据、摘要和工具结果，不发送原始 CSV。' }); return;
+        send(res, 200, { name: 'MoonData Lab', version: '0.2.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本机内存。模型模式发送你的问题、字段方案、当前字段信息和工具摘要；不发送原始数据行。分组工具结果可能包含类别名称。' }); return;
       }
       const now = Date.now();
       for (const [key, session] of sessions) if (now - session.lastUsed > 2 * 60 * 60 * 1000 && !session.busy) sessions.delete(key);
@@ -70,6 +72,24 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       }
       const session = sessions.get(sessionId); session.lastUsed = now;
       const store = session.store;
+      if (url.pathname === '/api/templates' && req.method === 'GET') { send(res, 200, { templates }); return; }
+      if (url.pathname === '/api/import' && req.method === 'POST') { send(res, 201, { dataset: importDataset(store, await body(req)) }); return; }
+      if (url.pathname === '/api/generate' && req.method === 'POST') { send(res, 201, { dataset: generateDataset(store, await body(req)) }); return; }
+      if (url.pathname === '/api/profile' && req.method === 'POST') { const input = await body(req); send(res, 200, { profile: profile(store, input.datasetId) }); return; }
+      if (url.pathname === '/api/explore' && req.method === 'POST') { send(res, 200, { result: explore(store, await body(req)) }); return; }
+      if (url.pathname === '/api/data-report' && req.method === 'POST') { send(res, 200, dataReport(store, await body(req))); return; }
+      if (url.pathname === '/api/download' && req.method === 'POST') { const input = await body(req); const file = downloadDataset(store, input.datasetId, input.format); send(res, 200, input.format === 'json' ? JSON.parse(file.content) : file.content, file.type); return; }
+      if (url.pathname === '/api/workbench-chat' && req.method === 'POST') {
+        if (session.busy) throw new AppError('助手正在运行，请先停止或等待', 409);
+        const input = await body(req); session.busy = true;
+        const controller = new AbortController(); const disconnected = () => { if (!res.writableEnded) controller.abort(); };
+        res.on('close', disconnected);
+        try {
+          const result = await workbenchAgent({ store, datasetId: input.datasetId, message: input.message, query: input.query, history: input.history, signal: AbortSignal.any([controller.signal, AbortSignal.timeout(120000)]), config: modelConfig(env), fetchImpl });
+          if (!res.destroyed) send(res, 200, result);
+        } finally { session.busy = false; res.off('close', disconnected); }
+        return;
+      }
       if (url.pathname === '/api/datasets' && req.method === 'GET') { send(res, 200, { datasets: store.list() }); return; }
       if (url.pathname === '/api/datasets' && req.method === 'POST') {
         const input = await body(req);

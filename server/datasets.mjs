@@ -3,7 +3,7 @@ import { AppError, parseCsv, summarize, text } from './core.mjs';
 
 export class DatasetStore {
   constructor() { this.datasets = new Map(); }
-  add({ name, csv, synthetic = false }) {
+  add({ name, csv, synthetic = false, sourceText = csv, sourceFormat = 'csv', provenance = null, records = null }) {
     text(name, '文件名', 200);
     if (typeof csv !== 'string' || Buffer.byteLength(csv) > 10 * 1024 * 1024) throw new AppError('CSV 文件不能超过 10 MiB');
     if (this.datasets.size >= 12) throw new AppError('最多保留 12 份数据，请先删除不再需要的实验', 413);
@@ -15,7 +15,8 @@ export class DatasetStore {
     if (bytes + [...this.datasets.values()].reduce((sum, d) => sum + d.bytes, 0) > 20 * 1024 * 1024) throw new AppError('当前会话的文件内容总量不能超过 20 MiB', 413);
     const dataset = {
       id: randomUUID(), name, synthetic, cells, bytes,
-      sha256: createHash('sha256').update(csv, 'utf8').digest('hex'),
+      sha256: createHash('sha256').update(sourceText, 'utf8').digest('hex'),
+      sourceFormat, provenance, records,
       createdAt: new Date().toISOString(),
       headers: parsed.headers,
       rows: parsed.rows,
@@ -35,7 +36,7 @@ export class DatasetStore {
   describe(d) {
     return {
       id: d.id, name: d.name, synthetic: d.synthetic, sha256: d.sha256,
-      createdAt: d.createdAt, rowCount: d.rows.length,
+      createdAt: d.createdAt, rowCount: d.rows.length, sourceFormat: d.sourceFormat, provenance: d.provenance,
       columns: d.columns.map((c, i) => {
         let summary = null;
         if (c.numeric) {

@@ -80,3 +80,90 @@ pub fn step_json(text : String) -> String {
     e => failure(e.to_string())
   }
 }
+
+///|
+priv struct GenerateRequest {
+  columns : Array[@generator.ColumnSpec]
+  rows : Int32
+  seed : Int32
+} derive(FromJson)
+
+///|
+#export_name("generate_json")
+pub fn generate_json(text : String) -> String {
+  try {
+    let request : GenerateRequest = @json.from_json(@json.parse(text))
+    let rows = @generator.generate(request.columns, request.rows, request.seed)
+    let headers = request.columns.map(c => c.name)
+    headers.push("_synthetic")
+    let result : Json = {
+      "ok": true,
+      "headers": Json(headers),
+      "rows": Json(rows),
+    }
+    result.stringify()
+  } catch {
+    e => failure(e.to_string())
+  }
+}
+
+///|
+priv struct DistributionRequest {
+  values : Array[Double]
+  bins : Int32
+} derive(FromJson)
+
+///|
+#export_name("distribution_json")
+pub fn distribution_json(text : String) -> String {
+  try {
+    let r : DistributionRequest = @json.from_json(@json.parse(text))
+    let result : Json = {
+      "ok": true,
+      "result": @explore.distribution(r.values, r.bins),
+    }
+    result.stringify()
+  } catch {
+    e => failure(e.to_string())
+  }
+}
+
+///|
+priv struct AggregateRequest {
+  groups : Array[String]
+  values : Array[Json]
+  reducer : String
+} derive(FromJson)
+
+///|
+#export_name("aggregate_json")
+pub fn aggregate_json(text : String) -> String {
+  try {
+    let r : AggregateRequest = @json.from_json(@json.parse(text))
+    let result : Json = {
+      "ok": true,
+      "result": @explore.aggregate(r.groups, r.values, r.reducer),
+    }
+    result.stringify()
+  } catch {
+    e => failure(e.to_string())
+  }
+}
+
+///|
+priv struct CorrelationRequest {
+  x : Array[Double]
+  y : Array[Double]
+} derive(FromJson)
+
+///|
+#export_name("correlation_json")
+pub fn correlation_json(text : String) -> String {
+  try {
+    let r : CorrelationRequest = @json.from_json(@json.parse(text))
+    let result : Json = { "ok": true, "result": @explore.correlation(r.x, r.y) }
+    result.stringify()
+  } catch {
+    e => failure(e.to_string())
+  }
+}

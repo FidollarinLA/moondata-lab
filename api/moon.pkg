@@ -2,6 +2,8 @@ import {
   "moonbitlang/core/json",
   "FidollarinLA/moondata_lab/csv",
   "FidollarinLA/moondata_lab/analysis",
+  "FidollarinLA/moondata_lab/generator",
+  "FidollarinLA/moondata_lab/explore",
 }
 
 pkgtype(kind: "foreign_library")
