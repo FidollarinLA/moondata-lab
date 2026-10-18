@@ -22,5 +22,5 @@ passed = run('Build browser/server core', process.execPath, ['scripts/build.mjs'
 if (passed) passed = run('Server and Agent tests', process.execPath, ['--test', 'test/*.test.mjs']) && passed;
 const version = spawnSync(moon, ['version', '--all'], { encoding: 'utf8', cwd: root });
 await mkdir(resolve(root, 'artifacts'), { recursive: true });
-await writeFile(resolve(root, 'artifacts/verification.json'), JSON.stringify({ checkedAt: new Date().toISOString(), passed, node: process.version, platform: `${process.platform}/${process.arch}`, toolchain: version.stdout?.trim(), checks, modelValidation: 'Protocol stub only; no external model credentials supplied.' }, null, 2));
+await writeFile(resolve(root, 'artifacts/verification.json'), JSON.stringify({ checkedAt: new Date().toISOString(), passed, node: process.version, platform: `${process.platform}/${process.arch}`, toolchain: version.stdout?.trim(), checks, modelValidation: 'Node suite uses protocol stubs. Actual Qwen CPU inference and browser checks are run separately by scripts/test-local-model.mjs.' }, null, 2));
 if (!passed) process.exitCode = 1;

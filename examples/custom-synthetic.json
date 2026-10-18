@@ -1,0 +1,555 @@
+{
+  "synthetic": true,
+  "sourceSha256": "f953e6fda0ee47e929eefede57fa1e1cc4486994f53e08825b6c07d8cffe343d",
+  "provenance": {
+    "contract": "moondata.generate/1",
+    "engine": "MoonBit",
+    "algorithm": "Park–Miller 16807 / Schrage",
+    "plan": {
+      "name": "其他 / 自定义",
+      "rows": 100,
+      "seed": 42,
+      "columns": [
+        {
+          "min": 0,
+          "max": 100,
+          "start": 0,
+          "step": 1,
+          "decimals": 2,
+          "prefix": "",
+          "choices": [],
+          "probability": 0.5,
+          "missing": 0,
+          "start_day": 20454,
+          "source": "",
+          "slope": 1,
+          "intercept": 0,
+          "noise": 0,
+          "name": "横轴",
+          "kind": "sequence"
+        },
+        {
+          "min": 0,
+          "max": 100,
+          "start": 1,
+          "step": 1,
+          "decimals": 2,
+          "prefix": "",
+          "choices": [],
+          "probability": 0.5,
+          "missing": 0,
+          "start_day": 20454,
+          "source": "",
+          "slope": 1,
+          "intercept": 0,
+          "noise": 0,
+          "name": "数值",
+          "kind": "number"
+        }
+      ]
+    },
+    "synthetic": true
+  },
+  "records": [
+    {
+      "横轴": 0,
+      "数值": 0.03,
+      "_synthetic": true
+    },
+    {
+      "横轴": 1,
+      "数值": 52.46,
+      "_synthetic": true
+    },
+    {
+      "横轴": 2,
+      "数值": 73.54,
+      "_synthetic": true
+    },
+    {
+      "横轴": 3,
+      "数值": 26.33,
+      "_synthetic": true
+    },
+    {
+      "横轴": 4,
+      "数值": 37.62,
+      "_synthetic": true
+    },
+    {
+      "横轴": 5,
+      "数值": 19.63,
+      "_synthetic": true
+    },
+    {
+      "横轴": 6,
+      "数值": 97.59,
+      "_synthetic": true
+    },
+    {
+      "横轴": 7,
+      "数值": 51.23,
+      "_synthetic": true
+    },
+    {
+      "横轴": 8,
+      "数值": 53.04,
+      "_synthetic": true
+    },
+    {
+      "横轴": 9,
+      "数值": 25.71,
+      "_synthetic": true
+    },
+    {
+      "横轴": 10,
+      "数值": 10.71,
+      "_synthetic": true
+    },
+    {
+      "横轴": 11,
+      "数值": 81.55,
+      "_synthetic": true
+    },
+    {
+      "横轴": 12,
+      "数值": 90.05,
+      "_synthetic": true
+    },
+    {
+      "横轴": 13,
+      "数值": 45.2,
+      "_synthetic": true
+    },
+    {
+      "横轴": 14,
+      "数值": 24.54,
+      "_synthetic": true
+    },
+    {
+      "横轴": 15,
+      "数值": 24.74,
+      "_synthetic": true
+    },
+    {
+      "横轴": 16,
+      "数值": 18.83,
+      "_synthetic": true
+    },
+    {
+      "横轴": 17,
+      "数值": 32.33,
+      "_synthetic": true
+    },
+    {
+      "横轴": 18,
+      "数值": 10.35,
+      "_synthetic": true
+    },
+    {
+      "横轴": 19,
+      "数值": 80.74,
+      "_synthetic": true
+    },
+    {
+      "横轴": 20,
+      "数值": 53.44,
+      "_synthetic": true
+    },
+    {
+      "横轴": 21,
+      "数值": 84.45,
+      "_synthetic": true
+    },
+    {
+      "横轴": 22,
+      "数值": 73.7,
+      "_synthetic": true
+    },
+    {
+      "横轴": 23,
+      "数值": 7.83,
+      "_synthetic": true
+    },
+    {
+      "横轴": 24,
+      "数值": 53.9,
+      "_synthetic": true
+    },
+    {
+      "横轴": 25,
+      "数值": 13.1,
+      "_synthetic": true
+    },
+    {
+      "横轴": 26,
+      "数值": 86.25,
+      "_synthetic": true
+    },
+    {
+      "横轴": 27,
+      "数值": 46.46,
+      "_synthetic": true
+    },
+    {
+      "横轴": 28,
+      "数值": 47.2,
+      "_synthetic": true
+    },
+    {
+      "横轴": 29,
+      "数值": 45,
+      "_synthetic": true
+    },
+    {
+      "横轴": 30,
+      "数值": 23.35,
+      "_synthetic": true
+    },
+    {
+      "横轴": 31,
+      "数值": 1.23,
+      "_synthetic": true
+    },
+    {
+      "横轴": 32,
+      "数值": 2.3,
+      "_synthetic": true
+    },
+    {
+      "横轴": 33,
+      "数值": 99.35,
+      "_synthetic": true
+    },
+    {
+      "横轴": 34,
+      "数值": 91.54,
+      "_synthetic": true
+    },
+    {
+      "横轴": 35,
+      "数值": 78.58,
+      "_synthetic": true
+    },
+    {
+      "横轴": 36,
+      "数值": 57.08,
+      "_synthetic": true
+    },
+    {
+      "横轴": 37,
+      "数值": 76.92,
+      "_synthetic": true
+    },
+    {
+      "横轴": 38,
+      "数值": 62.36,
+      "_synthetic": true
+    },
+    {
+      "横轴": 39,
+      "数值": 34.42,
+      "_synthetic": true
+    },
+    {
+      "横轴": 40,
+      "数值": 37.56,
+      "_synthetic": true
+    },
+    {
+      "横轴": 41,
+      "数值": 26.71,
+      "_synthetic": true
+    },
+    {
+      "横轴": 42,
+      "数值": 35.17,
+      "_synthetic": true
+    },
+    {
+      "横轴": 43,
+      "数值": 64.09,
+      "_synthetic": true
+    },
+    {
+      "横轴": 44,
+      "数值": 36.38,
+      "_synthetic": true
+    },
+    {
+      "横轴": 45,
+      "数值": 5.28,
+      "_synthetic": true
+    },
+    {
+      "横轴": 46,
+      "数值": 52.87,
+      "_synthetic": true
+    },
+    {
+      "横轴": 47,
+      "数值": 15.77,
+      "_synthetic": true
+    },
+    {
+      "横轴": 48,
+      "数值": 45.38,
+      "_synthetic": true
+    },
+    {
+      "横轴": 49,
+      "数值": 32.93,
+      "_synthetic": true
+    },
+    {
+      "横轴": 50,
+      "数值": 19.28,
+      "_synthetic": true
+    },
+    {
+      "横轴": 51,
+      "数值": 6.47,
+      "_synthetic": true
+    },
+    {
+      "横轴": 52,
+      "数值": 98.65,
+      "_synthetic": true
+    },
+    {
+      "横轴": 53,
+      "数值": 54.61,
+      "_synthetic": true
+    },
+    {
+      "横轴": 54,
+      "数值": 8.91,
+      "_synthetic": true
+    },
+    {
+      "横轴": 55,
+      "数值": 99.33,
+      "_synthetic": true
+    },
+    {
+      "横轴": 56,
+      "数值": 43.37,
+      "_synthetic": true
+    },
+    {
+      "横轴": 57,
+      "数值": 70.16,
+      "_synthetic": true
+    },
+    {
+      "横轴": 58,
+      "数值": 18.67,
+      "_synthetic": true
+    },
+    {
+      "横轴": 59,
+      "数值": 54.37,
+      "_synthetic": true
+    },
+    {
+      "横轴": 60,
+      "数值": 99.54,
+      "_synthetic": true
+    },
+    {
+      "横轴": 61,
+      "数值": 19,
+      "_synthetic": true
+    },
+    {
+      "横轴": 62,
+      "数值": 68.43,
+      "_synthetic": true
+    },
+    {
+      "横轴": 63,
+      "数值": 39.94,
+      "_synthetic": true
+    },
+    {
+      "横轴": 64,
+      "数值": 43.9,
+      "_synthetic": true
+    },
+    {
+      "横轴": 65,
+      "数值": 74.7,
+      "_synthetic": true
+    },
+    {
+      "横轴": 66,
+      "数值": 17.81,
+      "_synthetic": true
+    },
+    {
+      "横轴": 67,
+      "数值": 81.08,
+      "_synthetic": true
+    },
+    {
+      "横轴": 68,
+      "数值": 80.61,
+      "_synthetic": true
+    },
+    {
+      "横轴": 69,
+      "数值": 9.75,
+      "_synthetic": true
+    },
+    {
+      "横轴": 70,
+      "数值": 2.97,
+      "_synthetic": true
+    },
+    {
+      "横轴": 71,
+      "数值": 13.4,
+      "_synthetic": true
+    },
+    {
+      "横轴": 72,
+      "数值": 63.74,
+      "_synthetic": true
+    },
+    {
+      "横轴": 73,
+      "数值": 38.03,
+      "_synthetic": true
+    },
+    {
+      "横轴": 74,
+      "数值": 24.94,
+      "_synthetic": true
+    },
+    {
+      "横轴": 75,
+      "数值": 50.67,
+      "_synthetic": true
+    },
+    {
+      "横轴": 76,
+      "数值": 52.12,
+      "_synthetic": true
+    },
+    {
+      "横轴": 77,
+      "数值": 10.35,
+      "_synthetic": true
+    },
+    {
+      "横轴": 78,
+      "数值": 98.36,
+      "_synthetic": true
+    },
+    {
+      "横轴": 79,
+      "数值": 34.86,
+      "_synthetic": true
+    },
+    {
+      "横轴": 80,
+      "数值": 76.83,
+      "_synthetic": true
+    },
+    {
+      "横轴": 81,
+      "数值": 26.53,
+      "_synthetic": true
+    },
+    {
+      "横轴": 82,
+      "数值": 66.64,
+      "_synthetic": true
+    },
+    {
+      "横轴": 83,
+      "数值": 91.51,
+      "_synthetic": true
+    },
+    {
+      "横轴": 84,
+      "数值": 46.64,
+      "_synthetic": true
+    },
+    {
+      "横轴": 85,
+      "数值": 44.08,
+      "_synthetic": true
+    },
+    {
+      "横轴": 86,
+      "数值": 92.14,
+      "_synthetic": true
+    },
+    {
+      "横轴": 87,
+      "数值": 46.73,
+      "_synthetic": true
+    },
+    {
+      "横轴": 88,
+      "数值": 97.72,
+      "_synthetic": true
+    },
+    {
+      "横轴": 89,
+      "数值": 32,
+      "_synthetic": true
+    },
+    {
+      "横轴": 90,
+      "数值": 79.42,
+      "_synthetic": true
+    },
+    {
+      "横轴": 91,
+      "数值": 86.55,
+      "_synthetic": true
+    },
+    {
+      "横轴": 92,
+      "数值": 74.26,
+      "_synthetic": true
+    },
+    {
+      "横轴": 93,
+      "数值": 55.75,
+      "_synthetic": true
+    },
+    {
+      "横轴": 94,
+      "数值": 82.68,
+      "_synthetic": true
+    },
+    {
+      "横轴": 95,
+      "数值": 53.12,
+      "_synthetic": true
+    },
+    {
+      "横轴": 96,
+      "数值": 30.74,
+      "_synthetic": true
+    },
+    {
+      "横轴": 97,
+      "数值": 34.34,
+      "_synthetic": true
+    },
+    {
+      "横轴": 98,
+      "数值": 31.13,
+      "_synthetic": true
+    },
+    {
+      "横轴": 99,
+      "数值": 44.66,
+      "_synthetic": true
+    }
+  ]
+}

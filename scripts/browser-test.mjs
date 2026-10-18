@@ -2,11 +2,12 @@ import assert from 'node:assert/strict';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { createServer } from '../server/index.mjs';
+import { listenForBrowser } from './browser-server.mjs';
 
 const directory = new URL('../artifacts/', import.meta.url); await mkdir(directory, { recursive: true });
 const checks = [], errors = [], servers = [];
 const record = label => { checks.push(label); console.log(`PASS ${label}`); };
-async function listen(server) { servers.push(server); await new Promise(r => server.listen(0, '127.0.0.1', r)); return `http://127.0.0.1:${server.address().port}`; }
+async function listen(server) { servers.push(server); return listenForBrowser(server); }
 const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_CHANNEL ? { channel: process.env.BROWSER_CHANNEL } : {}) });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, acceptDownloads: true });
 const page = await context.newPage(); page.setDefaultTimeout(10000); page.on('pageerror', e => errors.push(e.message));
@@ -21,8 +22,10 @@ async function idle() { await page.locator('#send-button:enabled').waitFor(); }
 try {
   const base = await listen(createServer({ env: {} })); await page.goto(base); await page.locator('.template').first().waitFor();
   assert.match(await page.locator('#model-label').innerText(), /未连接大模型/); assert.equal(await page.locator('.field').count(), 6);
+  await page.locator('[data-template="custom"]').click(); assert.equal(await page.locator('.field').count(), 2); assert.equal(await page.locator('#plan-name').inputValue(), '其他 / 自定义');
+  await page.locator('[data-template="sales"]').click();
   await page.screenshot({ path: new URL('browser-generate.png', directory).pathname.replace(/^\/(\w:)/, '$1'), fullPage: true });
-  record('general workbench exposes four domain templates and honestly labels offline mode');
+  record('general workbench exposes other/custom option and four domain templates');
   await page.locator('#rows').fill('40'); await page.locator('#generate-button').click(); await ready();
   assert.match(await page.locator('#source-label').innerText(), /合成/); assert.match(await page.locator('#metrics').innerText(), /40/);
   const a = JSON.parse(await download('[data-download="json"]')); assert.equal(a.records.length, 40); assert.ok(a.records.every(r => r._synthetic === true)); assert.equal(a.provenance.plan.seed, 42);
@@ -31,7 +34,7 @@ try {
   record('schema generation and three full dataset downloads preserve types and synthetic marks');
   await page.locator('#tab-generate').click(); await page.locator('#generate-button').click(); await page.waitForFunction(() => document.querySelectorAll('.dataset-item').length === 2 && !document.querySelector('#report-button').disabled); const b = JSON.parse(await download('[data-download="json"]')); assert.equal(a.sourceSha256, b.sourceSha256);
   record('same schema and seed reproduce exact dataset hash through UI');
-  await page.locator('#mode').selectOption('group'); await page.locator('#group').selectOption('地区'); await page.locator('#reducer').selectOption('sum'); await page.locator('#value').selectOption('销售金额'); await update();
+  await page.locator('#advanced-analysis > summary').click(); await page.locator('#mode').selectOption('group'); await page.locator('#group').selectOption('地区'); await page.locator('#reducer').selectOption('sum'); await page.locator('#value').selectOption('销售金额'); await update();
   assert.equal(await page.locator('#chart rect').count(), 4); assert.match(await download('#svg-button'), /<svg/);
   await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({ path: new URL('browser-analysis.png', directory).pathname.replace(/^\/(\w:)/, '$1'), fullPage: true });
@@ -49,6 +52,12 @@ try {
   const scatter = JSON.parse(await download('#json-report-button')); assert.equal(scatter.statistics.count, 4); assert.ok(Math.abs(scatter.statistics.pearson - 1) < 1e-12); assert.equal(await page.locator('#chart circle').count(), 4); record('scatter uses complete numeric pairs and exact correlation');
   await page.locator('#mode').selectOption('line'); await page.locator('#x').selectOption('日期'); await page.locator('#y').selectOption('金额'); await update();
   assert.equal(JSON.parse(await download('#json-report-button')).chart.points[1].x, '2026-01-01'); assert.equal(await page.locator('#chart polyline').count(), 1); record('date line preserves source row order without motor assumptions');
+  await page.locator('#plot-x').selectOption('x'); for (const checkbox of await page.locator('#plot-ys input').all()) await checkbox.uncheck();
+  await page.getByLabel('金额', { exact: true }).check(); await page.getByLabel('y', { exact: true }).check(); await page.locator('#plot-kind').selectOption('line'); await page.locator('#plot-button').click(); await ready();
+  assert.equal(await page.locator('#chart polyline').count(), 2); const multi = JSON.parse(await download('#json-report-button')); assert.deepEqual(multi.query.yColumns, ['金额', 'y']); assert.equal(multi.chart.xMode, 'number');
+  record('free plot builder renders selected X with multiple Y series and actual numeric spacing');
+  await page.locator('#plot-kind').selectOption('scatter'); assert.equal(await page.locator('#svg-button').isDisabled(), true); await page.locator('#plot-button').click(); await ready(); assert.equal(await page.locator('#chart circle').count(), 7); record('chart style selection invalidates exports and redraws both scatter series');
+  await page.locator('#recommend-button').click(); await ready(); assert.equal(JSON.parse(await download('#json-report-button')).query.x, '日期'); record('one-click field recommendation creates chart without claiming model inference');
   await upload('rows.json', '[{"id":"001","score":3,"ok":true},{"id":"002","score":5,"extra":"a"}]');
   assert.equal(JSON.parse(await download('[data-download="json"]')).records[0].id, '001');
   await upload('rows.jsonl', '{"group":"A","v":1}\n{"group":"B","v":2}\n'); assert.match(await page.locator('#metrics').innerText(), /2/); record('JSON and JSONL preserve scalar types union headers and text IDs');

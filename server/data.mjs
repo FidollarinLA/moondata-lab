@@ -1,4 +1,5 @@
 import { AppError, text, parseCsv, generateRows, summarize, aggregate, distribution, correlation } from './core.mjs';
+import { makePlot, recommendPlot } from './plot.mjs';
 
 const KINDS = ['sequence', 'integer', 'number', 'category', 'boolean', 'text', 'date', 'linear'];
 const DAY = 86400000;
@@ -28,6 +29,7 @@ export const templates = [
     { name: '输入', kind: 'number', min: 0, max: 10 },
     { name: '输出', kind: 'linear', source: '输入', slope: 2.5, intercept: 1, noise: 0.5, decimals: 3 } ] },
 ];
+templates.push({ id: 'custom', name: '其他 / 自定义', description: '从空白领域开始，自由定义字段与关系', rows: 100, seed: 42, columns: [{ name: '横轴', kind: 'sequence', start: 0, step: 1 }, { name: '数值', kind: 'number', min: 0, max: 100 }] });
 export function normalizePlan(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new AppError('生成方案必须是对象');
   const rows = integer(input.rows ?? 300, 1, 10000, '行数');
@@ -121,7 +123,9 @@ export function profile(store, id) {
     if (c.numeric) { try { summary = summarize(d.numericColumns[i].filter(v => v !== null)); } catch { warning = '数值范围过大，统计无法可靠计算'; } }
     return { ...c, type, distinct: counts.size, top: [...counts].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([value, count]) => ({ value, count })), summary, warning };
   });
-  return { id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic, sourceFormat: d.sourceFormat, provenance: d.provenance, rowCount: d.rows.length, columns, missingCells: columns.reduce((s, c) => s + c.missing, 0), preview: d.rows.slice(0, 12) };
+  const result = { id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic, sourceFormat: d.sourceFormat, provenance: d.provenance, rowCount: d.rows.length, columns, missingCells: columns.reduce((s, c) => s + c.missing, 0), preview: d.rows.slice(0, 12) };
+  result.recommendation = recommendPlot(result);
+  return result;
 }
 function column(d, name) { const i = d.headers.indexOf(name); if (i < 0) throw new AppError(`字段不存在：${String(name).slice(0, 100)}`); return i; }
 function plotted(points, limit = 1500) {
@@ -134,6 +138,7 @@ export function explore(store, input) {
   const p = profile(store, d.id), warnings = ['描述统计与相关关系不证明因果。空白视为缺失；数值分析排除非数值单元格。'];
   const result = { contract: 'moondata.explore/1', engine: 'MoonBit', dataset: { id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic, rowCount: d.rows.length }, query: { datasetId: d.id, mode }, profile: p, excludedRows: 0, warnings, chart: null, table: [] };
   if (d.synthetic) warnings.push('此数据集为合成数据，不代表真实业务或测量结果。');
+  if (mode === 'plot') { const plot = makePlot(d, p, input); return { ...result, ...plot, warnings: [...warnings, ...plot.warnings] }; }
   if (mode === 'overview') { result.table = p.columns.map(c => ({ field: c.name, type: c.type, missing: c.missing, numeric: c.numeric, distinct: c.distinct, mean: c.summary?.mean ?? null })); return result; }
   if (mode === 'group') {
     const g = column(d, input.group), reducer = input.reducer ?? 'count';

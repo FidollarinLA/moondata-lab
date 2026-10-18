@@ -1,6 +1,6 @@
 {
   "name": "moondata-lab",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "engines": { "node": ">=22" },
@@ -11,6 +11,9 @@
     "test": "node --test test/*.test.mjs",
     "check": "node scripts/check.mjs",
     "test:browser": "node scripts/browser-test.mjs",
+    "setup:model": "node scripts/setup-local-model.mjs",
+    "start:model": "node scripts/start-with-model.mjs",
+    "test:model": "node scripts/test-local-model.mjs",
     "examples": "node scripts/generate-examples.mjs",
     "benchmark": "node scripts/benchmark.mjs"
   },

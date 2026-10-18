@@ -8,6 +8,12 @@ const SYSTEM = `你是 MoonData Lab 电机实验数据助手，使用中文回�
 若用户要求比较两份实验，调用 compare_experiments；若要求单份分析，调用 analyze_experiment。回答简洁，包含来源文件、关键结果和必要限制。`;
 
 export function modelConfig(env = process.env) {
+  if (env.LAB_LOCAL_MODEL_URL) {
+    let local;
+    try { local = new URL(env.LAB_LOCAL_MODEL_URL); } catch { throw new AppError('本地模型地址无效', 503); }
+    if (local.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]'].includes(local.hostname) || local.username || local.password || local.search || local.hash) throw new AppError('本地小模型必须使用本机 HTTP 地址', 503);
+    return { kind: 'local-planner', endpoint: `${local.href.replace(/\/$/, '')}/chat/completions`, model: env.LAB_LOCAL_MODEL_NAME || 'Qwen3-0.6B-Q8_0', origin: local.origin };
+  }
   if (!env.LAB_MODEL_URL || !env.LAB_MODEL_NAME) return null;
   let url;
   try { url = new URL(env.LAB_MODEL_URL); } catch { throw new AppError('LAB_MODEL_URL 不是有效地址', 503); }
@@ -18,7 +24,7 @@ export function modelConfig(env = process.env) {
 export function modelStatus(env = process.env) {
   try {
     const c = modelConfig(env);
-    return c ? { mode: 'model', model: c.model, origin: c.origin } : { mode: 'builtin', model: null, origin: null };
+    return c ? { mode: c.kind === 'local-planner' ? 'local-model' : 'model', model: c.model, origin: c.origin } : { mode: 'builtin', model: null, origin: null };
   } catch (e) { return { mode: 'unavailable', error: e.message }; }
 }
 

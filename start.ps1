@@ -1,6 +1,10 @@
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
+  if (Test-Path -LiteralPath '.local/local-model.json') {
+    & node scripts/start-with-model.mjs
+    return
+  }
   & node scripts/build.mjs
   if ($LASTEXITCODE -ne 0) { throw '构建失败；请按 README 配置 MoonBit 工具链。' }
   Write-Host '浏览器打开 http://127.0.0.1:4321 ，按 Ctrl+C 停止。'

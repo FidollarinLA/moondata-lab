@@ -1,6 +1,6 @@
 import { drawChart } from './chart.js';
 const $ = id => document.getElementById(id);
-const state = { datasets: [], id: '', plan: null, templates: [], result: null, controller: null, revision: 0, planRevision: 0, history: [] };
+const state = { datasets: [], id: '', plan: null, templates: [], result: null, controller: null, revision: 0, planRevision: 0, history: [], querySource: 'analysis', recommendation: null };
 const kinds = { text: '文本编号', sequence: '数值序列', integer: '随机整数', number: '随机小数', category: '类别', boolean: '是 / 否', date: '日期', linear: '线性关联' };
 function el(tag, text, cls) { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (cls) n.className = cls; return n; }
 const fmt = v => v === null || v === undefined ? '不可用' : typeof v === 'number' ? Number(v.toPrecision(7)).toLocaleString('zh-CN', { maximumFractionDigits: 7 }) : String(v);
@@ -18,6 +18,7 @@ function invalidate() {
   state.revision++; state.result = null;
   for (const id of ['report-button', 'json-report-button', 'svg-button']) $(id).disabled = true;
   $('stale-label').hidden = false; $('chart-wrap').hidden = true; $('result-table').replaceChildren(); $('warnings').replaceChildren();
+  $('chart-legend').replaceChildren();
 }
 function options(select, values, value) { select.replaceChildren(...values.map(v => { const o = el('option', typeof v === 'string' ? v : v.label); o.value = typeof v === 'string' ? v : v.value; return o; })); if (values.some(v => (typeof v === 'string' ? v : v.value) === value)) select.value = value; }
 function setPlan(plan) {
@@ -59,6 +60,14 @@ function renderFields() {
 function query() {
   return { datasetId: state.id, mode: $('mode').value, group: $('group').value, value: $('value').value, reducer: $('reducer').value, bins: Number($('bins').value), x: $('x').value, y: $('y').value };
 }
+function plotQuery() { return { datasetId: state.id, mode: 'plot', x: $('plot-x').value, yColumns: [...document.querySelectorAll('#plot-ys input:checked')].map(c => c.value), kind: $('plot-kind').value, reducer: $('plot-reducer').value }; }
+function currentQuery() { return state.querySource === 'plot' ? plotQuery() : query(); }
+function applyPlotQuery(q) {
+  $('plot-x').value = q.x; $('plot-kind').value = q.kind ?? 'auto'; $('plot-reducer').value = q.reducer === 'count' ? 'mean' : q.reducer ?? 'mean';
+  for (const checkbox of document.querySelectorAll('#plot-ys input')) checkbox.checked = q.yColumns?.includes(checkbox.value) ?? false;
+  state.querySource = 'plot';
+}
+async function plot() { if (!state.id) return; state.querySource = 'plot'; const revision = state.revision; const { result } = await json('explore', plotQuery()); if (revision === state.revision) showResult(result); }
 function queryFields() {
   const m = $('mode').value;
   for (const field of ['group', 'value', 'reducer', 'bins', 'x', 'y']) {
@@ -72,12 +81,20 @@ function table(target, headers, rows) {
 }
 function showResult(result) {
   state.result = result; $('stale-label').hidden = true;
+  state.querySource = result.query.mode === 'plot' ? 'plot' : 'analysis';
   for (const id of ['report-button', 'json-report-button']) $(id).disabled = false;
   $('svg-button').disabled = !result.chart; $('chart-wrap').hidden = !result.chart;
   drawChart($('chart'), result.chart);
+  $('chart-legend').replaceChildren(...(result.chart?.series ?? []).map((s, i) => { const item = el('span', undefined, `legend-item series-${i}`); item.append(el('i'), document.createTextNode(s.name)); return item; }));
   $('statistics').textContent = result.statistics?.pearson !== undefined ? `Pearson r：${fmt(result.statistics.pearson)}　有效配对：${fmt(result.statistics.count)}` : result.statistics?.median !== undefined ? `中位数 ${fmt(result.statistics.median)}　Q1 ${fmt(result.statistics.q1)}　Q3 ${fmt(result.statistics.q3)}` : '';
   $('chart-caption').textContent = result.chart ? `${result.chart.totalPoints ? `显示 ${result.chart.points.length} / ${result.chart.totalPoints} 个有效点。` : ''}排除 ${result.excludedRows} 行。悬停查看点或柱的数值；报告保留计算依据。` : '';
-  const headers = Object.keys(result.table[0] ?? {}); table($('result-table'), headers, result.table.map(r => headers.map(h => r[h])));
+  if (result.query.mode === 'plot') {
+    $('statistics').textContent = result.statistics.series.map(s => `${s.name}：${s.summary ? `N=${s.summary.count}，均值 ${fmt(s.summary.mean)}${s.summary.pearson !== undefined ? `，r=${fmt(s.summary.pearson)}` : ''}` : '行数汇总'}，排除 ${s.excludedRows} 行`).join('　 /　');
+    $('chart-caption').textContent = `显示 ${result.chart.series.reduce((n, s) => n + s.points.length, 0)} 个点 / 柱。横轴无效 ${result.excludedRows} 行；每条序列的缺失分别处理。结果表预览前200行，报告保留完整结果表。`;
+  }
+  const headers = Object.keys(result.table[0] ?? {}).filter(h => result.query.mode !== 'plot' || (h !== 'order' && !(h === 'x' && result.table[0]?.xLabel !== undefined)));
+  const labels = { series: '序列', x: '横轴', xLabel: '横轴原值', y: '纵轴数值', row: '原始行号', group: '分组', rows: '行数', valid: '有效数', value: '聚合值', field: '字段', type: '类型', missing: '缺失', numeric: '数值个数', distinct: '不同值', mean: '平均值', lower: '区间下界', upper: '区间上界', count: '频数' };
+  table($('result-table'), headers.map(h => labels[h] ?? h), result.table.slice(0, 200).map(r => headers.map(h => h === 'type' ? ({ number: '数值', text: '文本', date: '日期', boolean: '是/否' })[r[h]] ?? r[h] : r[h])));
   $('warnings').replaceChildren(...result.warnings.map(w => el('p', w)));
 }
 async function selectDataset(id) {
@@ -91,6 +108,10 @@ async function selectDataset(id) {
   const all = p.columns.map(c => c.name), numeric = p.columns.filter(c => c.numeric > 0).map(c => c.name);
   options($('group'), all, p.columns.find(c => ['text', 'boolean'].includes(c.type) && c.distinct <= 30)?.name ?? all[0]);
   options($('value'), numeric, numeric.at(-1)); options($('x'), all, numeric[0] ?? all[0]); options($('y'), numeric, numeric.at(-1));
+  options($('plot-x'), all); state.recommendation = p.recommendation;
+  $('plot-ys').replaceChildren(...numeric.map(name => { const label = el('label', undefined, 'y-choice'), checkbox = el('input'); checkbox.type = 'checkbox'; checkbox.value = name; label.append(checkbox, document.createTextNode(name)); return label; }));
+  $('plot-y-hint').textContent = numeric.length ? '选择多个数值字段可叠加比较；留空时画横轴类别行数。' : '未发现数值列：可按横轴类别画行数柱状图。';
+  applyPlotQuery(p.recommendation);
   $('fingerprint').textContent = `来源：${p.name} · ${p.sourceFormat} · SHA-256 ${p.sha256}`;
   table($('preview'), all, p.preview); $('mode').value = 'overview'; queryFields(); await analyze();
 }
@@ -115,13 +136,13 @@ async function chat(message) {
   const revision = state.revision; const planRevision = state.planRevision; const activeId = state.id;
   $('send-button').disabled = true; $('stop-button').hidden = false; $('chat-status').textContent = '助手正在处理…'; chatMessage(message, 'user');
   try {
-    const response = await json('workbench-chat', { datasetId: state.id || undefined, query: query(), message, history: state.history.slice(-10) }, controller.signal);
+    const response = await json('workbench-chat', { datasetId: state.id || undefined, query: currentQuery(), message, history: state.history.slice(-10) }, controller.signal);
     for (const trace of response.trace) { const d = el('details', undefined, 'trace'); d.append(el('summary', `${trace.ok ? '✓' : '×'} ${trace.tool}`), el('pre', JSON.stringify(trace.result, null, 2))); $('messages').append(d); }
     chatMessage(response.answer + (response.caveat ? `\n${response.caveat}` : ''), 'assistant-message');
     if (revision === state.revision && planRevision === state.planRevision && activeId === state.id) {
       for (const artifact of response.artifacts) {
         if (artifact.kind === 'generation-plan') { setPlan(artifact.plan); switchTab('generate'); notice('助手已提出方案。检查字段与参数后，点击“生成数据集”。'); }
-        else if (artifact.contract === 'moondata.explore/1') { for (const [k, v] of Object.entries(artifact.query)) if ($(k)) $(k).value = v; queryFields(); showResult(artifact); switchTab('analyze'); }
+        else if (artifact.contract === 'moondata.explore/1') { if (artifact.query.mode === 'plot') applyPlotQuery(artifact.query); else { for (const [k, v] of Object.entries(artifact.query)) if ($(k)) $(k).value = v; queryFields(); } showResult(artifact); switchTab('analyze'); }
       }
       state.history.push({ role: 'user', content: message }, { role: 'assistant', content: response.answer.slice(0, 6000) });
     } else notice('数据或方案已改变，本次助手结果保留在对话中，未覆盖当前视图。');
@@ -140,14 +161,19 @@ $('upload').addEventListener('change', () => attempt(async () => {
   const file = $('upload').files[0]; if (!file) return;
   try {
     if (file.size > 10 * 1024 * 1024) throw new Error('文件不能超过 10 MiB');
+    if (!/\.(csv|json|jsonl|ndjson)$/i.test(file.name)) throw new Error('当前支持 CSV / JSON / JSONL。Excel 请另存为 CSV；PDF、图片等需要先提取为表格。');
     const format = /\.(jsonl|ndjson)$/i.test(file.name) ? 'jsonl' : /\.json$/i.test(file.name) ? 'json' : 'csv';
     const { dataset } = await json('import', { name: file.name, content: await file.text(), format }); state.datasets.push(dataset); switchTab('analyze'); await selectDataset(dataset.id); notice(`已导入 ${file.name}`);
   } finally { $('upload').value = ''; }
 }));
 $('dataset-select').addEventListener('change', () => attempt(() => selectDataset($('dataset-select').value)));
 $('delete-button').addEventListener('click', () => attempt(async () => { const id = state.id; const r = await fetch(`/api/datasets/${id}`, { method: 'DELETE', headers: { 'X-Lab-Client': '1' } }); if (!r.ok) throw new Error((await r.json()).error); state.datasets = state.datasets.filter(d => d.id !== id); await selectDataset(state.datasets[0]?.id ?? ''); }));
-$('analysis-form').addEventListener('input', () => { invalidate(); queryFields(); });
+$('analysis-form').addEventListener('input', () => { state.querySource = 'analysis'; invalidate(); queryFields(); });
 $('analysis-form').addEventListener('submit', e => { e.preventDefault(); attempt(analyze); });
+$('plot-form').addEventListener('input', e => { if (document.querySelectorAll('#plot-ys input:checked').length > 8) { e.target.checked = false; notice('最多同时选择8个纵轴字段。', true); } state.querySource = 'plot'; invalidate(); });
+$('plot-form').addEventListener('submit', e => { e.preventDefault(); attempt(plot); });
+$('recommend-button').addEventListener('click', () => attempt(async () => { invalidate(); applyPlotQuery(state.recommendation); await plot(); notice('已按字段类型推荐图表；这是确定性推荐，可继续修改或让模型规划。'); }));
+$('describe-button').addEventListener('click', () => { state.querySource = 'plot'; $('message').value = '按当前选择画图'; $('message').focus(); notice('已把当前横纵轴选择带入对话，可直接发送，或改成“把当前选择换成折线图”。'); });
 for (const button of document.querySelectorAll('[data-download]')) button.addEventListener('click', () => attempt(async () => { const format = button.dataset.download; const r = await api('download', { datasetId: state.id, format }); save(await r.text(), `moondata-${state.id.slice(0, 8)}.${format}`, r.headers.get('Content-Type')); }));
 for (const [id, format] of [['report-button', 'markdown'], ['json-report-button', 'json']]) $(id).addEventListener('click', () => attempt(async () => { if (!state.result) return; const revision = state.revision; const report = await json('data-report', state.result.query); if (revision === state.revision && state.result) save(report[format], `moondata-report.${format === 'markdown' ? 'md' : 'json'}`); }));
 $('svg-button').addEventListener('click', () => { if (!state.result?.chart) return; const svg = $('chart').cloneNode(true); svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); save(new XMLSerializer().serializeToString(svg), 'moondata-chart.svg', 'image/svg+xml'); });
@@ -156,7 +182,8 @@ for (const b of document.querySelectorAll('[data-prompt]')) b.addEventListener('
 $('stop-button').addEventListener('click', () => state.controller?.abort());
 await attempt(async () => {
   const [status, templateResponse, data] = await Promise.all([json('status'), json('templates'), json('datasets')]);
-  $('model-label').textContent = status.model.mode === 'model' ? `模型已连接配置 · ${status.model.model}（请求时验证）` : status.model.mode === 'unavailable' ? `模型配置有误：${status.model.error}` : '内置模板与分析 · 未连接大模型';
+  $('model-label').textContent = status.model.mode === 'local-model' ? `本地小模型 · ${status.model.model} · 图表规划` : status.model.mode === 'model' ? `模型已连接配置 · ${status.model.model}（请求时验证）` : status.model.mode === 'unavailable' ? `模型配置有误：${status.model.error}` : '内置模板与分析 · 未连接大模型';
+  if (status.model.mode === 'local-model') $('message').placeholder = '例如：以日期为横轴，画收入和支出；或把我选的几列换成折线图…';
   $('data-policy').textContent = status.dataPolicy;
   state.templates = templateResponse.templates;
   $('templates').replaceChildren(...state.templates.map(t => { const b = el('button', t.name, 'template'); b.dataset.template = t.id; b.append(el('small', t.description)); b.addEventListener('click', () => setPlan(t)); return b; }));

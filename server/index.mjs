@@ -59,7 +59,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
         if (req.headers.origin && req.headers.origin !== `http://${req.headers.host}`) throw new AppError('拒绝跨站请求', 403);
       }
       if (url.pathname === '/api/status' && req.method === 'GET') {
-        send(res, 200, { name: 'MoonData Lab', version: '0.2.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本机内存。模型模式发送你的问题、字段方案、当前字段信息和工具摘要；不发送原始数据行。分组工具结果可能包含类别名称。' }); return;
+        send(res, 200, { name: 'MoonData Lab', version: '0.3.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本地小模型仅接收问题、字段信息和当前选择，不发送原始数据行。远程模型模式会发送问题、字段方案和工具摘要，分组结果可能包含类别名称。' }); return;
       }
       const now = Date.now();
       for (const [key, session] of sessions) if (now - session.lastUsed > 2 * 60 * 60 * 1000 && !session.busy) sessions.delete(key);
