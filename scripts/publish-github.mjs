@@ -22,7 +22,7 @@ try {
   if (existing) repo = JSON.parse(existing);
   else {
     if (target.split('/')[0].toLowerCase() !== login.toLowerCase()) throw new Error('自动新建仅支持当前登录者的个人账号，请提供已存在且可写的仓库。');
-    command('gh', ['repo', 'create', target, '--private', '--description', 'MoonBit-powered AI workbench for motor experiment data analysis.']);
+    command('gh', ['repo', 'create', target, '--private', '--description', 'MoonBit-powered reproducible synthetic data generation and general data analysis workbench.']);
     repo = JSON.parse(command('gh', ['repo', 'view', target, '--json', 'nameWithOwner,isPrivate,url']));
   }
   const remote = command('git', ['remote', 'get-url', 'origin'], true);

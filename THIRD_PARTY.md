@@ -25,4 +25,6 @@
 
 ## 数据来源
 
+通用版 `sales/inventory/survey/experiment-synthetic.csv/json` 由本仓库 MoonBit generator 和四种字段方案生成；不含个人、真实业务或真实实验数据。JSON 包含规范化方案与随机种子。算法使用经典 Park–Miller 16807 / Schrage 约简，源码独立实现；属于模拟取样，不承诺隐私保护或真实世界拟合。
+
 `examples/motor-a.csv` 和 `motor-b.csv` 由 `scripts/generate-examples.mjs` 使用标准二阶阶跃响应公式确定性生成，不含真实实验、个人或第三方数据。名称 a/b 只是两组不同阻尼/固有频率的合成响应，不声称对应某个实物电机或控制器。

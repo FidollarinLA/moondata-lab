@@ -1,111 +1,99 @@
 # MoonData Lab
 
-> **范围调整中：** 用户要求通用数据应用，之前的电机专用定位已撤销。以下 V0.1 功能与截图属于历史原型，不能代表通用数据生成/分析已经实现。当前计划见 [通用版实施计划](docs/PLAN.md) 与 [范围纠正](docs/SCOPE_CORRECTION.md)。
+**生成可复现的数据集；上传已有数据，生成图表、分析与报告。**
 
-**用自然语言探索电机实验数据，让曲线、指标与结论都有依据。**
+本机运行的中文通用数据工作台。销售台账、库存、问卷、运营、传感器和实验记录都可以使用，不要求电机参数、时间列或行业专属格式。
 
-MoonData Lab 是一个本机运行的中文实验工作台。上传 CSV、确认信号和单阶跃条件，然后计算响应指标、比较两次实验、向助手提问，并导出可核对的报告。
+![数据生成界面](artifacts/moondata-generation.png)
 
-MoonBit 负责 CSV 解析和数学计算；Node.js 负责本机服务及模型工具调用；浏览器负责交互和 SVG 曲线。运行时没有第三方 JavaScript 包依赖。Playwright 只用于开发验收。
+## 当前可以做什么
 
-![实验工作台](artifacts/workbench-desktop.png)
+- **生成数据**：可编辑字段、行数和随机种子；支持文本编号、数值序列、随机整数/小数、类别、布尔、日期、带噪声线性关联，以及按概率制造缺失值。固定方案和种子复现相同 CSV 指纹。
+- **分析数据**：导入 CSV、扁平对象 JSON / JSONL，查看类型、数值摘要、缺失、不同值数量、原始预览；按类别计数、求和、平均、最小/最大；查看直方图、四分位数、折线、散点和 Pearson 相关系数。
+- **保留结果**：下载完整 CSV / JSON / JSONL、Markdown 报告、JSON 分析结果和 SVG 图表。报告从当前查询重新计算，附来源 SHA-256、排除行数、参数和方法局限。
+- **数据助手**：默认离线模板与确定性工具；配置支持工具调用的模型后，可以用自然语言提出生成方案或调用分析。生成方案先展示给用户检查，再点击生成。
 
-## 当前功能
+所有新生成记录自动附加 `_synthetic=true`，文件名和界面也标为合成数据。合成数据不代表真实业务、调查或测量。导入数据的真实性未经验证，导入的合成标识也是来源文件声明。
 
-- CSV 导入、拖放、列质量概览、输入预览与 UTF-8 内容 SHA-256。
-- 显式选择时间列、响应列、原始时间单位、响应单位、初始值、目标值和阶跃时刻。
-- 单实验与双实验响应曲线，支持秒、毫秒、微秒到秒的转换和时间区间选择。
-- MoonBit 计算超调量、10–90% 上升时间、观察窗内调节时间、末段均值/误差、IAE、均值、总体标准差和 RMS。
-- 图表显示降采样保留各桶极值；指标仍使用全部原始分析样本。
-- 内置离线分析，以及兼容工具调用协议的真实模型连接；可展开调用记录核对。
-- Markdown 报告、JSON 结果、SVG 图表、原始分析区间 CSV 导出。
-- 合成示例、桌面和手机布局、模型请求取消、错误提示和旧结果失效。
-
-**边界：** 本版没有 CAN 实时采集、FFT、参数辨识或神经网络训练。数据暂存进程内存，服务重启后清空；浏览器刷新后保留当前会话数据，但分析参数需重新确认。模型文字解释不构成稳定性证明或故障诊断。
+![数据分析界面](artifacts/moondata-analysis.png)
 
 ## 快速开始
 
-需要 Node.js 22+ 和 MoonBit 工具链。当前在 Node.js 24.19.0、moonc 0.10.15 上验证。MoonBit 安装见[官方说明](https://www.moonbitlang.com/download)。
+需要 Node.js 22+ 和 MoonBit 工具链（本机验证：Node 24.19.0、MoonBit 0.10.15）。
 
 ```sh
 node scripts/build.mjs
 node server/index.mjs
 ```
 
-浏览器打开 <http://127.0.0.1:4321>，点击“体验合成示例”即可比较两组电机响应。
+打开 `http://127.0.0.1:4321`。默认展示销售台账方案，可直接点“生成数据集”；也可以点“导入数据”。无需先安装 npm 包：运行时没有第三方 JS 依赖。
 
-如果 MoonBit 没有加入 PATH，Windows PowerShell 可以指定：
+MoonBit 不在 PATH 时：
 
 ```powershell
 $env:MOON = '你的工具链目录\bin\moon.exe'
 node scripts/build.mjs
-node server/index.mjs
 ```
 
-也可以将工具链可执行文件的完整路径写入忽略的 `.local/moon-path.txt`。项目不捆绑工具链、不修改其他项目和全局设置。
+也可以把完整可执行路径写入忽略的 `.local/moon-path.txt`。服务读取进程环境，**不会自动加载 `.env` 文件**。
 
-### 使用自己的数据
+### 上传数据
+
+CSV 为 UTF-8、逗号分隔、带表头；支持引号、逗号、多行、BOM 和 Unicode。JSON 为扁平对象数组，或本项目导出的 `{records:[...]}`；JSONL 每个非空行是一条扁平对象。值支持文本、有限数值、布尔和 null，暂不支持嵌套对象或数组。
 
 ```csv
-time_ms,speed_rpm
-0,0
-100,200
-200,600
-300,1000
-400,1010
-500,1000
+地区,金额,数量
+华东,100,2
+华南,150,3
+华东,200,4
 ```
 
-1. 导入 UTF-8、逗号分隔、带表头的 CSV。
-2. 确认时间列与响应列；原始时间单位应选毫秒。
-3. 填入真实的初始值、目标值、阶跃时刻；时刻和区间设置始终以秒为单位。
-4. 点击“计算并绘图”，或向实验助手提问。
-5. 比较两次实验时，先分别切换并确认各自参数，再勾选“对比实验”。
+导入后选择“分组汇总”→地区→总和→金额，华东结果为 300，华南为 150。不需要时间、目标值或专业条件。CSV 的 ID 等字段下载为 JSON 时保持文本值，以免丢失前导零；分析时另外解析数值。
 
-空值、NaN、无穷大不会补零。时间必须严格递增，重复时间不自动合并。每份 CSV 上限 10 MiB、100000 数据行和 128 列；会话上限 12 份数据、100 万单元格及 20 MiB 文件内容。
+### 连接模型
 
-## 连接真实模型
+默认模式不访问外部模型，也不假装能理解自由自然语言。可用表单完成全部生成和分析；内置助手只识别界面建议中的明确命令。
 
-默认是**内置分析模式**：只运行已有分析工具，不调用模型，不向外发送数据。内置模式是受限的快捷操作，不宣称能理解任意自然语言。
-
-模型服务需要支持 `chat/completions`、`tools` 和 `tool_calls`。在服务端设置环境变量后重启：
+支持 `chat/completions` 的 `tools` / `tool_calls` 协议。服务端设置：
 
 ```powershell
 $env:LAB_MODEL_URL = 'https://你的模型服务地址/v1'
 $env:LAB_MODEL_NAME = '你的模型名称'
-# 如果服务要求密钥，在自己的终端中设置 LAB_MODEL_KEY。
-# 不要将密钥写进源码、浏览器或发给别人。
+# 如果需要密钥，在自己的终端中设置 LAB_MODEL_KEY，不要写进源码。
 node server/index.mjs
 ```
 
-`LAB_MODEL_URL` 是 API 基础地址，程序会追加 `/chat/completions`。远程服务必须使用 HTTPS；本机服务可用 HTTP。不支持的模型协议不会被悄悄替换成内置模式。
+程序在基础地址后追加 `/chat/completions`。远程地址须 HTTPS，本机可用 HTTP。不支持的协议会报错，不会悄悄回退到模板模式。顶部“模型已连接配置”表示配置存在，实际请求时才验证连接。
 
-每次提问会发送：当前问题、最近有限条对话、所选实验文件名与参数，以及工具返回的列描述、统计摘要和计算结果。**不发送原始 CSV 或原始数据行。** 名称和列名也可能敏感，使用远程服务前应确认自己有权发送这些信息。
-
-Agent 只提供三个工具：
-
-| 工具 | 行为 |
+| 工具 | 功能 |
 | --- | --- |
-| `inspect_experiments` | 查看当前选择的实验描述、列质量和摘要 |
-| `analyze_experiment` | 用界面确认的参数计算一份实验 |
-| `compare_experiments` | 比较当前选择的两份实验 |
+| `propose_generation` | 验证并展示合成数据字段方案；不创建数据 |
+| `profile_dataset` | 当前选择的数据集结构、类型和统计摘要 |
+| `explore_dataset` | 受限的概览、分组、分布、散点或折线 |
 
-模型不能改写分析条件、读取任意路径、运行命令或执行生成代码。单次最多 6 轮模型响应、10 次工具调用、120 秒总时限，单轮请求最多 45 秒。模型没有调用计算工具时，界面会明确标注该回答未执行数据分析。
+模型只收到问题、有限对话、字段方案、当前字段信息和精简工具结果。**不发送原始数据行或绘图采样点**；分组结果会包含类别名称。没有任意代码、命令、网络搜索或文件工具。单次最多 6 轮、10 次调用、120 秒，单轮 45 秒。可点击“停止”。
 
-**验证状态：** 已通过本地 HTTP 协议桩和真实浏览器工具调用验收；尚未使用外部模型凭据做实测，不能据此宣称兼容全部模型服务。
+目前通过了模拟模型服务的协议与浏览器验证；**尚未实测外部模型服务**，模型解释仍需核对。
+
+## 限制
+
+- 生成最多 10,000 行、32 自定义字段、300,000 单元格（含标识）。导入每文件最多 10 MiB、100,000 行、128 列。
+- 每会话最多 12 个数据集、100 万单元格、20 MiB 文件内容；本机最多 8 会话，空闲两小时可回收。
+- 数据在内存中；刷新保留同一 Cookie 会话的数据，但分析方式重置；重启服务会清空。需要保留时下载文件。
+- 第一版面向结构化表格。尚未提供 XLSX、PDF、图片、长文本语料生成、隐私合成保证、训练/预测、任意表达式、表关联或跨数据集自动比较。
+- 生成的噪声和数值均为所选分布的模拟。相关不证明因果；总体标准差不是样本标准差；缺失值不补零。
+- CSV 保留原始文本，含公式样式的文本请在电子表格中按文本导入。JSON / JSONL 适合类型明确的交换。
+- 专业阶跃代码只作为历史回归模块保留，不出现在默认界面；方法见 `docs/archive/MOTOR_V0_METHODS.md`。
 
 ## 开发与验证
 
-核心、接口和 Agent 测试不需要安装 JavaScript 依赖：
-
 ```sh
 node scripts/check.mjs
+node scripts/generate-examples.mjs
 node scripts/benchmark.mjs
 ```
 
-完整检查会更新 MoonBit 公共接口、格式化源码，执行 JS 与 Wasm GC 测试，构建 JS 引擎并测试服务。查看 `artifacts/verification.json`。
-
-浏览器验收需要安装锁定的开发依赖：
+完整检查会更新 MoonBit 接口和格式，运行 JS / WasmGC 核心与 Node 测试。浏览器验收：
 
 ```sh
 pnpm install --frozen-lockfile --ignore-scripts
@@ -113,36 +101,25 @@ pnpm exec playwright install chromium
 node scripts/browser-test.mjs
 ```
 
-Windows 已有 Edge 时可以跳过下载浏览器：
+Windows 已安装 Edge 可先设置 `$env:BROWSER_CHANNEL='msedge'`，跳过浏览器下载。测试自行启动并关闭服务，模型测试用模拟服务，不需要密钥。
 
-```powershell
-$env:BROWSER_CHANNEL = 'msedge'
-node scripts/browser-test.mjs
-```
-
-浏览器脚本自行启动临时本机服务和模型协议桩，结束后关闭；不会使用你的模型凭据。验证报告为 `artifacts/browser-verification.json`，截图只包含合成数据。
-
-## 项目结构与文档
+最新验收见 [ACCEPTANCE](docs/ACCEPTANCE.md)，详细步骤与后续范围见 [PLAN](docs/PLAN.md)，数学约定见 [METHODS](docs/METHODS.md)，接口见 [ARCHITECTURE](docs/ARCHITECTURE.md)。
 
 ```text
-csv/          MoonBit 严格 CSV 与数值列解析
-analysis/     MoonBit 统计和单阶跃响应
-api/          JSON / JS 导出边界
-server/       数据会话、工具、Agent、报告和本机 HTTP
-web/          中文工作台、SVG 绘图
-examples/     确定性合成数据
-scripts/      构建、检查、示例、浏览器与性能测量
-test/         服务、数学互操作、Agent 协议测试
-docs/         计划、计算契约、架构、验收与迭代记录
+csv/        MoonBit 严格 CSV 解析与数值列
+generator/  MoonBit 随机数、约束与合成行生成
+explore/    MoonBit 聚合、分箱、分位数与相关
+analysis/   MoonBit 统计与历史专业模块
+api/        JSON / JavaScript 导出
+server/     数据格式、会话、受限工具和本机 HTTP
+web/        中文界面、交互与 SVG
+examples/   标注清楚的合成示例及历史回归数据
+test/       数学互操作、服务和 Agent 协议
+docs/       计划、计算约定、架构与验收
 ```
 
-- [详细实施计划](docs/PLAN.md)
-- [计算方法与边界](docs/METHODS.md)
-- [架构与接口](docs/ARCHITECTURE.md)
-- [验收状态](docs/ACCEPTANCE.md)
-- [迭代记录](docs/WORKLOG.md)
-- [参考项目与来源说明](THIRD_PARTY.md)
+## GitHub
 
-## 许可
+用户已授权推送；当前环境尚无 GitHub CLI 登录。登录后运行 `node scripts/publish-github.mjs`，默认创建私有 `FidollarinLA/moondata-lab`，推送 `codex/initial-workbench` 并核对远端 SHA；不强推、不改全局 Git 设置。远端 CI 未运行时不报告发布完成。
 
-Apache-2.0，见 [LICENSE](LICENSE)。这是独立实现，当前不依赖 MoonFrame、MoonCharts 或 Data Formulator 的代码，不宣称与这些项目兼容或获得其背书。
+Apache-2.0，见 [LICENSE](LICENSE)。项目为独立实现，参考来源见 [THIRD_PARTY](THIRD_PARTY.md)，不声称移植或兼容整个 Data Formulator。

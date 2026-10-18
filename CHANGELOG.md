@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+- General-purpose synthetic data generation and uploaded-data analysis, confirmed as two product flows.
+- MoonBit deterministic generator, aggregation, histogram, quantile and Pearson packages.
+- CSV/JSON/JSONL, four domain templates, field editor, provenance and synthetic markers.
+- Generic Chinese workbench, charts and recomputed reports; bounded model schema proposal and analysis tools.
+- Independent numerical checks, cross-format round trips and 18 browser acceptance scenes.
+- External model validation and GitHub push remain pending external conditions.
+
 ## 0.1.0 — 2026-10-18
 
 - Added independent MoonBit CSV and step-response libraries with JS JSON exports.
