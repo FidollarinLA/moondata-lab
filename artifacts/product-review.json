@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-20T01:32:02.261Z",
+  "validation": "Automated public-data journey; not a novice usability study.",
+  "passed": true,
+  "publicData": {
+    "name": "cars",
+    "sourceRows": 406,
+    "completePairs": 392,
+    "independentMean": 23.44591836734694,
+    "reportedMean": 23.445918367346934
+  },
+  "mobile": {
+    "chartWidth": 360,
+    "minimumRenderedFont": 12,
+    "horizontalOverflow": false,
+    "plottedPoints": 392
+  },
+  "errors": []
+}

@@ -149,6 +149,9 @@ async function chat(message) {
   } finally { if (state.controller === controller) state.controller = null; $('send-button').disabled = false; $('stop-button').hidden = true; $('chat-status').textContent = '工具有边界，计算可追溯'; }
 }
 for (const tab of ['generate', 'analyze']) $(`tab-${tab}`).addEventListener('click', () => switchTab(tab));
+$('start-upload').addEventListener('click', () => { switchTab('analyze'); $('upload').click(); });
+$('start-generate').addEventListener('click', () => { switchTab('generate'); $('plan-name').focus(); });
+new ResizeObserver(() => { if (state.result?.chart && !$('chart-wrap').hidden) drawChart($('chart'), state.result.chart); }).observe($('chart'));
 $('back-generate').addEventListener('click', () => switchTab('generate'));
 $('generate-panel').addEventListener('input', () => { state.planRevision++; });
 $('add-field').addEventListener('click', () => { state.plan.columns.push({ name: `字段${state.plan.columns.length + 1}`, kind: 'number' }); renderFields(); });

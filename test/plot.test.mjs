@@ -6,6 +6,12 @@ import { localPlanner } from '../server/local-planner.mjs';
 import { modelConfig } from '../server/agent.mjs';
 import { workbenchAgent } from '../server/workbench-agent.mjs';
 const close = (a, b) => assert.ok(Math.abs(a - b) < 1e-9);
+test('recommendation prefers a valid 300-category axis over sole high-cardinality numeric field', () => {
+  const store = new DatasetStore();
+  const d = importDataset(store, { name: 'routes.csv', content: 'origin,destination,count\n' + Array.from({ length: 2000 }, (_, i) => `A${i % 300},B${i % 301},${i}`).join('\n') });
+  const p = profile(store, d.id); assert.equal(p.recommendation.x, 'origin'); assert.deepEqual(p.recommendation.yColumns, ['count']);
+  const r = explore(store, { datasetId: d.id, ...p.recommendation }); assert.equal(r.table.length, 300); assert.equal(r.chart.points.length, 50); assert.match(r.chart.yLabel, /平均值/);
+});
 function fixture() { const store = new DatasetStore(); const d = importDataset(store, { name: 'table.csv', content: '日期,地区,x,a,b\n2026-01-01,东,0,10,5\n2026-01-03,西,2,20,\n2026-01-10,东,9,30,15\n,西,10,40,20' }); return { store, d }; }
 test('multiple Y columns retain independent missing pairs and actual date spacing', () => {
   const { store, d } = fixture(), r = explore(store, { datasetId: d.id, mode: 'plot', x: '日期', yColumns: ['a', 'b'], kind: 'auto' });

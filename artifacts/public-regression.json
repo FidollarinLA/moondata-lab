@@ -1,0 +1,1720 @@
+{
+  "checkedAt": "2026-10-20T01:27:53.331Z",
+  "revision": "175a81ca00b2a0d9bd1159ddcf2b7b232e591d93",
+  "source": "https://github.com/vega/vega-datasets",
+  "datasetCount": 40,
+  "passed": 40,
+  "selectionPolicy": "40 distinct named tables; same-source size variants and generated fixtures excluded. All are curated by one Vega catalog; upstream provenance is recorded per resource. This is not 40 independent collection organizations.",
+  "results": [
+    {
+      "name": "airports",
+      "title": "Airport locations and identifiers",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/airports.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "Federal Aviation Administration",
+          "path": "https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription/"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-open",
+          "title": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "caeb10d97cf2946792f7f2b4e28b692c655bb6c5f0a8e048ea3625b538266dd3",
+      "rows": 3376,
+      "columns": 7,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "country",
+        "yColumns": [
+          "iata",
+          "latitude"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "f25c2402-9ef2-4747-a75a-24c7b8ec07c9"
+      }
+    },
+    {
+      "name": "barley",
+      "title": "Minnesota barley yields by variety and trial site",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/barley.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "The Design of Experiments Reference",
+          "path": "https://en.wikipedia.org/wiki/The_Design_of_Experiments"
+        },
+        {
+          "title": "Wiebe, G. A., Reinbach-Welch, L., Cowan, P. R. (1940). Yields of Barley Varieties in the United States and Canada, 1932-36. United States: U.S. Department of Agriculture.",
+          "path": "https://books.google.com/books?id=OUfxLocnpKkC&pg=PA19"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "notspecified",
+          "title": "Dataset collected by Minnesota Agricultural Experiment Station - license status unspecified"
+        }
+      ],
+      "status": "passed",
+      "sha256": "800faf5a0524e2145822a72af7821e153b80ad3433631f4bd30100b24c9fa2bc",
+      "rows": 120,
+      "columns": 4,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "site",
+        "yColumns": [
+          "yield",
+          "year"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "fa622b42-7444-42fb-9a9d-316efe0325c8"
+      }
+    },
+    {
+      "name": "bird_migration",
+      "title": "Daily bird migration population centers",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/bird-migration.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "Data from: Projected changes in prevailing winds for transatlantic migratory birds under global warming (La Sorte & Fink, Dryad)",
+          "path": "https://doi.org/10.5061/dryad.5h9c4"
+        },
+        {
+          "title": "La Sorte, F.A. & Fink, D. (2017). Projected changes in prevailing winds for transatlantic migratory birds under global warming. Journal of Animal Ecology, 86(2), 273-284",
+          "path": "https://doi.org/10.1111/1365-2656.12624"
+        },
+        {
+          "title": "eBird, Cornell Lab of Ornithology (upstream occurrence records, 1950-2015)",
+          "path": "https://ebird.org"
+        },
+        {
+          "title": "eBird Data Access Terms of Use (upstream occurrence records)",
+          "path": "https://www.birds.cornell.edu/home/ebird-data-access-terms-of-use/"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "CC0-1.0",
+          "title": "Creative Commons Zero v1.0 Universal",
+          "path": "https://spdx.org/licenses/CC0-1.0.html"
+        }
+      ],
+      "status": "passed",
+      "sha256": "257ddefeb18eefffa44dbd05e8ced2b2a2a558bdb481d8a9ee92a5509a5b728c",
+      "rows": 3229,
+      "columns": 5,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "date",
+        "yColumns": [
+          "day",
+          "lon"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "bbdabc5f-7011-4672-b8fc-4999d98688bc"
+      }
+    },
+    {
+      "name": "birdstrikes",
+      "title": "FAA aircraft wildlife strike reports",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/birdstrikes.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "FAA Wildlife Strike Database",
+          "path": "http://wildlife.faa.gov"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://resources.data.gov/open-licenses/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "45777edf69984b37599e73dbfb34dbc976055243547407214261a4fcb9466462",
+      "rows": 10000,
+      "columns": 14,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "Flight Date",
+        "yColumns": [
+          "Cost Other",
+          "Cost Repair"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "e5f140b6-0b61-463f-a04d-e7f1df405dc9"
+      }
+    },
+    {
+      "name": "budget",
+      "title": "U.S. federal receipts and estimates by account",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/budget.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Office of Management and Budget - Budget FY 2016 - Receipts",
+          "path": "https://www.govinfo.gov/app/details/BUDGET-2016-DB/BUDGET-2016-DB-3"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://resources.data.gov/open-licenses/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "13eeecc0993fc767df37eac8e151522a5bdaee78adcd3e7e37fe10c9ca71ea96",
+      "rows": 237,
+      "columns": 72,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "On- or off-budget",
+        "yColumns": [
+          "1962",
+          "1963"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "4a4c2ae9-554c-4b6f-8f32-71eaae6da4c8"
+      }
+    },
+    {
+      "name": "burtin",
+      "title": "Burtin's antibiotic susceptibility measurements",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/burtin.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Scope Magazine",
+          "path": "https://graphicdesignarchives.org/projects/scope-magazine-vol-iii-5/"
+        },
+        {
+          "title": "Protovis Antibiotics Example",
+          "path": "https://mbostock.github.io/protovis/ex/antibiotics-burtin.html"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "BSD-3-Clause",
+          "title": "BSD License (via Protovis)",
+          "path": "https://mbostock.github.io/protovis/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "443a3c2dc37f86dc26259e5ab1b4719180ccc811260f390b15518f05bbbbaf24",
+      "rows": 16,
+      "columns": 6,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "Gram_Staining",
+        "yColumns": [
+          "Penicillin",
+          "Streptomycin"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "d8299108-4a69-485f-ba44-e4bee7f292b4"
+      }
+    },
+    {
+      "name": "cars",
+      "title": "Car specifications and fuel economy",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/cars.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "StatLib Datasets Archive",
+          "path": "http://lib.stat.cmu.edu/datasets/"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "notspecified",
+          "title": "The original was distributed in 1982 for educational and scientific purposes.",
+          "path": "http://lib.stat.cmu.edu/datasets/cars.desc"
+        }
+      ],
+      "status": "passed",
+      "sha256": "f686a53678b21f4231e2f6a5ba7ce5761d9d39204fccdea1caa29fb8c460e319",
+      "rows": 406,
+      "columns": 9,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "Year",
+        "yColumns": [
+          "Miles_per_Gallon",
+          "Cylinders"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "f454c573-67ad-46b2-8a56-242cdd6577ca"
+      }
+    },
+    {
+      "name": "co2_concentration",
+      "title": "Monthly atmospheric CO2 at Mauna Loa",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/co2-concentration.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "Scripps CO2 Program",
+          "path": "https://scrippsco2.ucsd.edu/data/atmospheric_co2/primary_mlo_co2_record"
+        },
+        {
+          "title": "In-situ CO2 Data",
+          "path": "https://scrippsco2.ucsd.edu/assets/data/atmospheric/stations/in_situ_co2/monthly/monthly_in_situ_co2_mlo.csv"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "CC-BY-4.0",
+          "title": "Creative Commons Attribution 4.0",
+          "path": "https://creativecommons.org/licenses/by/4.0/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "c1a4a970864145940a28225cae288618b156cb32f9a2a1b6606ba7124134febb",
+      "rows": 741,
+      "columns": 3,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "Date",
+        "yColumns": [
+          "CO2",
+          "adjusted CO2"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "6d6139f6-3199-4524-a1b9-4e9912b99e96"
+      }
+    },
+    {
+      "name": "countries",
+      "title": "Country life expectancy and fertility over time",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/countries.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Gapminder Foundation - Life Expectancy",
+          "path": "https://docs.google.com/spreadsheets/d/1RehxZjXd7_rG8v2pJYV6aY0J3LAsgUPDQnbY4dRdiSs/edit?gid=176703676#gid=176703676",
+          "version": "14"
+        },
+        {
+          "title": "Gapminder Foundation - Fertility",
+          "path": "https://docs.google.com/spreadsheets/d/1aLtIpAWvDGGa9k2XXEz6hZugWn0wCd5nmzaRPPjbYNA/edit?gid=176703676#gid=176703676",
+          "version": "14"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "CC-BY-4.0",
+          "title": "Creative Commons Attribution 4.0 International",
+          "path": "https://www.gapminder.org/free-material/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "8b8aef930c5242c56ead108ec728317d6634d6775bc7a22e8f242f58b4aff92f",
+      "rows": 620,
+      "columns": 9,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "_comment",
+        "yColumns": [
+          "year",
+          "fertility"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "66dc8e80-65d4-47d7-80a9-1d68c50c9519"
+      }
+    },
+    {
+      "name": "crimea",
+      "title": "British Army deaths by cause in the Crimean War",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/crimea.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Nightingale, Florence. A contribution to the sanitary history of the British army during the late war with Russia. London : John W. Parker and Son, 1859. Table II. Table showing the Estimated Average Monthly Strength of the Army; and the Deaths and Annual Rate of Mortality per 1,000 in each month, from April 1854, to March 1856 (inclusive), in the Hospitals of the Army in the East.\n",
+          "path": "https://nrs.lib.harvard.edu/urn-3:hms.count:1177146?n=21"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "notspecified",
+          "title": "Harvard Library - Digitized Content Copyright & Viewer Terms of Use",
+          "path": "https://library.harvard.edu/privacy-terms-use-copyright-information#digitizedcontent"
+        }
+      ],
+      "status": "passed",
+      "sha256": "97edd09474812cd2c433fffc066b4b3900f68e3325eb2b63c888ee494ba4762a",
+      "rows": 24,
+      "columns": 5,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "date",
+        "yColumns": [
+          "wounds",
+          "other"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "57579761-e432-4716-af63-01c28ea0fad2"
+      }
+    },
+    {
+      "name": "disasters",
+      "title": "Deaths from natural disasters by type and year",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/disasters.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "EM-DAT: The Emergency Events Database",
+          "path": "https://www.emdat.be"
+        },
+        {
+          "title": "Hannah Ritchie, Pablo Rosado and Max Roser (2022) - Natural Disasters",
+          "path": "https://ourworldindata.org/natural-catastrophes"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "notspecified",
+          "title": "EM-DAT terms of use",
+          "path": "https://doc.emdat.be/docs/legal/terms-of-use/"
+        },
+        {
+          "name": "CC-BY-4.0",
+          "title": "Creative Commons BY license (Our World in Data)",
+          "path": "https://creativecommons.org/licenses/by/4.0/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "36d151b50da0aeb82e86b152f91b8cf912a0e4cb50fe32744cf33f22463847d9",
+      "rows": 803,
+      "columns": 3,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "Entity",
+        "yColumns": [
+          "Year",
+          "Deaths"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "593897e2-c2d2-41e0-9576-d9439069ab5b"
+      }
+    },
+    {
+      "name": "driving",
+      "title": "U.S. driving distances and gasoline prices",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/driving.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "New York Times (citing U.S. Energy Information Administration, Federal Highway Administration, and Brookings Institution)",
+          "path": "https://archive.nytimes.com/www.nytimes.com/imagepages/2010/05/02/business/02metrics.html"
+        }
+      ],
+      "licenses": [],
+      "status": "passed",
+      "sha256": "25a7e2d987372c77db93a85b68ffc58c20be09870378478b2faa4d9209910c15",
+      "rows": 55,
+      "columns": 4,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "side",
+        "yColumns": [
+          "year",
+          "miles"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "c6581203-77c3-47fe-b073-64bc48035858"
+      }
+    },
+    {
+      "name": "flights_airport",
+      "title": "U.S. flight counts by airport route",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/flights-airport.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "U.S. Bureau of Transportation Statistics",
+          "path": "https://www.transtats.bts.gov/DL_SelectFields.asp?gnoyr_VQ=FGJ&QO_fu146_anzr=b0-gvzr"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "f9f66bc27adebf459e39fbdb6d71402c4355584f27ea1062606219d771ea4bcf",
+      "rows": 5366,
+      "columns": 3,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "origin",
+        "yColumns": [
+          "count"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "c8e1ba17-bbfc-43d0-aca9-ea3e8f174085"
+      }
+    },
+    {
+      "name": "football",
+      "title": "European football match results from five leagues",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/football.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "OpenFootball",
+          "path": "https://github.com/openfootball/football.json"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "path": "https://github.com/openfootball/football.json?tab=readme-ov-file#license"
+        }
+      ],
+      "status": "passed",
+      "sha256": "89db986ec1fe0c2ef88cc56f6c7bfb22a4928735c4d6fc0055fc2745af316f3a",
+      "rows": 6508,
+      "columns": 6,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "date",
+        "yColumns": [
+          "home_score",
+          "away_score"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "03eeac31-1332-43b2-9778-e3226a8f73bf"
+      }
+    },
+    {
+      "name": "gapminder",
+      "title": "Gapminder population, life expectancy and fertility",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/gapminder.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Gapminder Foundation - Life Expectancy (Data)",
+          "path": "https://docs.google.com/spreadsheets/d/1RehxZjXd7_rG8v2pJYV6aY0J3LAsgUPDQnbY4dRdiSs/edit?gid=176703676#gid=176703676",
+          "version": "14"
+        },
+        {
+          "title": "Gapminder Foundation - Life Expectancy (Documentation)",
+          "path": "https://www.gapminder.org/data/documentation/gd004/"
+        },
+        {
+          "title": "Gapminder Foundation - Population (Data)",
+          "path": "https://docs.google.com/spreadsheets/d/1c1luQNdpH90tNbMIeU7jD__59wQ0bdIGRFpbMm8ZBTk/edit?gid=176703676#gid=176703676",
+          "version": "7"
+        },
+        {
+          "title": "Gapminder Foundation - Population (Documentation)",
+          "path": "https://www.gapminder.org/data/documentation/gd003/"
+        },
+        {
+          "title": "Gapminder Foundation - Fertility (Data)",
+          "path": "https://docs.google.com/spreadsheets/d/1aLtIpAWvDGGa9k2XXEz6hZugWn0wCd5nmzaRPPjbYNA/edit?gid=176703676#gid=176703676",
+          "version": "14"
+        },
+        {
+          "title": "Gapminder Foundation - Fertility Documentation (Documentation)",
+          "path": "https://www.gapminder.org/data/documentation/gd008/"
+        },
+        {
+          "title": "Gapminder Foundation - Data Geographies (Data)",
+          "path": "https://docs.google.com/spreadsheets/d/1qHalit8sXC0R8oVXibc2wa2gY7bkwGzOybEMTWp-08o/edit?gid=1597424158#gid=1597424158",
+          "version": "2"
+        },
+        {
+          "title": "Gapminder Foundation - Data Geographies (Documentation)",
+          "path": "https://www.gapminder.org/data/geo/"
+        },
+        {
+          "title": "Gapminder Data Documentation",
+          "path": "https://www.gapminder.org/data/documentation/"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "CC-BY-4.0",
+          "title": "Creative Commons Attribution 4.0 International",
+          "path": "https://www.gapminder.org/free-material/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "70630efd862153116c1518a098a5a3bc4ca8c9f037306f86fba282a2720909b9",
+      "rows": 682,
+      "columns": 6,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "country",
+        "yColumns": [
+          "year",
+          "cluster"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "209544f4-6ad1-4909-827e-549fde4b6298"
+      }
+    },
+    {
+      "name": "github",
+      "title": "Simulated hourly GitHub commit counts",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/github.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "Generated using `/scripts/github.py`.",
+          "path": "https://github.com/vega/vega-datasets/blob/main/scripts/github.py"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "BSD-3-Clause",
+          "path": "https://github.com/vega/vega-datasets/blob/main/scripts/LICENSE"
+        }
+      ],
+      "status": "passed",
+      "sha256": "d7e3fa02d6025a63bb9a3148648e5dda170139247b24e7237208eb72876ee7ca",
+      "rows": 955,
+      "columns": 2,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "time",
+        "yColumns": [
+          "count"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "91a57f94-3ba3-4200-aaee-d866f4e520d0"
+      }
+    },
+    {
+      "name": "global_temp",
+      "title": "Global land and ocean temperature anomalies",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/global-temp.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "NASA Goddard Institute for Space Studies",
+          "path": "https://data.giss.nasa.gov/gistemp/"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "5933dcb6d5e7fc5c0c241b956b802de2b02da12d0914d06031030579a0f1443b",
+      "rows": 144,
+      "columns": 2,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "year",
+        "yColumns": [
+          "temp"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "a36982bd-692f-4eec-975b-144dc744d954"
+      }
+    },
+    {
+      "name": "income",
+      "title": "U.S. household income distributions by state and territory",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/income.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "U.S. Census Bureau American Community Survey 3-Year Data (2013)",
+          "path": "https://www.census.gov/data/developers/data-sets/acs-3year/2013.html"
+        },
+        {
+          "title": "Census Bureau Data API User Guide",
+          "path": "https://www.census.gov/data/developers/guidance/api-user-guide.html"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-open",
+          "title": "U.S. Census Bureau API Terms of Service",
+          "path": "https://www.census.gov/data/developers/about/terms-of-service.html"
+        }
+      ],
+      "status": "passed",
+      "sha256": "c04ac5db8f263ccfe43250fce2c4e808e362d5ccf6c5b904f029bc2b1ae5d260",
+      "rows": 520,
+      "columns": 6,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "region",
+        "yColumns": [
+          "id",
+          "pct"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "ef995eaa-99f7-42c3-9de8-5a552d2f3fda"
+      }
+    },
+    {
+      "name": "iowa_electricity",
+      "title": "Iowa annual electricity generation by source",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/iowa-electricity.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "U.S. Energy Information Administration",
+          "path": "https://www.eia.gov/beta/electricity/data/browser/#/topic/0?agg=2,0,1&fuel=vvg&geo=00000g&sec=g&linechart=ELEC.GEN.OTH-IA-99.A~ELEC.GEN.COW-IA-99.A~ELEC.GEN.PEL-IA-99.A~ELEC.GEN.PC-IA-99.A~ELEC.GEN.NG-IA-99.A~~ELEC.GEN.NUC-IA-99.A~ELEC.GEN.HYC-IA-99.A~ELEC.GEN.AOR-IA-99.A~ELEC.GEN.HPS-IA-99.A~&columnchart=ELEC.GEN.ALL-IA-99.A&map=ELEC.GEN.ALL-IA-99.A&freq=A&start=2001&end=2017&ctype=linechart&ltype=pin&tab=overview&maptype=0&rse=0&pin="
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "6071c2e657d91509885a1f3eec0884b2854d66990b5c556dbead15e263f9506b",
+      "rows": 51,
+      "columns": 3,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "year",
+        "yColumns": [
+          "net_generation"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "7961e681-869e-4065-8db6-ead70d712124"
+      }
+    },
+    {
+      "name": "jobs",
+      "title": "U.S. occupation counts by sex and census year",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/jobs.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "IPUMS USA",
+          "path": "https://usa.ipums.org/usa/",
+          "version": "6.0"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "notspecified",
+          "title": "IPUMS Terms of Use",
+          "path": "https://www.ipums.org/about/terms"
+        }
+      ],
+      "status": "passed",
+      "sha256": "bc9a798eba79dd166939d040c92641943a0b031955eb6fd897223a9cdab8a7e6",
+      "rows": 7650,
+      "columns": 5,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "sex",
+        "yColumns": [
+          "year",
+          "count"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "a384931a-70c9-4404-ba48-afe81119845d"
+      }
+    },
+    {
+      "name": "la_riots",
+      "title": "Los Angeles Times death records for the 1992 unrest",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/la-riots.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "LA Riots Deaths, Los Angeles Times Data Desk",
+          "path": "http://spreadsheets.latimes.com/la-riots-deaths/"
+        }
+      ],
+      "licenses": [],
+      "status": "passed",
+      "sha256": "90884a2c333e45c172446211edadcb0201957b6b9a378525fa8fd10f4856734a",
+      "rows": 63,
+      "columns": 11,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "death_date",
+        "yColumns": [
+          "age",
+          "longitude"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "6c0c4b7a-a472-491f-a3fe-1f1f36423590"
+      }
+    },
+    {
+      "name": "london_centroids",
+      "title": "London borough centroids including the City of London",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/londonCentroids.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "[londonBoroughs.json](https://github.com/vega/vega-datasets/blob/main/data/londonBoroughs.json) from the [vega-datasets](https://github.com/vega/vega-datasets) repository",
+          "path": "https://github.com/vega/vega-datasets/blob/main/data/londonBoroughs.json"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "OGL-UK-3.0",
+          "title": "UK Open Government License",
+          "path": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "97cf9bfbc701f2fc2bad9ce5bc25df4646e8902eac0fe5adc1a2a8a6ba60e231",
+      "rows": 33,
+      "columns": 3,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "name",
+        "yColumns": [
+          "cx",
+          "cy"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "f9d6a9a6-0d2c-4c70-83e0-1ae7fa075881"
+      }
+    },
+    {
+      "name": "monarchs",
+      "title": "English and British rulers for Wheat and Wages",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/monarchs.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "The Royal Family - Kings & Queens",
+          "path": "https://www.royal.uk/kings-and-queens-1066"
+        },
+        {
+          "title": "The Royal Family - Interregnum",
+          "path": "https://www.royal.uk/interregnum-1649-1660"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "OGL-UK-3.0",
+          "title": "Open Government Licence v3.0 (UK)",
+          "path": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "7cd181422c94dbf4340974355cc917df5202327be44d1a0f5839c388075ba133",
+      "rows": 12,
+      "columns": 5,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "commonwealth",
+        "yColumns": [
+          "start",
+          "end"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "6b0beb36-85be-4a3a-b218-71c3660407d6"
+      }
+    },
+    {
+      "name": "movies",
+      "title": "Movie box office, budgets and ratings",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/movies.json",
+      "format": "json",
+      "upstreamSources": [],
+      "licenses": [],
+      "status": "passed",
+      "sha256": "e63c499759e3b07b49563e036f55290f87feb56def8703ec049ca305ab1523d3",
+      "rows": 3201,
+      "columns": 16,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "MPAA Rating",
+        "yColumns": [
+          "Title",
+          "US Gross"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "be417ea8-cd4c-4c99-b685-3ba03d50f10f"
+      }
+    },
+    {
+      "name": "obesity",
+      "title": "U.S. state obesity rates",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/obesity.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Protovis",
+          "path": "https://mbostock.github.io/protovis/ex/us_stats.js"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "5540b62cfb48d9c72f52732aaaaeac7d1209504f318ec13b623a1ee38b2891df",
+      "rows": 50,
+      "columns": 3,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "state",
+        "yColumns": [
+          "id",
+          "rate"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "bddc30f4-02ef-4c58-bf3d-6334c91be78a"
+      }
+    },
+    {
+      "name": "ohlc",
+      "title": "VIX daily open, high, low and close values",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/ohlc.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Yahoo Finance VIX Data",
+          "path": "https://finance.yahoo.com/chart/%5EVIX"
+        },
+        {
+          "title": "CBOE - VIX Historical Data",
+          "path": "https://www.cboe.com/tradable_products/vix/vix_historical_data/"
+        }
+      ],
+      "licenses": [],
+      "status": "passed",
+      "sha256": "a0ad3ef04c1bb5ac98c564f87fdb79f095ad109a20e569719b2e19bea5e4a7c9",
+      "rows": 44,
+      "columns": 7,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "date",
+        "yColumns": [
+          "open",
+          "high"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "fe1dd975-d61a-4ca2-9860-9fbe741c0e0e"
+      }
+    },
+    {
+      "name": "penguins",
+      "title": "Palmer Archipelago penguin measurements",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/penguins.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Palmer Station Antarctica LTER",
+          "path": "https://pallter.marine.rutgers.edu/"
+        },
+        {
+          "title": "Allison Horst's Penguins Repository",
+          "path": "https://github.com/allisonhorst/penguins"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "CC0-1.0",
+          "title": "Creative Commons Zero 1.0 Universal",
+          "path": "https://github.com/allisonhorst/palmerpenguins?tab=CC0-1.0-1-ov-file#readme"
+        }
+      ],
+      "status": "passed",
+      "sha256": "0facf769609f1205b82cbceb8238c36af3e6147a0ca0e163902cc6281ce3e917",
+      "rows": 344,
+      "columns": 7,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "Species",
+        "yColumns": [
+          "Beak Length (mm)",
+          "Beak Depth (mm)"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "c9a15388-a378-4aaa-8bb4-781754143c8a"
+      }
+    },
+    {
+      "name": "political_contributions",
+      "title": "U.S. candidate campaign finance summaries",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/political-contributions.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "Federal Election Commission Bulk Data",
+          "path": "https://www.fec.gov/data/browse-data/?tab=bulk-data"
+        },
+        {
+          "title": "OpenFEC API",
+          "path": "https://api.open.fec.gov/developers/"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "CC0-1.0",
+          "title": "Creative Commons Zero 1.0 Universal",
+          "path": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      ],
+      "status": "passed",
+      "sha256": "5282b00a7572981dba360c91aea618a8493fb6b818878d94d97e164b10c712eb",
+      "rows": 58,
+      "columns": 25,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "Incumbent_Challenger_Status",
+        "yColumns": [
+          "Party_Code",
+          "Total_Receipts"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "dda80d4e-e752-497b-b6c1-126473b3112a"
+      }
+    },
+    {
+      "name": "population",
+      "title": "U.S. population by age, sex and census year",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/population.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "IPUMS USA",
+          "path": "https://usa.ipums.org/usa/"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "notspecified",
+          "title": "IPUMS Terms of Use",
+          "path": "https://www.ipums.org/about/terms"
+        }
+      ],
+      "status": "passed",
+      "sha256": "6fb13672c09b115c6b76322b13f43ab0a92a2813621370c355f15808be402597",
+      "rows": 570,
+      "columns": 4,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "year",
+        "yColumns": [
+          "age",
+          "sex"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "54c15700-7dca-4fb1-a6dd-cde282135a8f"
+      }
+    },
+    {
+      "name": "seattle_weather",
+      "title": "Seattle daily weather from 2012–2015",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/seattle-weather.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "NOAA National Climatic Data Center",
+          "path": "https://www.ncdc.noaa.gov/cdo-web/datatools/records"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "0845078a290b48e3149ab8639966824110a251db4e06fc144c06ebb534af23be",
+      "rows": 1461,
+      "columns": 6,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "date",
+        "yColumns": [
+          "precipitation",
+          "temp_max"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "8ce235e6-98b6-45dc-97d8-878cf7b89d86"
+      }
+    },
+    {
+      "name": "sp500",
+      "title": "S&P 500 monthly closing values",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/sp500.csv",
+      "format": "csv",
+      "upstreamSources": [],
+      "licenses": [],
+      "status": "passed",
+      "sha256": "8d1a3310b741565fd2aaf7b9d34030c92b1fbedbc9ba839f4a50dab8b2dd5c3d",
+      "rows": 123,
+      "columns": 2,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "date",
+        "yColumns": [
+          "price"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "4cf2f5bc-ff47-48fa-a2c2-d527d2985f32"
+      }
+    },
+    {
+      "name": "species",
+      "title": "Year-round habitat coverage for four species by U.S. county",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/species.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "USGS Gap Analysis Project (GAP) Species Habitat Maps",
+          "path": "https://www.usgs.gov/programs/gap-analysis-project"
+        },
+        {
+          "title": "US Census Bureau Cartographic Boundary Files (1:10,000,000)",
+          "path": "https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "5a517e887a2b2b1c5756d7aaad66b5ac9244139058c4c4835f8a9186c649396a",
+      "rows": 12360,
+      "columns": 6,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "item_id",
+        "yColumns": [
+          "county_id",
+          "habitat_yearround_pct"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "9952c5e7-9682-4849-9365-7db78dda938c"
+      }
+    },
+    {
+      "name": "stocks",
+      "title": "Monthly stock prices for five companies",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/stocks.csv",
+      "format": "csv",
+      "upstreamSources": [],
+      "licenses": [],
+      "status": "passed",
+      "sha256": "f9953ac6693e587476b4ebf2f0b00d9bb95371ca8c39da4cc6155077b3e417cd",
+      "rows": 560,
+      "columns": 3,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "symbol",
+        "yColumns": [
+          "price"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "788938e9-f6bf-4cff-a3ac-5f6025ba1faf"
+      }
+    },
+    {
+      "name": "udistrict",
+      "title": "Restaurant and cafe latitudes in Seattle's University District",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/udistrict.json",
+      "format": "json",
+      "upstreamSources": [],
+      "licenses": [],
+      "status": "passed",
+      "sha256": "f71090657c467647caa873bcaec3123dbecc12da256ef176460407a62819a37f",
+      "rows": 182,
+      "columns": 2,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "key",
+        "yColumns": [
+          "lat"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "eab34468-92be-41b8-850f-918177f66776"
+      }
+    },
+    {
+      "name": "unemployment_across_industries",
+      "title": "U.S. unemployment by industry over time",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/unemployment-across-industries.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "U.S. Census Bureau Current Population Survey",
+          "path": "https://www.census.gov/programs-surveys/cps.html"
+        },
+        {
+          "title": "BLS LAUS Data Tools",
+          "path": "https://www.bls.gov/lau/data.htm"
+        },
+        {
+          "title": "Bureau of Labor Statistics Table A-31",
+          "path": "https://www.bls.gov/web/empsit/cpseea31.htm"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "c12e32b5b8bf66d5ce40081a22b5557b2a8649dbdcbe03028b3df65cd66257a1",
+      "rows": 1708,
+      "columns": 6,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "series",
+        "yColumns": [
+          "year",
+          "month"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "01e49a90-f804-425c-91bc-025f73bf55eb"
+      }
+    },
+    {
+      "name": "us_employment",
+      "title": "U.S. monthly employment totals by sector",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/us-employment.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "U.S. Bureau of Labor Statistics Current Employment Statistics",
+          "path": "https://www.bls.gov/ces/"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "0fa5366929bf738ac420509b84ed120155f740b0fa9c265ca309dad4057d1b1b",
+      "rows": 120,
+      "columns": 24,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "month",
+        "yColumns": [
+          "nonfarm",
+          "private"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "be142e4c-63ff-4576-8c87-fedbf46a4525"
+      }
+    },
+    {
+      "name": "us_state_capitals",
+      "title": "U.S. state capitals and capitol building locations",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/us-state-capitals.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "U.S. Geological Survey National Geospatial Program - The National Map",
+          "path": "https://www.usgs.gov/programs/national-geospatial-program/national-map"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Public Domain",
+          "path": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+        },
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "070b12ff2db958b12c2df2287330f4598611404d7e7ef8211a3b578a26c0827f",
+      "rows": 50,
+      "columns": 4,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "state",
+        "yColumns": [
+          "lon",
+          "lat"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "1ecf0536-aaab-4635-9334-8c692c3e7af4"
+      }
+    },
+    {
+      "name": "weather",
+      "title": "Seattle and New York daily weather from 2012–2015",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/weather.csv",
+      "format": "csv",
+      "upstreamSources": [
+        {
+          "title": "NOAA Climate Data Online",
+          "path": "http://www.ncdc.noaa.gov/cdo-web/datatools/findstation"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "U.S. Government Dataset",
+          "path": "https://www.usa.gov/government-works"
+        }
+      ],
+      "status": "passed",
+      "sha256": "27219f1ca8dbd94c9b6f4b9f4f52ab2f1eb33dfdcf719cd9fc6481ed50b74549",
+      "rows": 2922,
+      "columns": 7,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "date",
+        "yColumns": [
+          "precipitation",
+          "temp_max"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "026695ae-dcbf-4c85-85e1-7fb9ba099971"
+      }
+    },
+    {
+      "name": "wheat",
+      "title": "Playfair's wheat prices and wages from 1565–1820",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/wheat.json",
+      "format": "json",
+      "upstreamSources": [
+        {
+          "title": "1822 Playfair Chart",
+          "path": "https://commons.wikimedia.org/wiki/File:Chart_Showing_at_One_View_the_Price_of_the_Quarter_of_Wheat,_and_Wages_of_Labour_by_the_Week,_from_1565_to_1821.png"
+        }
+      ],
+      "licenses": [
+        {
+          "name": "other-pd",
+          "title": "Public Domain",
+          "path": "https://commons.wikimedia.org/wiki/Public_domain"
+        }
+      ],
+      "status": "passed",
+      "sha256": "f81aca0a91d8f60ea04526d03d7e878fce3dd01847e02e409cab63776b9a41b4",
+      "rows": 52,
+      "columns": 3,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "year",
+        "yColumns": [
+          "wheat",
+          "wages"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "2ca07774-e700-4edb-bccf-7b725b48d429"
+      }
+    },
+    {
+      "name": "windvectors",
+      "title": "Simulated wind vectors over northwestern Europe",
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/175a81ca00b2a0d9bd1159ddcf2b7b232e591d93/data/windvectors.csv",
+      "format": "csv",
+      "upstreamSources": [],
+      "licenses": [],
+      "status": "passed",
+      "sha256": "5c39a73494320709433432248fe3951c69a3172129544d345e8060dab6c70f8d",
+      "rows": 4800,
+      "columns": 5,
+      "checks": [
+        "import",
+        "profile",
+        "recommended-plot",
+        "recomputed-report",
+        "independent-mean",
+        "histogram-count"
+      ],
+      "query": {
+        "mode": "plot",
+        "x": "longitude",
+        "yColumns": [
+          "latitude",
+          "dir"
+        ],
+        "kind": "auto",
+        "reducer": "mean",
+        "datasetId": "01816a13-3945-4419-a080-acb67a41cc17"
+      }
+    }
+  ],
+  "caveat": "Software regression on public curated datasets. Not a novice usability study or open-domain model accuracy evaluation. Cached originals remain local; no silent preprocessing."
+}

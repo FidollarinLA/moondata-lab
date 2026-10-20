@@ -4,7 +4,7 @@ const sample = points => points.length <= 1500 ? points : Array.from({ length: 1
 export function recommendPlot(p) {
   const numeric = p.columns.filter(c => c.numeric > 0 && c.name !== '_synthetic');
   const date = p.columns.find(c => c.type === 'date');
-  const category = p.columns.find(c => ['text', 'boolean'].includes(c.type) && c.name !== '_synthetic' && c.distinct > 0 && c.distinct <= 30);
+  const category = p.columns.filter(c => ['text', 'boolean'].includes(c.type) && c.name !== '_synthetic' && c.distinct > 0 && c.distinct <= 1000).sort((a, b) => a.distinct - b.distinct)[0];
   const x = date?.name ?? category?.name ?? numeric[0]?.name ?? p.columns[0]?.name;
   return { mode: 'plot', x, yColumns: numeric.filter(c => c.name !== x).slice(0, 2).map(c => c.name), kind: 'auto', reducer: 'mean' };
 }
@@ -61,5 +61,7 @@ export function makePlot(d, p, input) {
   warnings.push('每条序列分别排除缺失配对；统计使用全部有效值，图中每条序列最多1500点。');
   if (names.length > 1) warnings.push('多条序列共用纵轴，请确认数值尺度与单位适合直接比较。');
   const plotQuery = { datasetId: d.id, mode: 'plot', x: input.x, yColumns: ys, kind: requested, reducer };
-  return { query: plotQuery, chart: { kind, xMode, xLabel: input.x, yLabel: ys.length > 1 ? '数值（共用纵轴）' : names[0], points: series[0].points, series, totalPoints: series.reduce((s, a) => s + a.totalPoints, 0) }, table, statistics: { series: statistics }, excludedRows: d.rows.length - validX.length, warnings };
+  const operation = ({ mean: '平均值', sum: '总和', min: '最小值', max: '最大值', count: '行数' })[reducer];
+  const yLabel = ys.length > 1 ? '数值（共用纵轴）' : names[0];
+  return { query: plotQuery, chart: { kind, xMode, xLabel: input.x, yLabel: kind === 'bar' ? `${yLabel} · ${operation}` : yLabel, points: series[0].points, series, totalPoints: series.reduce((s, a) => s + a.totalPoints, 0) }, table, statistics: { series: statistics }, excludedRows: d.rows.length - validX.length, warnings };
 }

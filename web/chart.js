@@ -5,18 +5,22 @@ export function drawChart(svg, chart) {
   svg.replaceChildren(); if (!chart?.points.length) return;
   svg.append(node('title', {}, `${chart.xLabel} / ${chart.yLabel}`));
   const series = chart.series ?? [{ name: chart.yLabel, color: '#659b77', points: chart.points }];
-  const points = series.flatMap(s => s.points), W = 800, left = 78, right = 24, top = 48, bottom = 270, width = W - left - right;
+  const W = Math.max(320, svg.getBoundingClientRect().width || 800), left = 70, right = 20, width = W - left - right;
+  svg.setAttribute('viewBox', `0 0 ${W} 350`);
+  const columns = Math.max(1, Math.floor(width / 140));
+  const top = 48 + (chart.series ? Math.max(0, Math.ceil(series.length / columns) - 1) * 18 : 0), bottom = 270;
+  const points = series.flatMap(s => s.points);
   const ys = points.filter(p => p.y !== null).map(p => p.y); let ymin = Math.min(...ys, 0), ymax = Math.max(...ys, 0);
   if (ymin === ymax) ymax = ymin + 1;
   const sy = y => bottom - (y - ymin) / (ymax - ymin) * (bottom - top);
   for (let i = 0; i <= 4; i++) { const y = ymin * (1 - i / 4) + ymax * i / 4; svg.append(node('line', { x1: left, x2: W - right, y1: sy(y), y2: sy(y), stroke: '#e8eddf', 'stroke-dasharray': '4 5' }), node('text', { x: left - 12, y: sy(y) + 4, 'text-anchor': 'end' }, fmt(y))); }
   svg.append(node('text', { x: left, y: 15 }, chart.yLabel), node('text', { x: left + width / 2, y: 337, 'text-anchor': 'middle' }, chart.xLabel));
-  if (chart.series) series.forEach((s, i) => { const x = left + i * (width / Math.max(4, series.length)); svg.append(node('rect', { x, y: 27, width: 9, height: 4, fill: s.color }), node('text', { x: x + 13, y: 33 }, s.name.slice(0, 13))); });
+  if (chart.series) series.forEach((s, i) => { const x = left + i % columns * width / columns, y = 27 + Math.floor(i / columns) * 18; svg.append(node('rect', { x, y, width: 9, height: 4, fill: s.color }), node('text', { x: x + 13, y: y + 6 }, s.name.slice(0, 13))); });
   if (chart.kind === 'bar') {
     const bw = width / chart.points.length;
     series.forEach((s, j) => { for (let i = 0; i < s.points.length; i++) { const p = s.points[i], x = left + i * bw, zero = sy(0), y = sy(p.y ?? 0);
       if (p.y !== null) { const rect = node('rect', { x: x + bw * .1 + j * bw * .8 / series.length, y: Math.min(y, zero), width: bw * .8 / series.length * .94, height: Math.abs(zero - y), fill: s.color, rx: 2 }); rect.append(node('title', {}, `${s.name} · ${p.x}：${fmt(p.y)}`)); svg.append(rect); }
-      if (j === 0 && i % Math.ceil(s.points.length / 7) === 0) svg.append(node('text', { x: x + bw / 2, y: 292, 'text-anchor': 'middle' }, String(p.x).slice(0, 12)));
+      if (j === 0 && i % Math.ceil(s.points.length / (W < 500 ? 3 : 7)) === 0) svg.append(node('text', { x: x + bw / 2, y: 292, 'text-anchor': 'middle' }, String(p.x).slice(0, W < 500 ? 8 : 12)));
     } });
   } else {
     const continuous = chart.kind === 'scatter' || ['number', 'date'].includes(chart.xMode);
@@ -28,6 +32,6 @@ export function drawChart(svg, chart) {
       if (chart.kind === 'line') svg.append(node('polyline', { points: s.points.map((p, i) => `${sx(p, i)},${sy(p.y)}`).join(' '), fill: 'none', stroke: s.color, 'stroke-width': 2 }));
       s.points.forEach((p, i) => { const c = node('circle', { cx: sx(p, i), cy: sy(p.y), r: chart.kind === 'scatter' ? 3 : 2, fill: s.color, opacity: .65 }); c.append(node('title', {}, `${s.name} · 第 ${p.row} 行 · ${p.xLabel ?? p.x}：${fmt(p.y)}`)); svg.append(c); });
     }
-    for (let i = 0; i <= 4; i++) { const v = xmin * (1 - i / 4) + xmax * i / 4; const label = continuous ? chart.xMode === 'date' ? new Date(v).toISOString().slice(0, 10) : fmt(v) : chart.points[Math.round(i / 4 * (chart.points.length - 1))].x; svg.append(node('text', { x: left + i / 4 * width, y: 292, 'text-anchor': i === 0 ? 'start' : i === 4 ? 'end' : 'middle' }, String(label).slice(0, 16))); }
+    for (let i = 0; i <= 4; i += W < 500 ? 2 : 1) { const v = xmin * (1 - i / 4) + xmax * i / 4; const label = continuous ? chart.xMode === 'date' ? new Date(v).toISOString().slice(0, 10) : fmt(v) : chart.points[Math.round(i / 4 * (chart.points.length - 1))].x; svg.append(node('text', { x: left + i / 4 * width, y: 292, 'text-anchor': i === 0 ? 'start' : i === 4 ? 'end' : 'middle' }, String(label).slice(0, 16))); }
   }
 }
