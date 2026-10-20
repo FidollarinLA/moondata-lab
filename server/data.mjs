@@ -1,5 +1,18 @@
 import { AppError, text, parseCsv, generateRows, summarize, aggregate, distribution, correlation } from './core.mjs';
 import { makePlot, recommendPlot } from './plot.mjs';
+import { parseXlsx } from './xlsx.mjs';
+
+/** Reject buffers that are not valid UTF-8 (common when Excel saves GBK CSV). */
+export function decodeUtf8(buffer, label = '文件') {
+  const buf = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
+  if (buf.length > 10 * 1024 * 1024) throw new AppError('单份数据最大 10 MiB');
+  try {
+    const decoder = new TextDecoder('utf-8', { fatal: true });
+    return decoder.decode(buf);
+  } catch {
+    throw new AppError(`${label}不是有效 UTF-8。请另存为 UTF-8 CSV，或直接上传 .xlsx`);
+  }
+}
 
 const KINDS = ['sequence', 'integer', 'number', 'category', 'boolean', 'text', 'date', 'linear'];
 const DAY = 86400000;
@@ -82,18 +95,36 @@ export function toCsv(headers, rows, safe = false) {
   };
   return [headers, ...rows].map(row => row.map(cell).join(',')).join('\r\n') + '\r\n';
 }
-export function importDataset(store, { name, content, format = 'csv' }) {
+export function importDataset(store, { name, content, contentBase64, format = 'csv' }) {
   text(name, '文件名', 200);
-  if (typeof content !== 'string' || Buffer.byteLength(content) > 10 * 1024 * 1024) throw new AppError('单份数据最大 10 MiB');
-  if (format === 'csv') {
-    const parsed = parseCsv(content), marker = parsed.headers.indexOf('_synthetic');
-    const synthetic = marker >= 0 && parsed.rows.length > 0 && parsed.rows.every(r => r[marker] === 'true');
-    return store.add({ name, csv: content, synthetic, provenance: synthetic ? { imported: true, note: '来源文件声明为合成数据，生成过程未经验证' } : null });
+  if (format === 'xlsx') {
+    if (typeof contentBase64 !== 'string' || !contentBase64) throw new AppError('XLSX 需要以 Base64 上传');
+    let buffer;
+    try { buffer = Buffer.from(contentBase64, 'base64'); } catch { throw new AppError('XLSX Base64 无效'); }
+    if (!buffer.length || buffer.byteLength > 10 * 1024 * 1024) throw new AppError('单份数据最大 10 MiB');
+    const { sheetName, headers, rows } = parseXlsx(buffer);
+    const records = rows.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]])));
+    const csv = toCsv(headers, rows);
+    return store.add({
+      name, csv, sourceText: buffer, sourceFormat: 'xlsx', records, synthetic: false,
+      provenance: { imported: true, note: `从 Excel 工作表“${sheetName}”导入；仅第一个工作表，合并单元格与公式结果以文件存盘值为准`, sheetName },
+    });
   }
-  if (!['json', 'jsonl'].includes(format)) throw new AppError('支持 CSV、JSON、JSONL');
+  let textContent = content;
+  if (typeof contentBase64 === 'string' && contentBase64 && (textContent === undefined || textContent === null)) {
+    textContent = decodeUtf8(Buffer.from(contentBase64, 'base64'), 'CSV / JSON');
+  }
+  if (typeof textContent !== 'string' || Buffer.byteLength(textContent) > 10 * 1024 * 1024) throw new AppError('单份数据最大 10 MiB');
+  if (format === 'csv') {
+    if (textContent.includes('\uFFFD')) throw new AppError('CSV 含无法识别的字符。请另存为 UTF-8，或直接上传 .xlsx');
+    const parsed = parseCsv(textContent), marker = parsed.headers.indexOf('_synthetic');
+    const synthetic = marker >= 0 && parsed.rows.length > 0 && parsed.rows.every(r => r[marker] === 'true');
+    return store.add({ name, csv: textContent, synthetic, provenance: synthetic ? { imported: true, note: '来源文件声明为合成数据，生成过程未经验证' } : null });
+  }
+  if (!['json', 'jsonl'].includes(format)) throw new AppError('支持 CSV、JSON、JSONL、XLSX');
   let records, importedProvenance = null;
   try {
-    const clean = content.replace(/^\uFEFF/, '');
+    const clean = textContent.replace(/^\uFEFF/, '');
     const parsed = format === 'jsonl' ? clean.split(/\r?\n/).filter(s => s.trim()).map(s => JSON.parse(s)) : JSON.parse(clean);
     records = Array.isArray(parsed) ? parsed : parsed?.records;
     if (!Array.isArray(parsed) && parsed?.provenance) importedProvenance = { imported: true, note: '来源文件声称的生成信息，未经验证', claimed: parsed.provenance };
@@ -111,7 +142,7 @@ export function importDataset(store, { name, content, format = 'csv' }) {
   const rows = records.map(r => headers.map(h => Object.hasOwn(r, h) ? r[h] : null));
   const synthetic = records.every(r => r._synthetic === true || r._synthetic === 'true');
   if (synthetic && !importedProvenance) importedProvenance = { imported: true, note: '来源文件声明为合成数据，生成过程未经验证' };
-  return store.add({ name, csv: toCsv(headers, rows), sourceText: content, sourceFormat: format, records, synthetic, provenance: importedProvenance });
+  return store.add({ name, csv: toCsv(headers, rows), sourceText: textContent, sourceFormat: format, records, synthetic, provenance: importedProvenance });
 }
 export function profile(store, id) {
   const d = store.get(id);
@@ -173,8 +204,8 @@ export function explore(store, input) {
     result.excludedRows = d.rows.length - points.length;
     result.chart = { kind: mode, xLabel: input.x, yLabel: input.y, totalPoints: points.length, points: plotted(points) };
     result.table = result.chart.points;
-    if (mode === 'line') warnings.push('折线按原始行顺序连接，横轴等间距；不排序，也不假设时间严格递增。');
-    if (points.length > 1500) warnings.push('图和报告点表最多等距抽取 1500 点；统计使用全部有效配对，完整数据请另行下载。');
+    if (mode === 'line') warnings.push('兼容模式：折线按原始行顺序连接，横轴等间距，不是真实时间/数值间隔。日期或数值趋势请使用自由画图（mode=plot）。');
+    if (points.length > 1500) warnings.push(`图和报告点表最多等距抽取 1500 点（已截断 ${points.length - 1500}）；统计使用全部有效配对，完整数据请另行下载。`);
     if (mode === 'scatter' && result.statistics.pearson === null) warnings.push('常数列的 Pearson 相关系数不可用。');
   } else throw new AppError('未知分析模式');
   return result;

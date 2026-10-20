@@ -1,8 +1,8 @@
-# 架构与接口 v0.4
+# 架构与接口 v0.5
 
-白底交互导览位于 `/showcase`，仅开放HTML/CSS/JS明确白名单。合成台账通过已有导入与重算报告接口执行，不增加模型或任意文件权限。独立核心示例见 [CORE_USAGE](CORE_USAGE.md)。
+白底交互导览位于 `/showcase`，仅开放HTML/CSS/JS明确白名单。合成台账通过已有导入与重算报告接口执行，不增加模型或任意文件权限。独立核心示例见 [CORE_USAGE](CORE_USAGE.md)。产品定位为**本地表格探索预览版**。
 
-新增自由画图：Query mode=plot，`{datasetId,x,yColumns:[...],kind:auto/line/scatter/bar,reducer:mean/sum/min/max}`。最多8个Y，返回多个series、每列统计与缺失数、实际X轴类型。UI点击和模型都走同一受限计算链，默认推荐只依据字段类型。
+新增自由画图：Query mode=plot，`{datasetId,x,yColumns:[...],kind:auto/line/scatter/bar,reducer:mean/sum/min/max}`。最多8个Y，返回多个series、每列统计与缺失数、实际X轴类型。UI点击和模型都走同一受限计算链，默认推荐只依据字段类型。界面主路径折线/散点只用 plot；历史 line/scatter 模式保留 API 兼容。
 
 新增本地模型：setup脚本下载固定版本权重与运行器到忽略目录并校验摘要；start-with-model先构建，再启动只监听loopback的llama.cpp子进程，健康检查通过后启动应用。启动终端关闭时清理所创建的模型进程。
 
@@ -35,12 +35,14 @@ api 导出 `parse_csv,summarize_json,step_json,generate_json,distribution_json,a
 | /api/status | GET | 版本、模型配置模式、数据策略；无凭据 |
 | /api/templates | GET | 四种可编辑模板 |
 | /api/datasets | GET | 当前会话数据列表 |
-| /api/import | POST | `{name,content,format:csv/json/jsonl}` → dataset |
+| /api/import | POST | `{name,content\|contentBase64,format:csv/json/jsonl/xlsx}` → dataset |
 | /api/generate | POST | `{name,rows,seed,columns}` → 合成 dataset |
 | /api/profile | POST | `{datasetId}` → profile |
 | /api/explore | POST | Query → result |
 | /api/data-report | POST | Query → `{result,markdown,json}` |
 | /api/download | POST | `{datasetId,format}` → 完整数据文本 |
+| /api/workspace/export | POST | `{datasetId?,query?}` → `{workspace}` |
+| /api/workspace/import | POST | `{workspace,replace?}` → `{datasets,view}` |
 | /api/workbench-chat | POST | `{datasetId?,message,query?,history?}` → 回答、trace、artifacts |
 | /api/datasets/:id | DELETE | 删除当前会话指定数据 |
 
@@ -60,8 +62,8 @@ Query：datasetId 与 mode；group 模式附 group、reducer、可选 value；di
 
 ## 运行边界
 
-仅监听 loopback，校验 Host 和 Origin，静态白名单，CSP self，不提供公网部署或多人认证。最多 8 会话，空闲 2 小时可回收；每会话 12 数据集 / 100 万单元格 / 20 MiB 文件。请求最大 12 MiB，单文件 10 MiB。
+仅监听 loopback，校验 Host 和 Origin，静态白名单，CSP self，不提供公网部署或多人认证。最多 8 会话，空闲 2 小时可回收；每会话 12 数据集 / 100 万单元格 / 20 MiB 文件。请求最大 16 MiB（兼容 XLSX Base64），单文件 10 MiB。
 
-没有持久化。刷新只保留同 Cookie 会话数据，视图默认概览；重启清空。密钥不进入客户端、错误日志和导出。
+默认内存会话；可用工作区包文件恢复。刷新只保留同 Cookie 会话数据；重启清空除非用户导入工作区。密钥不进入客户端、错误日志和导出。
 
 原 v0.1 `/api/analyze,compare,chat,report,export-csv,demo` 和 CSV 旧接口只保留历史回归兼容，通用页面不调用。旧专业方法和验收另见 archive；不可用旧记录代表 v0.2 通过。

@@ -1,3 +1,7 @@
+# v0.5 预览版验收补充
+
+2026-10-21：在 v0.4 基线上交付 XLSX 首表导入、UTF-8 校验、工作区包、自由画图路径收敛与预览版话术。Node `test/*.test.mjs` **71/71** 通过（含新增 v05）；浏览器 Edge 旅程 **22** 项通过（`artifacts/browser-acceptance.json`），散点/日期折线改走自由画图。本机 `.local/moon-path.txt` 指向的 Moon 工具链不存在，未能重跑 MoonBit JS/WasmGC 套件；本轮未改 `.mbt` 源码，沿用既有 `web/engine.js`。未扩大真实模型准确率结论；GitHub 仍待认证。
+
 # v0.4 通用版验收补充
 
 2026-10-20：65项Node、MoonBit JS15项/WasmGC15项、21项常规浏览器旅程全部通过；40项Vega公开表格及USGS/NASA两份直接来源快照通过。另有真实cars数据选轴与390px检查、交互导览5项检查。证据与限制见 [人工审阅](HUMAN_REVIEW.md)。没有扩大此前真实模型测试结论，GitHub待认证，远端CI没有宣称已执行。

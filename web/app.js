@@ -89,8 +89,10 @@ function showResult(result) {
   $('statistics').textContent = result.statistics?.pearson !== undefined ? `Pearson r：${fmt(result.statistics.pearson)}　有效配对：${fmt(result.statistics.count)}` : result.statistics?.median !== undefined ? `中位数 ${fmt(result.statistics.median)}　Q1 ${fmt(result.statistics.q1)}　Q3 ${fmt(result.statistics.q3)}` : '';
   $('chart-caption').textContent = result.chart ? `${result.chart.totalPoints ? `显示 ${result.chart.points.length} / ${result.chart.totalPoints} 个有效点。` : ''}排除 ${result.excludedRows} 行。悬停查看点或柱的数值；报告保留计算依据。` : '';
   if (result.query.mode === 'plot') {
-    $('statistics').textContent = result.statistics.series.map(s => `${s.name}：${s.summary ? `N=${s.summary.count}，均值 ${fmt(s.summary.mean)}${s.summary.pearson !== undefined ? `，r=${fmt(s.summary.pearson)}` : ''}` : '行数汇总'}，排除 ${s.excludedRows} 行`).join('　 /　');
-    $('chart-caption').textContent = `显示 ${result.chart.series.reduce((n, s) => n + s.points.length, 0)} 个点 / 柱。横轴无效 ${result.excludedRows} 行；每条序列的缺失分别处理。结果表预览前200行，报告保留完整结果表。`;
+    $('statistics').textContent = result.statistics.series.map(s => `${s.name}：${s.skipped ? '无有效配对（已跳过）' : s.summary ? `N=${s.summary.count}，均值 ${fmt(s.summary.mean)}${s.summary.pearson !== undefined ? `，r=${fmt(s.summary.pearson)}` : ''}` : '行数汇总'}，排除 ${s.excludedRows} 行`).join('　 /　');
+    const shown = result.chart.series.reduce((n, s) => n + s.points.length, 0);
+    const trunc = result.chart.truncatedGroups ? `柱图截断 ${result.chart.truncatedGroups} 组。` : '';
+    $('chart-caption').textContent = `显示 ${shown} 个点 / 柱。${trunc}横轴无效 ${result.excludedRows} 行；每条序列的缺失分别处理。结果表预览前200行，报告保留完整结果表。`;
   }
   const headers = Object.keys(result.table[0] ?? {}).filter(h => result.query.mode !== 'plot' || (h !== 'order' && !(h === 'x' && result.table[0]?.xLabel !== undefined)));
   const labels = { series: '序列', x: '横轴', xLabel: '横轴原值', y: '纵轴数值', row: '原始行号', group: '分组', rows: '行数', valid: '有效数', value: '聚合值', field: '字段', type: '类型', missing: '缺失', numeric: '数值个数', distinct: '不同值', mean: '平均值', lower: '区间下界', upper: '区间上界', count: '频数' };
@@ -160,14 +162,58 @@ $('generate-button').addEventListener('click', () => attempt(async () => {
   try { const { dataset } = await json('generate', { ...state.plan, name: $('plan-name').value, rows: Number($('rows').value), seed: Number($('seed').value) }); state.datasets.push(dataset); switchTab('analyze'); await selectDataset(dataset.id); notice(`已生成 ${dataset.rowCount} 行合成数据，可继续分析或下载。`); }
   finally { $('generate-button').disabled = false; }
 }));
+function bytesToBase64(bytes) {
+  let binary = ''; const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  return btoa(binary);
+}
+async function importFile(file) {
+  if (file.size > 10 * 1024 * 1024) throw new Error('文件不能超过 10 MiB');
+  if (!/\.(csv|json|jsonl|ndjson|xlsx)$/i.test(file.name)) throw new Error('当前支持 CSV / JSON / JSONL / XLSX。PDF、图片等需要先提取为表格。');
+  const buffer = new Uint8Array(await file.arrayBuffer());
+  if (/\.xlsx$/i.test(file.name)) {
+    const { dataset } = await json('import', { name: file.name, format: 'xlsx', contentBase64: bytesToBase64(buffer) });
+    return dataset;
+  }
+  let content;
+  try { content = new TextDecoder('utf-8', { fatal: true }).decode(buffer); }
+  catch { throw new Error('文件不是有效 UTF-8。请另存为 UTF-8 CSV，或直接上传 .xlsx'); }
+  const format = /\.(jsonl|ndjson)$/i.test(file.name) ? 'jsonl' : /\.json$/i.test(file.name) ? 'json' : 'csv';
+  const { dataset } = await json('import', { name: file.name, content, format });
+  return dataset;
+}
 $('upload').addEventListener('change', () => attempt(async () => {
   const file = $('upload').files[0]; if (!file) return;
   try {
-    if (file.size > 10 * 1024 * 1024) throw new Error('文件不能超过 10 MiB');
-    if (!/\.(csv|json|jsonl|ndjson)$/i.test(file.name)) throw new Error('当前支持 CSV / JSON / JSONL。Excel 请另存为 CSV；PDF、图片等需要先提取为表格。');
-    const format = /\.(jsonl|ndjson)$/i.test(file.name) ? 'jsonl' : /\.json$/i.test(file.name) ? 'json' : 'csv';
-    const { dataset } = await json('import', { name: file.name, content: await file.text(), format }); state.datasets.push(dataset); switchTab('analyze'); await selectDataset(dataset.id); notice(`已导入 ${file.name}`);
+    const dataset = await importFile(file);
+    state.datasets.push(dataset); switchTab('analyze'); await selectDataset(dataset.id); notice(`已导入 ${file.name}`);
   } finally { $('upload').value = ''; }
+}));
+async function exportWorkspacePack() {
+  if (!state.datasets.length) throw new Error('当前没有可导出的数据集');
+  const { workspace } = await json('workspace/export', { datasetId: state.id || undefined, query: state.result?.query ?? currentQuery() });
+  save(JSON.stringify(workspace, null, 2), `moondata-workspace-${new Date().toISOString().slice(0, 10)}.json`, 'application/json;charset=utf-8');
+  notice('已导出工作区包。重启服务后可用“导入工作区”恢复。');
+}
+$('workspace-export').addEventListener('click', () => attempt(exportWorkspacePack));
+$('workspace-export-main').addEventListener('click', () => attempt(exportWorkspacePack));
+$('workspace-upload').addEventListener('change', () => attempt(async () => {
+  const file = $('workspace-upload').files[0]; if (!file) return;
+  try {
+    let workspace;
+    try { workspace = JSON.parse(await file.text()); } catch { throw new Error('工作区文件不是有效 JSON'); }
+    const result = await json('workspace/import', { workspace, replace: true });
+    state.datasets = result.datasets; state.history = [];
+    switchTab('analyze');
+    const focus = result.view?.datasetId ?? state.datasets[0]?.id ?? '';
+    await selectDataset(focus);
+    if (result.view?.query?.mode === 'plot') { applyPlotQuery(result.view.query); await plot(); }
+    else if (result.view?.query?.mode) {
+      for (const [k, v] of Object.entries(result.view.query)) if ($(k) && ['overview', 'group', 'distribution'].includes(result.view.query.mode)) $(k).value = v;
+      queryFields(); await analyze();
+    }
+    notice(`已导入工作区（${result.datasets.length} 份数据）。`);
+  } finally { $('workspace-upload').value = ''; }
 }));
 $('dataset-select').addEventListener('change', () => attempt(() => selectDataset($('dataset-select').value)));
 $('delete-button').addEventListener('click', () => attempt(async () => { const id = state.id; const r = await fetch(`/api/datasets/${id}`, { method: 'DELETE', headers: { 'X-Lab-Client': '1' } }); if (!r.ok) throw new Error((await r.json()).error); state.datasets = state.datasets.filter(d => d.id !== id); await selectDataset(state.datasets[0]?.id ?? ''); }));

@@ -28,12 +28,23 @@ test('full HTTP import analyze chat report and raw CSV export', async t => {
   const report = await (await request('/api/report', { selections: [s] })).json(); assert.equal(report.json.results[0].metrics.iae, 10); assert.match(report.markdown, /motor\.csv/);
   const csv = await (await request('/api/export-csv', s)).text(); assert.match(csv, /time_s,"x"\n0,0/);
 });
-test('demo returns two synthetic datasets and comparison is reproducible', async t => {
+test('demo returns two generic synthetic datasets for the workbench', async t => {
   const { request } = await setup(t, { env: {} }); const { datasets } = await (await request('/api/demo', {})).json();
   assert.equal(datasets.length, 2); assert.ok(datasets.every(d => d.synthetic));
-  const selections = datasets.map(d => ({ ...selection(d.id), timeColumn: 'time_s', valueColumn: 'speed_rpm', target: 1000, stepTime: .5 }));
-  const response = await request('/api/compare', { selections }); assert.equal(response.status, 200);
-  const { result } = await response.json(); assert.ok(result.results[0].metrics.overshoot_percent > result.results[1].metrics.overshoot_percent);
+  assert.deepEqual(datasets.map(d => d.name), ['sales-synthetic.csv', 'survey-synthetic.csv']);
+  const profiled = await (await request('/api/profile', { datasetId: datasets[0].id })).json();
+  assert.ok(profiled.profile.columns.some(c => c.name === '地区' || c.name === '销售金额'));
+});
+test('historical motor fixtures still compare through legacy analyze APIs', async t => {
+  const { request } = await setup(t, { env: {} });
+  const { readFile } = await import('node:fs/promises');
+  const a = await readFile(new URL('../examples/motor-a.csv', import.meta.url), 'utf8');
+  const b = await readFile(new URL('../examples/motor-b.csv', import.meta.url), 'utf8');
+  const da = await (await request('/api/datasets', { name: 'motor-a.csv', csv: a })).json();
+  const db = await (await request('/api/datasets', { name: 'motor-b.csv', csv: b })).json();
+  const selections = [da.dataset.id, db.dataset.id].map(id => ({ ...selection(id), timeColumn: 'time_s', valueColumn: 'speed_rpm', target: 1000, stepTime: .5 }));
+  const { result } = await (await request('/api/compare', { selections })).json();
+  assert.ok(result.results[0].metrics.overshoot_percent > result.results[1].metrics.overshoot_percent);
 });
 test('sessions cannot access each other datasets', async t => {
   const { base, request } = await setup(t, { env: {} });

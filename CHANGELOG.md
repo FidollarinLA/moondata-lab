@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0
+
+- Locked product positioning as a local table-exploration preview edition.
+- Added XLSX import (first worksheet only), UTF-8 validation for text uploads, and workspace export/import packs.
+- Converged charting onto free-plot; advanced analysis keeps overview/group/distribution only.
+- Fixed multi-series skip for empty Y columns, Y-axis scaling for non-bar charts, generic demo fixtures, and clearer truncation warnings.
+- Removed motor field heuristics from dataset descriptions; historical motor APIs remain for regression.
+
+## 0.4.0
+
+- Product review pass: public table regression, cars journey, showcase guide, source snapshots, core-only usage example.
+- Readable mobile charts, clearer upload/generate entry points, high-cardinality plot recommendation fix.
+
 ## 0.3.0
 
 - Added explicit other/custom template and free X/multiple-Y chart builder.

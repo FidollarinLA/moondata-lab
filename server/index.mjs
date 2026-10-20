@@ -10,6 +10,7 @@ import { modelConfig, modelStatus, runAgent } from './agent.mjs';
 import { makeReport } from './report.mjs';
 import { templates, generateDataset, importDataset, profile, explore, dataReport, downloadDataset } from './data.mjs';
 import { workbenchAgent } from './workbench-agent.mjs';
+import { exportWorkspace, importWorkspace } from './workspace.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const staticFiles = new Map([
@@ -36,7 +37,7 @@ async function body(req) {
   const chunks = []; let bytes = 0;
   for await (const chunk of req) {
     bytes += chunk.length;
-    if (bytes > 12 * 1024 * 1024) throw new AppError('上传请求超过 12 MiB', 413);
+    if (bytes > 16 * 1024 * 1024) throw new AppError('上传请求超过 16 MiB', 413);
     chunks.push(chunk);
   }
   try {
@@ -63,7 +64,11 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
         if (req.headers.origin && req.headers.origin !== `http://${req.headers.host}`) throw new AppError('拒绝跨站请求', 403);
       }
       if (url.pathname === '/api/status' && req.method === 'GET') {
-        send(res, 200, { name: 'MoonData Lab', version: '0.4.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本地小模型仅接收问题、字段信息和当前选择，不发送原始数据行。远程模型模式会发送问题、字段方案和工具摘要，分组结果可能包含类别名称。' }); return;
+        send(res, 200, {
+          name: 'MoonData Lab', version: '0.5.0', engine: 'MoonBit', model: modelStatus(env),
+          persistence: 'memory+workspace-pack', edition: 'local-table-preview',
+          dataPolicy: '本地表格探索预览版：本地小模型仅接收问题、字段信息和当前选择，不发送原始数据行。远程模型模式会发送问题、字段方案和工具摘要，分组结果可能包含类别名称。不承诺任意格式或任意自然语言一次做对。',
+        }); return;
       }
       const now = Date.now();
       for (const [key, session] of sessions) if (now - session.lastUsed > 2 * 60 * 60 * 1000 && !session.busy) sessions.delete(key);
@@ -83,6 +88,14 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       if (url.pathname === '/api/explore' && req.method === 'POST') { send(res, 200, { result: explore(store, await body(req)) }); return; }
       if (url.pathname === '/api/data-report' && req.method === 'POST') { send(res, 200, dataReport(store, await body(req))); return; }
       if (url.pathname === '/api/download' && req.method === 'POST') { const input = await body(req); const file = downloadDataset(store, input.datasetId, input.format); send(res, 200, input.format === 'json' ? JSON.parse(file.content) : file.content, file.type); return; }
+      if (url.pathname === '/api/workspace/export' && req.method === 'POST') {
+        const input = await body(req);
+        send(res, 200, { workspace: exportWorkspace(store, input) }); return;
+      }
+      if (url.pathname === '/api/workspace/import' && req.method === 'POST') {
+        if (session.busy) throw new AppError('请先停止当前分析，再导入工作区', 409);
+        send(res, 201, importWorkspace(store, await body(req))); return;
+      }
       if (url.pathname === '/api/workbench-chat' && req.method === 'POST') {
         if (session.busy) throw new AppError('助手正在运行，请先停止或等待', 409);
         const input = await body(req); session.busy = true;
@@ -101,9 +114,9 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       }
       if (url.pathname === '/api/demo' && req.method === 'POST') {
         await body(req);
-        // Read and preflight both files before adding either; leave existing user data intact.
+        // Generic synthetic demos for the workbench; motor fixtures remain for historical regression only.
         if (store.datasets.size > 10) throw new AppError('请先删除旧数据，为两份示例腾出位置', 413);
-        const names = ['motor-a.csv', 'motor-b.csv'];
+        const names = ['sales-synthetic.csv', 'survey-synthetic.csv'];
         const files = await Promise.all(names.map(name => readFile(resolve(root, 'examples', name), 'utf8')));
         const added = [];
         try { for (let i = 0; i < names.length; i++) added.push(store.add({ name: names[i], csv: files[i], synthetic: true })); }

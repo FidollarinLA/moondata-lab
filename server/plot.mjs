@@ -13,7 +13,11 @@ export function makePlot(d, p, input) {
   if (xIndex < 0) throw new AppError('请选择有效的横轴字段');
   const ys = input.yColumns ?? [];
   if (!Array.isArray(ys) || ys.length > 8 || new Set(ys).size !== ys.length || ys.some(y => typeof y !== 'string' || !d.headers.includes(y))) throw new AppError('纵轴应为最多 8 个不重复的字段');
-  for (const y of ys) if (!p.columns[d.headers.indexOf(y)].numeric) throw new AppError(`纵轴“${y}”没有有效数值`);
+  for (const y of ys) {
+    const col = p.columns[d.headers.indexOf(y)];
+    if (!col.numeric && col.invalid > 0) throw new AppError(`纵轴“${y}”没有有效数值`);
+  }
+  if (ys.length && !ys.some(y => p.columns[d.headers.indexOf(y)].numeric)) throw new AppError('所选纵轴均无有效数值');
   const requested = input.kind ?? 'auto';
   if (!['auto', 'line', 'scatter', 'bar'].includes(requested)) throw new AppError('支持自动推荐、折线、散点和柱状图');
   const type = p.columns[xIndex].type;
@@ -32,6 +36,12 @@ export function makePlot(d, p, input) {
   for (let s = 0; s < names.length; s++) {
     const name = names[s], yIndex = d.headers.indexOf(name);
     let points, total, stat, excludedRows;
+    if (ys.length && yIndex >= 0 && !p.columns[yIndex].numeric) {
+      warnings.push(`“${name}”没有有效数值，已跳过该序列。`);
+      series.push({ name, color: colors[s], points: [], totalPoints: 0, excludedRows: d.rows.length, skipped: true });
+      statistics.push({ name, excludedRows: d.rows.length, summary: null, skipped: true });
+      continue;
+    }
     if (kind === 'bar') {
       const all = aggregate(validX.map(i => d.rows[i][xIndex]), validX.map(i => ys.length ? d.numericColumns[yIndex][i] : null), reducer);
       if (!sharedGroups) sharedGroups = all.slice(0, 50).map(r => r.group);
@@ -49,13 +59,21 @@ export function makePlot(d, p, input) {
         if (xMode === 'date' && !Number.isFinite(x)) continue;
         full.push({ x, xLabel: rawX, y, row: i + 1, order: i });
       }
-      if (!full.length) throw new AppError(`“${name}”与横轴没有有效配对`);
+      if (!full.length) {
+        warnings.push(`“${name}”与横轴没有有效配对，已跳过该序列。`);
+        series.push({ name, color: colors[s], points: [], totalPoints: 0, excludedRows: d.rows.length, skipped: true });
+        statistics.push({ name, excludedRows: d.rows.length, summary: null, skipped: true });
+        continue;
+      }
       total = full.length; points = sample(full); excludedRows = d.rows.length - total;
       stat = { ...summarize(full.map(p => p.y)), ...(kind === 'scatter' && full.length >= 2 ? { pearson: correlation(full.map(p => p.x), full.map(p => p.y)).pearson } : {}) };
       for (const point of points) table.push({ series: name, ...point });
+      series.push({ name, color: colors[s], points, totalPoints: total, excludedRows }); statistics.push({ name, excludedRows, summary: stat });
+      continue;
     }
     series.push({ name, color: colors[s], points, totalPoints: total, excludedRows }); statistics.push({ name, excludedRows, summary: stat });
   }
+  if (!series.some(s => s.points.length)) throw new AppError(ys.length ? '所选纵轴与横轴均无有效配对' : '横轴没有可汇总的有效值');
   if (kind === 'bar') warnings.push('同一横轴值分组；默认使用平均值，可切换总和、最小或最大。图按首次出现顺序显示前50组，表中保留全部组。');
   if (kind === 'line') warnings.push(xMode === 'category' ? '类别横轴按原始行顺序等间距连接，排除缺失对。' : '横轴使用实际数值或 UTC 日期间隔，按原始行顺序连接；不自动排序，排除缺失对。');
   warnings.push('每条序列分别排除缺失配对；统计使用全部有效值，图中每条序列最多1500点。');
@@ -63,5 +81,8 @@ export function makePlot(d, p, input) {
   const plotQuery = { datasetId: d.id, mode: 'plot', x: input.x, yColumns: ys, kind: requested, reducer };
   const operation = ({ mean: '平均值', sum: '总和', min: '最小值', max: '最大值', count: '行数' })[reducer];
   const yLabel = ys.length > 1 ? '数值（共用纵轴）' : names[0];
-  return { query: plotQuery, chart: { kind, xMode, xLabel: input.x, yLabel: kind === 'bar' ? `${yLabel} · ${operation}` : yLabel, points: series[0].points, series, totalPoints: series.reduce((s, a) => s + a.totalPoints, 0) }, table, statistics: { series: statistics }, excludedRows: d.rows.length - validX.length, warnings };
+  const primary = series.find(s => s.points.length) ?? series[0];
+  const truncatedGroups = kind === 'bar' && series[0]?.totalPoints > 50 ? series[0].totalPoints - 50 : 0;
+  if (truncatedGroups) warnings.push(`柱状图仅显示前 ${50} 个分组（按首次出现），另有 ${truncatedGroups} 组仅保留在结果表中。`);
+  return { query: plotQuery, chart: { kind, xMode, xLabel: input.x, yLabel: kind === 'bar' ? `${yLabel} · ${operation}` : yLabel, points: primary.points, series, totalPoints: series.reduce((s, a) => s + a.totalPoints, 0), truncatedGroups }, table, statistics: { series: statistics }, excludedRows: d.rows.length - validX.length, warnings };
 }

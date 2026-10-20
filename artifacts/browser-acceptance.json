@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-20T06:36:32.381Z",
+  "checkedAt": "2026-10-20T18:09:11.454Z",
   "passed": true,
   "checks": [
     "general workbench exposes other/custom option and four domain templates",
@@ -9,8 +9,9 @@
     "non-time ledger imports and group sums agree with independent expected values",
     "changed queries disable stale reports and recalculate",
     "histogram frequencies and interpolated median are correct",
-    "scatter uses complete numeric pairs and exact correlation",
-    "date line preserves source row order without motor assumptions",
+    "advanced analysis no longer duplicates free-plot scatter/line modes",
+    "free-plot scatter uses complete numeric pairs and exact correlation",
+    "free-plot date line uses actual UTC spacing and preserves source row order",
     "free plot builder renders selected X with multiple Y series and actual numeric spacing",
     "chart style selection invalidates exports and redraws both scatter series",
     "one-click field recommendation creates chart without claiming model inference",
