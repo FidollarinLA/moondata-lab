@@ -11,7 +11,7 @@ const pairs = rows.filter(r => typeof r.Horsepower === 'number' && typeof r.Mile
 const expectedMean = pairs.reduce((sum, r) => sum + r.Miles_per_Gallon, 0) / pairs.length;
 const server = createServer({ env: {} });
 const base = await listenForBrowser(server);
-const browser = await chromium.launch({ headless: true, channel: process.env.BROWSER_CHANNEL || 'msedge' });
+const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_CHANNEL ? { channel: process.env.BROWSER_CHANNEL } : {}) });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true });
 const errors = []; page.on('pageerror', e => errors.push(e.message));
 const result = { checkedAt: new Date().toISOString(), validation: 'Automated public-data journey; not a novice usability study.', passed: false };

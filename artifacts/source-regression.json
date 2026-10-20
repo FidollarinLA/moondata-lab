@@ -1,0 +1,81 @@
+{
+  "checkedAt": "2026-10-20T06:33:51.552Z",
+  "passed": true,
+  "results": [
+    {
+      "name": "usgs-earthquakes-2025-01-m4",
+      "format": "csv",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime=2025-01-01&endtime=2025-02-01&minmagnitude=4&orderby=time-asc",
+      "documentation": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php",
+      "attribution": "USGS ANSS earthquake catalog; source corrections may change later responses.",
+      "x": "depth",
+      "y": "mag",
+      "passed": true,
+      "license": "Public provider download; attribution preserved, no blanket redistribution license inferred.",
+      "transformations": "None. Exact downloaded CSV or flat JSON imported.",
+      "retrievedAt": "2026-10-20T06:33:49.431Z",
+      "sha256": "9474fd188a35c66eb3f60412474ff1a6ab2d95675eba4dde261597a70c17bf5b",
+      "rows": 1413,
+      "columns": 22,
+      "query": {
+        "datasetId": "35c8a0f9-d315-4575-b4f9-6e2641a5e239",
+        "mode": "plot",
+        "x": "depth",
+        "yColumns": [
+          "mag"
+        ],
+        "kind": "scatter"
+      },
+      "completePairs": 1413,
+      "excludedRows": 0,
+      "independentMean": 4.497699929228597,
+      "reportedMean": 4.497699929228592,
+      "checks": [
+        "unaltered-import",
+        "recommended-plot",
+        "explicit-scatter",
+        "recomputed-report",
+        "pair-count",
+        "independent-mean"
+      ]
+    },
+    {
+      "name": "nasa-exoplanets-first-200",
+      "format": "json",
+      "url": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select%20top%20200%20pl_name%2Chostname%2Cdiscoverymethod%2Cdisc_year%2Cpl_orbper%2Cpl_rade%20from%20pscomppars%20order%20by%20pl_name&format=json",
+      "documentation": "https://exoplanetarchive.ipac.caltech.edu/docs/TAP/usingTAP.html",
+      "attribution": "NASA Exoplanet Archive, operated by Caltech/IPAC; original scientific measurements have their own references. A bounded query, not the entire archive.",
+      "x": "pl_orbper",
+      "y": "pl_rade",
+      "passed": true,
+      "license": "Public provider download; attribution preserved, no blanket redistribution license inferred.",
+      "transformations": "None. Exact downloaded CSV or flat JSON imported.",
+      "retrievedAt": "2026-10-20T06:33:51.543Z",
+      "sha256": "3cb96f9bdc49a41dceb2500f6cc4d7cf91a0117b384ac30f39895e0748dee26e",
+      "rows": 200,
+      "columns": 6,
+      "query": {
+        "datasetId": "3959398c-7908-433d-b632-5f440cb63f2d",
+        "mode": "plot",
+        "x": "pl_orbper",
+        "yColumns": [
+          "pl_rade"
+        ],
+        "kind": "scatter"
+      },
+      "completePairs": 199,
+      "excludedRows": 1,
+      "independentMean": 7.043063595829145,
+      "reportedMean": 7.0430635958291425,
+      "checks": [
+        "unaltered-import",
+        "recommended-plot",
+        "explicit-scatter",
+        "recomputed-report",
+        "pair-count",
+        "independent-mean"
+      ]
+    }
+  ],
+  "caveat": "Two direct-provider snapshots supplement the 40 curated tables. This is not model evaluation, a license audit or complete coverage of raw scientific data. Math cross-check uses imported numeric pairs; parser correctness is separately tested."
+}

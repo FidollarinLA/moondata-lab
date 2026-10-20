@@ -28,6 +28,8 @@ jobs:
           pnpm exec playwright install --with-deps chromium
       - name: Browser acceptance
         run: node scripts/browser-test.mjs
+      - name: Interactive showcase acceptance
+        run: node scripts/showcase-review.mjs
       - name: Upload acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4

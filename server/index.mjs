@@ -18,6 +18,10 @@ const staticFiles = new Map([
   ['/chart.js', ['web/chart.js', 'text/javascript; charset=utf-8']],
   ['/style.css', ['web/style.css', 'text/css; charset=utf-8']],
   ['/favicon.svg', ['web/favicon.svg', 'image/svg+xml']],
+  ['/showcase', ['docs/showcase/index.html', 'text/html; charset=utf-8']],
+  ['/showcase/', ['docs/showcase/index.html', 'text/html; charset=utf-8']],
+  ['/showcase/style.css', ['docs/showcase/style.css', 'text/css; charset=utf-8']],
+  ['/showcase/scene.js', ['docs/showcase/scene.js', 'text/javascript; charset=utf-8']],
 ]);
 const securityHeaders = {
   'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer',
@@ -59,7 +63,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
         if (req.headers.origin && req.headers.origin !== `http://${req.headers.host}`) throw new AppError('拒绝跨站请求', 403);
       }
       if (url.pathname === '/api/status' && req.method === 'GET') {
-        send(res, 200, { name: 'MoonData Lab', version: '0.3.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本地小模型仅接收问题、字段信息和当前选择，不发送原始数据行。远程模型模式会发送问题、字段方案和工具摘要，分组结果可能包含类别名称。' }); return;
+        send(res, 200, { name: 'MoonData Lab', version: '0.4.0', engine: 'MoonBit', model: modelStatus(env), persistence: 'memory', dataPolicy: '本地小模型仅接收问题、字段信息和当前选择，不发送原始数据行。远程模型模式会发送问题、字段方案和工具摘要，分组结果可能包含类别名称。' }); return;
       }
       const now = Date.now();
       for (const [key, session] of sessions) if (now - session.lastUsed > 2 * 60 * 60 * 1000 && !session.busy) sessions.delete(key);

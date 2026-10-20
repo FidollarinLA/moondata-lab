@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-10-20T06:36:30.834Z",
+  "passed": true,
+  "checks": [
+    "Live MoonBit sum and complete-sample count match independent expectations",
+    "Mean recomputes and changed query invalidates prior export",
+    "All three views, step controls and pause work",
+    "390px layout has no overflow and reduced-motion disables illustration animation",
+    "Compute failure clears stale chart and never fabricates success"
+  ],
+  "errors": [],
+  "modelCalled": false
+}

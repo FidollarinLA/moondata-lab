@@ -5,7 +5,7 @@
 <nav aria-label="工作区"><button id="tab-generate" class="nav active" aria-pressed="true">✧　生成新数据</button><button id="tab-analyze" class="nav" aria-pressed="false">▥　分析已有数据</button></nav>
 <div class="side-heading">我的数据集 <span id="dataset-count">0 / 12</span></div><div id="dataset-list" class="dataset-list"></div><label class="upload-side" for="upload">＋ 上传 CSV / JSON / JSONL</label>
 <div class="side-bottom"><span class="dot"></span> MoonBit 计算核心<p>数据仅保存在当前本机会话。<br>重启服务或会话过期后需要重新导入。</p><span>Built with MoonBit</span></div></aside>
-<main id="main"><header class="topbar"><span>工作空间 <b>/</b> 通用数据实验室</span><span>v0.3 · 本地运行</span></header><div class="workspace">
+<main id="main"><header class="topbar"><span>工作空间 <b>/</b> 通用数据实验室</span><span><a href="/showcase">操作导览 ↗</a>　v0.4 · 本地运行</span></header><div class="workspace">
 <div class="heading"><div><p class="eyebrow">MAKE DATA. FIND ANSWERS.</p><h1>让数据，从这里开始。</h1><p class="subtitle">生成可复现的数据集，也让已有数据变成图表与结论。</p></div><label class="button secondary" for="upload">↥ 导入数据</label></div><input id="upload" type="file" accept=".csv,.json,.jsonl,.ndjson" hidden><div id="notice" role="status" hidden></div>
 <section class="start-choices" aria-label="选择开始方式"><button id="start-upload" class="start-choice"><span>↥</span><strong>我已有数据</strong><small>上传 CSV / JSON / JSONL，选坐标开始画图</small></button><button id="start-generate" class="start-choice"><span>✧</span><strong>我想生成数据</strong><small>从模板或自定义字段开始，生成可复现的数据集</small></button></section>
 <div class="layout"><div class="work-column">

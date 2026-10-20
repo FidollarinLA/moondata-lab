@@ -4,15 +4,19 @@
 
 本机运行的中文通用数据工作台。销售台账、库存、问卷、运营、传感器和实验记录都可以使用，不要求电机参数、时间列或行业专属格式。
 
+只想使用 MoonBit 解析与计算？见 [核心复用示例](docs/CORE_USAGE.md)，不需要启动网页或模型。
+
 ![从上传到可核对结果的流程](docs/assets/workflow.svg)
 
-本次产品审阅：40 份不同命名的公开表格完成确定性回归；另用真实 cars 数据走通上传、选轴、手机显示与报告核对。数据集中在 Vega 整理目录，不代表任意数据或模型准确率。当前定位是可试用的本地表格探索工具，详见 [人工审阅与已知限制](docs/HUMAN_REVIEW.md)。
+v0.4 产品审阅：40 份 Vega 整理的公开表格完成确定性回归，另补 USGS 地震与 NASA 行星两份直接来源快照；真实 cars 数据走通上传、选轴、手机显示与报告核对。这些结果不代表任意数据或模型准确率。当前定位是可试用的本地表格探索工具，详见 [人工审阅与已知限制](docs/HUMAN_REVIEW.md)。
 
 ![浏览器、编排、MoonBit与可选模型架构](docs/assets/architecture.svg)
 
 ![原始文本、字段、计算与导出的数据流](docs/assets/data-flow.svg)
 
-以上为白底静态 SVG；GitHub README 不执行 JavaScript。独立交互动画展示仍在制作中。
+以上为白底静态 SVG；GitHub README 不执行 JavaScript。启动本机应用后打开 [交互导览](http://127.0.0.1:4321/showcase)：白底插画、轻动画、操作/架构/数据流切换，以及真正调用 MoonBit 的六行台账演示。端口自定义时请使用对应地址的 `/showcase`。
+
+![白底交互导览预览](artifacts/showcase-desktop.png)
 
 ## v0.3：自定义与对话画图
 

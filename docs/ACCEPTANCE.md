@@ -1,4 +1,8 @@
-# v0.3 通用版验收
+# v0.4 通用版验收补充
+
+2026-10-20：65项Node、MoonBit JS15项/WasmGC15项、21项常规浏览器旅程全部通过；40项Vega公开表格及USGS/NASA两份直接来源快照通过。另有真实cars数据选轴与390px检查、交互导览5项检查。证据与限制见 [人工审阅](HUMAN_REVIEW.md)。没有扩大此前真实模型测试结论，GitHub待认证，远端CI没有宣称已执行。
+
+## v0.3 历史验收
 
 日期：2026-10-18，Windows x64 / Node 24.19.0 / MoonBit 0.10.15 / Playwright 1.62.1 / Microsoft Edge。此记录对应通用数据生成与分析；旧电机记录见 archive/MOTOR_V0_ACCEPTANCE.md。
 

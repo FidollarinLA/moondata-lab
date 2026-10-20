@@ -1,4 +1,6 @@
-# 架构与接口 v0.3
+# 架构与接口 v0.4
+
+白底交互导览位于 `/showcase`，仅开放HTML/CSS/JS明确白名单。合成台账通过已有导入与重算报告接口执行，不增加模型或任意文件权限。独立核心示例见 [CORE_USAGE](CORE_USAGE.md)。
 
 新增自由画图：Query mode=plot，`{datasetId,x,yColumns:[...],kind:auto/line/scatter/bar,reducer:mean/sum/min/max}`。最多8个Y，返回多个series、每列统计与缺失数、实际X轴类型。UI点击和模型都走同一受限计算链，默认推荐只依据字段类型。
 
