@@ -17,9 +17,9 @@ pub fn CsvError::to_string(Self) -> String
 // Types and methods
 pub(all) struct Column {
   name : String
-  numeric : Int
-  missing : Int
-  invalid : Int
+  numeric : Int32
+  missing : Int32
+  invalid : Int32
 } derive(ToJson)
 pub fn Column::to_json(Self) -> Json
 

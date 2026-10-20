@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-10-20T21:41:41.282Z",
+  "passed": true,
+  "node": "v24.19.0",
+  "platform": "win32/x64",
+  "toolchain": "moon 0.1.20261016 (1af328f 2026-10-16) ~\\Documents\\ChatGPT\\moonbit\\moondata-lab\\.local\\moon-official-20261021\\bin\\moon.exe\nmoonc v0.10.16+b1a0e846e (2026-10-16) ~\\Documents\\ChatGPT\\moonbit\\moondata-lab\\.local\\moon-path-compat\\moonc.exe\nmoonrun 0.1.20261016 (1af328f 2026-10-16) ~\\Documents\\ChatGPT\\moonbit\\moondata-lab\\.local\\moon-official-20261021\\bin\\moonrun.exe\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "checks": [
+    {
+      "label": "MoonBit interfaces",
+      "passed": true,
+      "elapsedMs": 1326,
+      "output": "Finished. moon: ran 10 tasks, now up to date"
+    },
+    {
+      "label": "MoonBit formatting",
+      "passed": true,
+      "elapsedMs": 263,
+      "output": "Finished. moon: ran 15 tasks, now up to date"
+    },
+    {
+      "label": "MoonBit JS tests",
+      "passed": true,
+      "elapsedMs": 979,
+      "output": "Total tests: 15, passed: 15, failed: 0."
+    },
+    {
+      "label": "MoonBit Wasm GC tests",
+      "passed": true,
+      "elapsedMs": 912,
+      "output": "Total tests: 15, passed: 15, failed: 0."
+    },
+    {
+      "label": "Build browser/server core",
+      "passed": true,
+      "elapsedMs": 571,
+      "output": "MoonData Lab: MoonBit core compiled to web/engine.js\nFinished. moon: ran 6 tasks, now up to date"
+    },
+    {
+      "label": "Server and Agent tests",
+      "passed": true,
+      "elapsedMs": 429,
+      "output": "✔ model configuration is opt-in and restricts insecure remote endpoints (0.835ms)\n✔ builtin analysis is explicitly labeled and performs no network call (7.1986ms)\n✔ builtin mode does not pretend to provide training or FFT (0.538ms)\n✔ real protocol loop executes tools and sends compact evidence without raw CSV or key leakage (15.5525ms)\n✔ tool errors are returned to model and never grant arbitrary execution (1.0778ms)\n✔ model answer without computation is marked unverified (0.9926ms)\n✔ invalid JSON empty content and provider errors are sanitized (3.9116ms)\n✔ duplicate call IDs and oversized tool batches are rejected (1.4213ms)\n✔ loop budget stops a model that never finishes (2.3268ms)\n✔ oversized provider response is rejected (1.5877ms)\n✔ inspection alone is not labeled completed response calculation (0.9448ms)\n✔ response stream errors are sanitized (0.9017ms)\n✔ unrelated builtin questions do not fabricate an analysis (0.394ms)\n✔ MoonBit JSON boundary exposes numbers and null without Option arrays (4.1389ms)\n✔ CSV round trips Unicode, BOM, embedded delimiters and escaped quotes (0.7689ms)\n✔ CSV rejects structural errors and too many columns (0.8447ms)\n✔ missing, invalid, zero and numeric exponent are distinct (0.4827ms)\n✔ source fingerprint uses exact UTF-8 content including BOM (2.3813ms)\n✔ population statistics agree with independent algebra (0.9043ms)\n✔ ramp has known rise time, IAE, tail and settling (0.8501ms)\n✔ falling response overshoot uses step direction and zero target (0.2159ms)\n✔ IAE integrates absolute linear error across zero rather than endpoints alone (0.228ms)\n✔ non-sample step boundary is interpolated and pre-crossed thresholds stay unavailable (0.3186ms)\n✔ unsettled response and one final in-band sample never produce fake settling (0.4819ms)\n✔ time unit conversion is applied once and range is explicit (0.4517ms)\n✔ duplicate, decreasing or missing time and invalid response are rejected (0.9856ms)\n✔ reject zero amplitude, invalid band, empty range and invalid unit (0.8091ms)\n✔ comparison identifies incompatible conditions and rejects units or duplicate data (2.536ms)\n✔ comparison reports unequal settling bands tail windows and observation durations (0.5859ms)\n✔ dataset count limit does not overwrite existing experiments (2.5609ms)\n✔ downsampling keeps spikes endpoints and time order (1.3225ms)\n✔ Agent tool boundary cannot analyze unselected data or change confirmed parameters (0.6823ms)\n✔ report preserves computed evidence and escapes untrusted names (0.5952ms)\n✔ synthetic example overshoot agrees with closed-form second-order response (44.1254ms)\n✔ all four domains generate reproducible typed records and mandatory synthetic marker (86.112ms)\n✔ seed 1 first integer draws match independently documented Park–Miller states (0.7449ms)\n✔ linear constraints date and missing propagation are honored (0.9772ms)\n✔ reject invalid schema bounds seed dependencies and sizes before execution (0.3728ms)\n✔ JSON and JSONL import preserve union headers types leading zeros and exact source hash (0.8905ms)\n✔ synthetic status survives all export import formats while imported provenance stays unverified (1.5929ms)\n✔ distributed domain CSV bytes match JSON provenance fingerprints (9.5425ms)\n✔ generic profile needs neither monotonic time nor target; missing is distinct from text (1.1749ms)\n✔ group reducers handle categorical rows and missing independently (1.45ms)\n✔ histogram edges and quantiles match independent arithmetic (0.7142ms)\n✔ Pearson handles positive negative and constant columns; pairwise deletion is explicit (0.7459ms)\n✔ plot limit does not reduce statistical sample and report recomputes rather than trusts metrics (20.6532ms)\n✔ offline commands propose without generating and never pretend free natural language (0.5015ms)\n✔ model tool protocol uses chosen dataset; raw samples never enter provider payload (3.7827ms)\n✔ HTTP general workflow and session isolation (57.6134ms)\n✔ recommendation prefers a valid 300-category axis over sole high-cardinality numeric field (55.1694ms)\n✔ multiple Y columns retain independent missing pairs and actual date spacing (1.8792ms)\n✔ multi-series categorical aggregation uses exact sum and mean with consistent groups (1.9839ms)\n✔ numeric plots and recommendations respect types and validate invalid axes (2.7499ms)\n✔ text-only data can produce a count chart and wide plot samples preserve full statistics (43.2234ms)\n✔ local model configuration only accepts loopback and no credentials (0.3503ms)\n✔ local structured planner sees metadata only and style patches preserve explicit selections (16.0199ms)\n✔ unknown explicitly named horizontal axis never silently draws another field (0.475ms)\n✔ local planner sanitizes malformed model responses and does not execute code (2.9156ms)\n✔ full HTTP import analyze chat report and raw CSV export (111.2964ms)\n✔ demo returns two generic synthetic datasets for the workbench (27.4051ms)\n✔ historical motor fixtures still compare through legacy analyze APIs (56.6401ms)\n✔ sessions cannot access each other datasets (4.3626ms)\n✔ reject cross-site mutation missing client marker and DNS rebinding host (5.7235ms)\n✔ static allowlist does not expose source environment or traversal (38.3845ms)\n✔ invalid bodies csv and analysis inputs fail without crashing (15.6499ms)\n✔ security headers are present and credentials never enter status (2.4641ms)\n✔ xlsx round-trip preserves headers numbers and text cells (10.7662ms)\n✔ invalid utf-8 csv is rejected with actionable message (0.4052ms)\n✔ multi-series plot skips empty series instead of failing the chart (1.2404ms)\n✔ workspace export import restores records query mapping and replaces session (3.4085ms)\n✔ status advertises preview edition and workspace HTTP round-trips (81.4147ms)\nℹ tests 71\nℹ suites 0\nℹ pass 71\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 383.5006"
+    }
+  ],
+  "modelValidation": "Node suite uses protocol stubs. Actual Qwen CPU inference and browser checks are run separately by scripts/test-local-model.mjs."
+}

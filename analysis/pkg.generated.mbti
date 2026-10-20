@@ -28,7 +28,7 @@ pub fn StepConfig::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecod
 pub fn StepConfig::to_json(Self) -> Json
 
 pub(all) struct StepMetrics {
-  samples : Int
+  samples : Int32
   duration : Double
   amplitude : Double
   band_absolute : Double
@@ -38,7 +38,7 @@ pub(all) struct StepMetrics {
   rise_time : Double?
   settling_time : Double?
   settling_status : String
-  tail_samples : Int
+  tail_samples : Int32
   tail_start : Double
   tail_mean : Double
   steady_error : Double
@@ -50,7 +50,7 @@ pub fn StepMetrics::to_json(Self) -> Json
 pub impl ToJson for StepMetrics
 
 pub(all) struct Summary {
-  count : Int
+  count : Int32
   min : Double
   max : Double
   mean : Double

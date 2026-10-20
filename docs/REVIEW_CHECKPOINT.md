@@ -1,5 +1,22 @@
 # 产品审阅与真实数据回归：续跑检查点
 
+## 最新核验：2026-10-21 05:43 北京时间（优先于下文）
+
+工作区已有其他会话提交的v0.5 c114294（XLSX、workspace保存、自由绘图收敛）；保留这些更改，不退回v0.4。账号从0%开始，当前8%，准备保存并留出10%上限余量；resetsAt=1792550128。
+
+v0.5重新跑71项Node、22项浏览器、cars公开文件旅程、5项导览、Vega40/40和USGS/NASA2/2，全部通过。初次完整check失败：旧项目工具链路径失效；全局0.10.16编译器无法处理moon驱动传入的Windows扩展路径前缀，且全局标准库缓存日期为9月29日，存在版本不配套。
+
+本轮隔离修复已经验证：官方工具链下载到.local/moon-official-20261021，zip SHA256=653ebf0a3b2683048faa8ad79b7b7d0721bf78726bf1a7e58678e9740b0d430f；配套核心来自官方安装脚本的https://cli.moonbitlang.com/cores/core-latest.zip，实测SHA256=d58caf5ee6e2a95d8785adf7d90fd68dd9366d174df1dfaa36646dd6b47c5663（记录下载指纹，并非独立签名认证）。只在项目内解压与bundle，不改系统安装。
+
+临时路径适配器源码.local/moon-path-compat.cs，以Framework64/v4.0.30319/csc.exe编译到.local/moon-path-compat/moonc.exe，复制为moonfmt.exe/mooninfo.exe。只把编译器参数中的Windows扩展路径前缀规范化，转发输出和返回码。设置MOON_HOME为隔离目录、MOON为其bin/moon.exe、MOON_COMPAT_BIN为其bin，MOONC_OVERRIDE/MOONFMT_OVERRIDE/MOONINFO_OVERRIDE分别为上述适配器。先在隔离lib/core运行moon bundle --warn-list -a --target js和wasm-gc，再node scripts/check.mjs。完整结果现已71项Node、JS15/WasmGC15核心全部通过，.local/recovered-check.log及artifacts/verification.json（忽略）可复查。新编译产物下重新完成了上述所有浏览器与公开回归。公开接口生成器将Int显示规范化为Int32，未改核心算法。
+
+重要未完：这个Windows修复目前仅临时环境生效！需要下一窗口将适配器与隔离工具链准备流程整理为可审阅的项目脚本、固定校验和/版本、接入构建启动脚本，然后验证普通启动与全新解压构建。不要把手工env的一次成功说成用户已可直接启动或依赖安装已固化。系统全局工具链未改；所有临时浏览器服务已关。
+
+发布状态也有更新：.local/publication.json记载v0.4 df0828d在2026-10-20T17:48:30Z已推送到私有仓库，origin追踪同一提交，v0.5本地在其前方。这个收据属于其他会话记录，本轮远端核验未成功，不能当新版本上传证明。gh当前仍未登录；连接器查分支文件404（可能无权限）；Git只读请求网络失败，尚未推送v0.5。主机用户和沙箱用户不同，若主机Git报dubious ownership，仅对本命令使用-c safe.directory=已核对的本项目绝对路径，不修改全局。不要继续反复发已过期的设备码；用户在线时核对实际可用认证通道。
+
+下步优先：固化构建修复→新环境/启动验证→更新v0.5交付包→已有授权下推送/核对SHA/观察CI。全部结束后才暂停心跳。未扩大模型准确率结论，没有消费重置券或切换账号。
+
+
 ## 最新状态：2026-10-20 14:40 北京时间（替代下方历史状态）
 
 本轮开始用量0%，曾升至3%，随后账号服务读数回到0%且reset时间变化；本任务没有使用重置券、购买或切换账号。最近读数4%，300分钟，resetsAt=1792496020。每个实质步骤后持续检查，仍以最新账号总用量10%为硬上限。

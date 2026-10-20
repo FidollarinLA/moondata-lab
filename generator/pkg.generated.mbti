@@ -6,9 +6,9 @@ import {
 }
 
 // Values
-pub fn generate(Array[ColumnSpec], Int, Int) -> Array[Array[Json]] raise
+pub fn generate(Array[ColumnSpec], Int32, Int32) -> Array[Array[Json]] raise
 
-pub fn random_sequence(Int, Int) -> Array[Double] raise
+pub fn random_sequence(Int32, Int32) -> Array[Double] raise
 
 // Errors
 
@@ -20,12 +20,12 @@ pub(all) struct ColumnSpec {
   max : Double
   start : Double
   step : Double
-  decimals : Int
+  decimals : Int32
   prefix : String
   choices : Array[String]
   probability : Double
   missing : Double
-  start_day : Int
+  start_day : Int32
   source : String
   slope : Double
   intercept : Double

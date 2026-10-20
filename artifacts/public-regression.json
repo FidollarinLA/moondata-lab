@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-20T01:27:53.331Z",
+  "checkedAt": "2026-10-20T21:42:04.142Z",
   "revision": "175a81ca00b2a0d9bd1159ddcf2b7b232e591d93",
   "source": "https://github.com/vega/vega-datasets",
   "datasetCount": 40,
@@ -44,7 +44,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "f25c2402-9ef2-4747-a75a-24c7b8ec07c9"
+        "datasetId": "dce65554-64c5-4b76-adbe-83dffac35b72"
       }
     },
     {
@@ -89,7 +89,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "fa622b42-7444-42fb-9a9d-316efe0325c8"
+        "datasetId": "8f1a75a7-2fd6-44aa-b504-6d7dd9824b42"
       }
     },
     {
@@ -143,7 +143,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "bbdabc5f-7011-4672-b8fc-4999d98688bc"
+        "datasetId": "8e919cd2-c9f5-4da7-a7b6-c0338bf0293e"
       }
     },
     {
@@ -185,7 +185,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "e5f140b6-0b61-463f-a04d-e7f1df405dc9"
+        "datasetId": "4479641f-96c6-41ab-862d-b20ef1a12057"
       }
     },
     {
@@ -227,7 +227,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "4a4c2ae9-554c-4b6f-8f32-71eaae6da4c8"
+        "datasetId": "b8484f3e-eae1-4c4f-9ff7-62ea1593a81d"
       }
     },
     {
@@ -273,7 +273,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "d8299108-4a69-485f-ba44-e4bee7f292b4"
+        "datasetId": "03a8b8db-55d4-4460-9b69-93c636430fec"
       }
     },
     {
@@ -315,7 +315,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "f454c573-67ad-46b2-8a56-242cdd6577ca"
+        "datasetId": "289e0f07-78d3-48e1-99d2-d5f5eb2847da"
       }
     },
     {
@@ -361,7 +361,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "6d6139f6-3199-4524-a1b9-4e9912b99e96"
+        "datasetId": "bed60d48-3530-4237-b2d7-9072d1b8db3e"
       }
     },
     {
@@ -409,7 +409,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "66dc8e80-65d4-47d7-80a9-1d68c50c9519"
+        "datasetId": "8a142db8-4b3f-4eeb-903b-e57a4771c45c"
       }
     },
     {
@@ -451,7 +451,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "57579761-e432-4716-af63-01c28ea0fad2"
+        "datasetId": "bf762923-f099-4334-8dae-060cedfd6be4"
       }
     },
     {
@@ -502,7 +502,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "593897e2-c2d2-41e0-9576-d9439069ab5b"
+        "datasetId": "81750462-8210-4184-b476-e565cfc4e28f"
       }
     },
     {
@@ -538,7 +538,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "c6581203-77c3-47fe-b073-64bc48035858"
+        "datasetId": "8ebe2de6-1a54-4edf-99f2-166bf4ca207c"
       }
     },
     {
@@ -579,7 +579,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "c8e1ba17-bbfc-43d0-aca9-ea3e8f174085"
+        "datasetId": "0ca80d90-1a5e-4421-822c-906b46484c1b"
       }
     },
     {
@@ -620,7 +620,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "03eeac31-1332-43b2-9778-e3226a8f73bf"
+        "datasetId": "ff439b8d-6dcd-45a7-83af-78f546bfa54e"
       }
     },
     {
@@ -698,7 +698,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "209544f4-6ad1-4909-827e-549fde4b6298"
+        "datasetId": "d557c654-7b1f-469e-84aa-0ea759308e2a"
       }
     },
     {
@@ -738,7 +738,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "91a57f94-3ba3-4200-aaee-d866f4e520d0"
+        "datasetId": "975d90bb-d530-471b-9a90-b241fc57ecd9"
       }
     },
     {
@@ -779,7 +779,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "a36982bd-692f-4eec-975b-144dc744d954"
+        "datasetId": "1f1c4746-a0d3-484f-af09-40f573d89ae4"
       }
     },
     {
@@ -825,7 +825,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "ef995eaa-99f7-42c3-9de8-5a552d2f3fda"
+        "datasetId": "b4a7da87-4e8c-4513-9c99-8793499bf901"
       }
     },
     {
@@ -866,7 +866,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "7961e681-869e-4065-8db6-ead70d712124"
+        "datasetId": "1d112d03-b57d-4a82-abb1-256d4c4c0b57"
       }
     },
     {
@@ -909,7 +909,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "a384931a-70c9-4404-ba48-afe81119845d"
+        "datasetId": "dc1826da-84fc-4310-851c-9c236ec44d00"
       }
     },
     {
@@ -945,7 +945,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "6c0c4b7a-a472-491f-a3fe-1f1f36423590"
+        "datasetId": "b028796a-2c89-432f-a9f6-77fa230f5c93"
       }
     },
     {
@@ -987,7 +987,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "f9d6a9a6-0d2c-4c70-83e0-1ae7fa075881"
+        "datasetId": "073ea1ce-41e7-4863-8937-a7a5d35cef89"
       }
     },
     {
@@ -1033,7 +1033,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "6b0beb36-85be-4a3a-b218-71c3660407d6"
+        "datasetId": "48fe8f3f-5625-4e20-a4ad-6fdeed478d71"
       }
     },
     {
@@ -1064,7 +1064,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "be417ea8-cd4c-4c99-b685-3ba03d50f10f"
+        "datasetId": "51d9fa63-ca80-4ef6-ae5f-f8a164ece6c0"
       }
     },
     {
@@ -1106,7 +1106,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "bddc30f4-02ef-4c58-bf3d-6334c91be78a"
+        "datasetId": "02cb971a-3431-4df0-aa05-70ea5fe7d94c"
       }
     },
     {
@@ -1146,7 +1146,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "fe1dd975-d61a-4ca2-9860-9fbe741c0e0e"
+        "datasetId": "a87dd4ee-bf7f-48aa-8c9c-f31c0d5c6e9e"
       }
     },
     {
@@ -1192,7 +1192,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "c9a15388-a378-4aaa-8bb4-781754143c8a"
+        "datasetId": "d7c582dc-172f-4536-9c75-1a3f56c5dd5b"
       }
     },
     {
@@ -1238,7 +1238,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "dda80d4e-e752-497b-b6c1-126473b3112a"
+        "datasetId": "71432cf6-19bb-4276-9339-3093887ffa45"
       }
     },
     {
@@ -1280,7 +1280,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "54c15700-7dca-4fb1-a6dd-cde282135a8f"
+        "datasetId": "11cb3748-a7ca-49a2-b83c-d39c4cd393e8"
       }
     },
     {
@@ -1322,7 +1322,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "8ce235e6-98b6-45dc-97d8-878cf7b89d86"
+        "datasetId": "fb59aff5-041a-4065-b9b2-67436b1423a6"
       }
     },
     {
@@ -1352,7 +1352,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "4cf2f5bc-ff47-48fa-a2c2-d527d2985f32"
+        "datasetId": "c80c7ea8-2577-4d96-aff8-4b50ef99f8e5"
       }
     },
     {
@@ -1398,7 +1398,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "9952c5e7-9682-4849-9365-7db78dda938c"
+        "datasetId": "34ed60f3-596a-4f89-8512-6a0072fc61b9"
       }
     },
     {
@@ -1428,7 +1428,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "788938e9-f6bf-4cff-a3ac-5f6025ba1faf"
+        "datasetId": "eefdc2d7-9635-468d-bbe8-fd5caca6d8d8"
       }
     },
     {
@@ -1458,7 +1458,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "eab34468-92be-41b8-850f-918177f66776"
+        "datasetId": "3950ae2b-5667-4ce2-984b-733ea60fef6b"
       }
     },
     {
@@ -1508,7 +1508,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "01e49a90-f804-425c-91bc-025f73bf55eb"
+        "datasetId": "c0c36f1a-97fa-45e1-b6c8-a1f54644c921"
       }
     },
     {
@@ -1550,7 +1550,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "be142e4c-63ff-4576-8c87-fedbf46a4525"
+        "datasetId": "1b170d19-76ee-4047-bc83-c4802a36e34e"
       }
     },
     {
@@ -1597,7 +1597,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "1ecf0536-aaab-4635-9334-8c692c3e7af4"
+        "datasetId": "8442ecfc-2604-45f6-a811-f86f84c59ef7"
       }
     },
     {
@@ -1639,7 +1639,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "026695ae-dcbf-4c85-85e1-7fb9ba099971"
+        "datasetId": "db005e31-f1bc-4eb1-b57d-4230c35df304"
       }
     },
     {
@@ -1681,7 +1681,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "2ca07774-e700-4edb-bccf-7b725b48d429"
+        "datasetId": "21fcf41e-75ce-42a2-8af7-7904dd263988"
       }
     },
     {
@@ -1712,7 +1712,7 @@
         ],
         "kind": "auto",
         "reducer": "mean",
-        "datasetId": "01816a13-3945-4419-a080-acb67a41cc17"
+        "datasetId": "a7387737-3264-41a4-9ddd-fdd62a0fabde"
       }
     }
   ],

@@ -1,5 +1,7 @@
 # v0.5 预览版验收补充
 
+2026-10-21 05:43补验：在隔离官方0.10.16与配套标准库、临时Windows路径适配器下，完整check71项Node及核心JS15/WasmGC15通过；新编译产物下22项浏览器、cars旅程、5项导览、40+2公开回归均通过。证据artifacts/v05-core-verification.json。启动流程尚未集成该环境修复，不宣称全新源码包可直接构建；详见REVIEW_CHECKPOINT。
+
 2026-10-21：在 v0.4 基线上交付 XLSX 首表导入、UTF-8 校验、工作区包、自由画图路径收敛与预览版话术。Node `test/*.test.mjs` **71/71** 通过（含新增 v05）；浏览器 Edge 旅程 **22** 项通过（`artifacts/browser-acceptance.json`），散点/日期折线改走自由画图。本机 `.local/moon-path.txt` 指向的 Moon 工具链不存在，未能重跑 MoonBit JS/WasmGC 套件；本轮未改 `.mbt` 源码，沿用既有 `web/engine.js`。未扩大真实模型准确率结论；GitHub 仍待认证。
 
 # v0.4 通用版验收补充

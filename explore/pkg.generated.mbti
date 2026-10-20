@@ -6,7 +6,7 @@ pub fn aggregate(Array[String], Array[Json], String) -> Json raise
 
 pub fn correlation(Array[Double], Array[Double]) -> Json raise
 
-pub fn distribution(Array[Double], Int) -> Json raise
+pub fn distribution(Array[Double], Int32) -> Json raise
 
 // Errors
 
