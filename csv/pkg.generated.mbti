@@ -8,9 +8,9 @@ pub fn number(String) -> Double?
 
 pub fn parse(String) -> Table raise CsvError
 
-pub fn quality_notes(Column, Int) -> Array[String]
+pub fn quality_notes(Column, Int32) -> Array[String]
 
-pub fn table_quality_notes(Array[Column], Int) -> Array[String]
+pub fn table_quality_notes(Array[Column], Int32) -> Array[String]
 
 // Errors
 pub(all) suberror CsvError {

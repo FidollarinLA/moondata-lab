@@ -164,7 +164,7 @@ pub fn describe(table : Table) -> Array[Column] {
 ///|
 /// Deterministic dirty-data notes from MoonBit column counts.
 /// Text columns with only non-numeric values are not treated as errors.
-pub fn quality_notes(column : Column, row_count : Int) -> Array[String] {
+pub fn quality_notes(column : Column, row_count : Int32) -> Array[String] {
   let notes : Array[String] = []
   let rows = row_count
   let numeric = column.numeric
@@ -190,7 +190,7 @@ pub fn quality_notes(column : Column, row_count : Int) -> Array[String] {
 ///|
 pub fn table_quality_notes(
   columns : Array[Column],
-  row_count : Int,
+  row_count : Int32,
 ) -> Array[String] {
   let notes : Array[String] = []
   for column in columns {
