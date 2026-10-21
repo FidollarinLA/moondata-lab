@@ -311,6 +311,9 @@ pub fn AnalysisError::to_string(self : AnalysisError) -> String {
 }
 
 ///|
+pub extend Summary with ToJson::{to_json}
+
+///|
 /// JSON boundary uses numeric values or null for optional sample stddev.
 pub impl ToJson for Summary with fn to_json(self : Summary) -> Json {
   {
