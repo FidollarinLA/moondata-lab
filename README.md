@@ -45,7 +45,9 @@ v0.5：在 v0.4 审阅基础上增加 XLSX（首表）、工作区导出/导入�
 
 ## 快速开始
 
-需要 Node.js 22+ 和 MoonBit 工具链（本机验证：Node 24.19.0、MoonBit 0.10.15）。
+需要 Node.js 22+ 和 MoonBit 工具链（本机验证：Node 24.19.0、MoonBit 0.10.16；此前0.10.15也有验收记录）。
+
+Windows x64 首次使用可执行 `node scripts/setup-windows-toolchain.mjs`，准备仅供本项目使用的工具链、配套标准库与路径兼容层，然后按下述方式构建或运行 `./start.ps1`。下载校验固定，官方地址内容变化时会停止。不会改动系统安装或全局 PATH，详见 [Windows 构建说明](docs/WINDOWS_BUILD.md)。
 
 ```sh
 node scripts/build.mjs

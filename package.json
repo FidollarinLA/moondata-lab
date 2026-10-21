@@ -16,6 +16,7 @@
     "test:sources": "node scripts/source-regression.mjs",
     "package:release": "node scripts/package-release.mjs",
     "setup:model": "node scripts/setup-local-model.mjs",
+    "setup:windows": "node scripts/setup-windows-toolchain.mjs",
     "start:model": "node scripts/start-with-model.mjs",
     "test:model": "node scripts/test-local-model.mjs",
     "examples": "node scripts/generate-examples.mjs",
