@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+- Public GitHub default branch `main`, hackathon review checklist, and README first-screen clone path for resubmission.
+
 ## 0.5.0
 
 - Locked product positioning as a local table-exploration preview edition.

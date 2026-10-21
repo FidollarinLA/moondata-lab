@@ -1,14 +1,33 @@
 # MoonData Lab
 
-**生成可复现的数据集；上传已有数据，生成图表、分析与报告。**
+[![Verify MoonData Lab](https://github.com/FidollarinLA/moondata-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/FidollarinLA/moondata-lab/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-本机运行的中文**本地表格探索预览版**。销售台账、库存、问卷、运营、传感器和实验记录都可以使用，不要求电机参数、时间列或行业专属格式。不承诺任意格式、任意自然语言或行业业务一次做对。
+**用 MoonBit 做可复核的表格计算：生成可复现数据；上传已有表，得到图表、统计与报告。**
 
-只想使用 MoonBit 解析与计算？见 [核心复用示例](docs/CORE_USAGE.md)，不需要启动网页或模型。
+本机运行的中文**本地表格探索预览版**（v0.5）。销售台账、库存、问卷、运营、传感器和实验记录都可以用，不要求电机参数或行业专属格式。不承诺任意格式、任意自然语言或行业业务一次做对。
+
+| 评审想看的 | 去哪里 |
+| --- | --- |
+| 为什么用 MoonBit、怎么 10 分钟验收 | [黑客松 / 初审核对](docs/HACKATHON_REVIEW.md) |
+| 只跑数值核心、不启网页 | [核心复用示例](docs/CORE_USAGE.md) · `node examples/core-only.mjs` |
+| 已知限制与证据 | [人工审阅](docs/HUMAN_REVIEW.md) · [验收](docs/ACCEPTANCE.md) |
+
+```sh
+git clone https://github.com/FidollarinLA/moondata-lab.git
+cd moondata-lab
+node scripts/build.mjs
+node server/index.mjs
+# 打开 http://127.0.0.1:4321
+```
+
+仓库 **Public**，默认分支 **`main`**。Windows 首次构建可先看 [Windows 构建说明](docs/WINDOWS_BUILD.md)。
 
 ![从上传到可核对结果的流程](docs/assets/workflow.svg)
 
-v0.5：在 v0.4 审阅基础上增加 XLSX（首表）、工作区导出/导入，并把折线/散点收敛到自由画图。v0.4 的 40 份公开表回归与 cars 旅程仍作基线；这些结果不代表任意数据或模型准确率。详见 [人工审阅与已知限制](docs/HUMAN_REVIEW.md)。
+**MoonBit 负责什么：** 严格 CSV、确定性合成生成、均值/方差、分组聚合、直方图与分位数、Pearson 相关——计算在 MoonBit，JS 只编排会话与界面。模型（可选）只提出受限工具参数，不编造数值。
+
+v0.5：XLSX（首表）、工作区导出/导入、折线/散点收敛到自由画图。v0.4 的公开表回归与 cars 旅程仍作基线；不代表任意数据或模型准确率。
 
 ![浏览器、编排、MoonBit与可选模型架构](docs/assets/architecture.svg)
 
@@ -152,6 +171,9 @@ docs/       计划、计算约定、架构与验收
 
 ## GitHub
 
-用户已授权推送；当前环境尚无 GitHub CLI 登录。登录后运行 `node scripts/publish-github.mjs`，默认创建私有 `FidollarinLA/moondata-lab`，推送 `codex/initial-workbench` 并核对远端 SHA；不强推、不改全局 Git 设置。远端 CI 未运行时不报告发布完成。
+- 公开仓库：https://github.com/FidollarinLA/moondata-lab  
+- 默认分支：`main`（开发分支 `codex/initial-workbench` 与其同步）  
+- CI：推送后跑 MoonBit / Node / 浏览器验收（见 Actions）  
+- 发布脚本：`node scripts/publish-github.mjs`（需已 `gh auth login`）
 
 Apache-2.0，见 [LICENSE](LICENSE)。项目为独立实现，参考来源见 [THIRD_PARTY](THIRD_PARTY.md)，不声称移植或兼容整个 Data Formulator。
