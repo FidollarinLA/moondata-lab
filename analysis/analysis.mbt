@@ -71,7 +71,15 @@ pub fn summarize(values : Array[Double]) -> Summary raise AnalysisError {
   if !finite(mean) || !finite(stddev) || !finite(rms) {
     raise AnalysisError("Numeric range exceeds stable calculation limits")
   }
-  { count: values.length(), min: low, max: high, mean, stddev, sample_stddev, rms, }
+  {
+    count: values.length(),
+    min: low,
+    max: high,
+    mean,
+    stddev,
+    sample_stddev,
+    rms,
+  }
 }
 
 ///|
