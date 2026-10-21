@@ -48,9 +48,11 @@ test "quality notes flag mixed and sparse columns with independent percents" {
       "字段「金额」为混合列：2 个可解析数值、2 个非数值；数值分析只使用有效值。",
     ],
   )
-  let sparse_table = @csv.parse("备注\n\n\n\nx")
+  // Blank physical lines are ignored; empty fields need a real record (pad column).
+  let sparse_table = @csv.parse("备注,pad\n,1\n,2\n,3\nx,4")
   let sparse = @csv.describe(sparse_table)[0]
   assert_eq(sparse.missing, 3)
+  assert_eq(sparse.invalid, 1)
   assert_eq(
     @csv.quality_notes(sparse, sparse_table.rows.length()),
     ["字段「备注」缺失约 75%（空白视为缺失，0 不算缺失）。"],
