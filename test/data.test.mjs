@@ -61,6 +61,25 @@ test('generic profile needs neither monotonic time nor target; missing is distin
   assert.equal(p.rowCount, 5); assert.equal(p.missingCells, 3); assert.equal(p.columns[0].type, 'text'); assert.equal(p.columns[1].type, 'number'); assert.equal(p.columns[4].type, 'date'); close(p.columns[1].summary.mean, 25);
   assert.equal(explore(store, { datasetId: d.id }).table.length, 5);
 });
+test('dirty mixed and sparse columns surface MoonBit-aligned quality notes', () => {
+  const store = new DatasetStore();
+  const d = importDataset(store, {
+    name: 'dirty.csv',
+    content: '金额,备注\n10,a\nbad,b\n,c\n20,\n30,\n',
+  });
+  const p = profile(store, d.id);
+  assert.equal(p.columns[0].type, 'mixed');
+  assert.equal(p.columns[0].mixed, true);
+  assert.equal(p.invalidCells, 4);
+  assert.deepEqual(p.qualityNotes, [
+    '字段「金额」为混合列：3 个可解析数值、1 个非数值；数值分析只使用有效值。',
+    '字段「备注」缺失约 40%（空白视为缺失，0 不算缺失）。',
+  ]);
+  const overview = explore(store, { datasetId: d.id, mode: 'overview' });
+  assert.ok(overview.warnings.some(w => w.includes('混合列')));
+  assert.equal(overview.table[0].invalid, 1);
+  assert.equal(overview.table[1].missing, 2);
+});
 test('group reducers handle categorical rows and missing independently', () => {
   const { store, d } = fixture(), base = { datasetId: d.id, mode: 'group', group: '地区', value: '金额' };
   const sum = explore(store, { ...base, reducer: 'sum' }); assert.deepEqual(sum.table.map(r => [r.group, r.value]), [['东', 40], ['西', 20], ['', 40]]); assert.equal(sum.excludedRows, 1);

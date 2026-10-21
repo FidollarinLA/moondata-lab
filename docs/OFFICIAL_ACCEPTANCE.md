@@ -7,7 +7,7 @@
 | 1 | MoonBit 为主 | `csv/` `generator/` `explore/` `analysis/` `api/` 为数值核心；JS 只做会话/UI/编排，不静默替换计算。见 [CORE_USAGE](CORE_USAGE.md)、[METHODS](METHODS.md) | 持续加强 MoonBit 契约与测试 |
 | 2 | 仓库公开、提交可追踪 | Public；默认分支 `main`；Actions CI；Issues 承载迭代计划 | 已公开可克隆 |
 | 3 | 能运行：README + 示例 + 测试 | README 快速开始；`node scripts/smoke.mjs`；`examples/core-only.mjs`；MoonBit 双后端 + Node + 浏览器测试 | 已具备 |
-| 4 | 本期工作有效 | v0.3–v0.5 实质功能：自由画图、本地模型规划、XLSX、工作区、样本标准差等；见 CHANGELOG / commits | 继续公开提交至 10/31 |
+| 4 | 本期工作有效 | v0.3–v0.5.3：自由画图、本地模型、XLSX、工作区、样本标准差、混合列/高缺失脏数据提示；见 CHANGELOG | 继续公开提交至 10/31 |
 | 5 | 开源合规 | Apache-2.0；参考来源 [THIRD_PARTY](../THIRD_PARTY.md) | 已具备 |
 | 6 | AI 可解释 | [AI_USAGE](AI_USAGE.md)：哪些由 AI 辅助、哪些必须人工掌握 | 已具备 |
 

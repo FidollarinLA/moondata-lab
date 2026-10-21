@@ -35,3 +35,27 @@ test "missing values do not become zero" {
   assert_eq(@csv.number(" -1.25e2 "), Some(-125.0))
   assert_eq(@csv.number(" "), None)
 }
+
+///|
+test "quality notes flag mixed and sparse columns with independent percents" {
+  let mixed = { name: "金额", numeric: 2, missing: 0, invalid: 2 }
+  let sparse = { name: "备注", numeric: 0, missing: 3, invalid: 1 }
+  let clean = { name: "id", numeric: 4, missing: 0, invalid: 0 }
+  let synthetic = { name: "_synthetic", numeric: 0, missing: 0, invalid: 4 }
+  assert_eq(
+    @csv.quality_notes(mixed, 4),
+    [
+      "字段「金额」为混合列：2 个可解析数值、2 个非数值；数值分析只使用有效值。",
+    ],
+  )
+  assert_eq(
+    @csv.quality_notes(sparse, 4),
+    ["字段「备注」缺失约 75%（空白视为缺失，0 不算缺失）。"],
+  )
+  assert_eq(@csv.quality_notes(clean, 4), [])
+  assert_eq(@csv.quality_notes(synthetic, 4), [])
+  assert_eq(
+    @csv.table_quality_notes([mixed, sparse, clean, synthetic], 4).length(),
+    2,
+  )
+}

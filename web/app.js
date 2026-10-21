@@ -95,7 +95,7 @@ function showResult(result) {
     $('chart-caption').textContent = `显示 ${shown} 个点 / 柱。${trunc}横轴无效 ${result.excludedRows} 行；每条序列的缺失分别处理。结果表预览前200行，报告保留完整结果表。`;
   }
   const headers = Object.keys(result.table[0] ?? {}).filter(h => result.query.mode !== 'plot' || (h !== 'order' && !(h === 'x' && result.table[0]?.xLabel !== undefined)));
-  const labels = { series: '序列', x: '横轴', xLabel: '横轴原值', y: '纵轴数值', row: '原始行号', group: '分组', rows: '行数', valid: '有效数', value: '聚合值', field: '字段', type: '类型', missing: '缺失', numeric: '数值个数', distinct: '不同值', mean: '平均值', lower: '区间下界', upper: '区间上界', count: '频数' };
+  const labels = { series: '序列', x: '横轴', xLabel: '横轴原值', y: '纵轴数值', row: '原始行号', group: '分组', rows: '行数', valid: '有效数', value: '聚合值', field: '字段', type: '类型', missing: '缺失', invalid: '不可解析', numeric: '数值个数', distinct: '不同值', mean: '平均值', lower: '区间下界', upper: '区间上界', count: '频数', hint: '质量提示' };
   table($('result-table'), headers.map(h => labels[h] ?? h), result.table.slice(0, 200).map(r => headers.map(h => h === 'type' ? ({ number: '数值', text: '文本', date: '日期', boolean: '是/否' })[r[h]] ?? r[h] : r[h])));
   $('warnings').replaceChildren(...result.warnings.map(w => el('p', w)));
 }
@@ -106,7 +106,17 @@ async function selectDataset(id) {
   const revision = state.revision;
   const { profile: p } = await json('profile', { datasetId: id }); if (revision !== state.revision) return;
   $('source-label').textContent = p.synthetic ? '合成数据' : '用户导入';
-  $('metrics').replaceChildren(...[['数据行', p.rowCount, '全部记录'], ['字段', p.columns.length, '含标识字段'], ['数值字段', p.columns.filter(c => c.type === 'number').length, '非空均可解析'], ['缺失单元格', p.missingCells, '空白视为缺失']].map(([label, value, note]) => { const d = el('div', undefined, 'metric'); d.append(el('span', label), el('strong', fmt(value)), el('small', note)); return d; }));
+  $('metrics').replaceChildren(...[
+    ['数据行', p.rowCount, '全部记录'],
+    ['字段', p.columns.length, '含标识字段'],
+    ['数值字段', p.columns.filter(c => c.type === 'number').length, '非空均可解析'],
+    ['混合字段', p.columns.filter(c => c.mixed).length, '含数值与非数值'],
+    ['缺失单元格', p.missingCells, '空白视为缺失'],
+    ['不可解析', p.invalidCells ?? 0, '非空且非有限数值'],
+  ].map(([label, value, note]) => { const d = el('div', undefined, 'metric'); d.append(el('span', label), el('strong', fmt(value)), el('small', note)); return d; }));
+  const quality = $('quality-notes') || (() => { const n = el('div'); n.id = 'quality-notes'; n.className = 'quality-notes'; $('metrics').after(n); return n; })();
+  quality.replaceChildren(...(p.qualityNotes?.length ? p.qualityNotes.map(w => el('p', w)) : [el('p', '未发现混合列或高缺失字段提示。')]));
+  quality.hidden = false;
   const all = p.columns.map(c => c.name), numeric = p.columns.filter(c => c.numeric > 0).map(c => c.name);
   options($('group'), all, p.columns.find(c => ['text', 'boolean'].includes(c.type) && c.distinct <= 30)?.name ?? all[0]);
   options($('value'), numeric, numeric.at(-1)); options($('x'), all, numeric[0] ?? all[0]); options($('y'), numeric, numeric.at(-1));

@@ -162,6 +162,46 @@ pub fn describe(table : Table) -> Array[Column] {
 }
 
 ///|
+/// Deterministic dirty-data notes from MoonBit column counts.
+/// Text columns with only non-numeric values are not treated as errors.
+pub fn quality_notes(column : Column, row_count : Int) -> Array[String] {
+  let notes : Array[String] = []
+  let rows = row_count
+  let numeric = column.numeric.to_int()
+  let missing = column.missing.to_int()
+  let invalid = column.invalid.to_int()
+  if rows <= 0 || column.name == "_synthetic" {
+    return notes
+  }
+  if numeric > 0 && invalid > 0 {
+    notes.push(
+      "字段「\{column.name}」为混合列：\{numeric} 个可解析数值、\{invalid} 个非数值；数值分析只使用有效值。",
+    )
+  }
+  if missing * 10 >= rows * 3 {
+    let percent = missing * 100 / rows
+    notes.push(
+      "字段「\{column.name}」缺失约 \{percent}%（空白视为缺失，0 不算缺失）。",
+    )
+  }
+  notes
+}
+
+///|
+pub fn table_quality_notes(
+  columns : Array[Column],
+  row_count : Int,
+) -> Array[String] {
+  let notes : Array[String] = []
+  for column in columns {
+    for note in quality_notes(column, row_count) {
+      notes.push(note)
+    }
+  }
+  notes
+}
+
+///|
 pub fn CsvError::to_string(self : CsvError) -> String {
   let CsvError(message) = self
   message

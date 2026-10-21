@@ -20,12 +20,16 @@ pub fn parse_csv(text : String) -> String {
         }),
       )
     }
+    let columns = @csv.describe(table)
     let result : Json = {
       "ok": true,
       "headers": Json(table.headers),
       "rows": Json(table.rows),
-      "columns": Json(@csv.describe(table)),
+      "columns": Json(columns),
       "numeric_columns": Json(numeric_columns),
+      "quality_notes": Json(
+        @csv.table_quality_notes(columns, table.rows.length()),
+      ),
     }
     result.stringify()
   } catch {

@@ -8,6 +8,7 @@ export class DatasetStore {
     if (typeof csv !== 'string' || Buffer.byteLength(csv) > 10 * 1024 * 1024) throw new AppError('CSV 文件不能超过 10 MiB');
     if (this.datasets.size >= 12) throw new AppError('最多保留 12 份数据，请先删除不再需要的数据', 413);
     const parsed = parseCsv(csv);
+    const qualityNotes = Array.isArray(parsed.quality_notes) ? parsed.quality_notes : null;
     const cells = parsed.rows.length * parsed.headers.length;
     const used = [...this.datasets.values()].reduce((sum, d) => sum + d.cells, 0);
     if (cells + used > 1_000_000) throw new AppError('当前会话最多保留 100 万个单元格，请先删除旧数据', 413);
@@ -23,6 +24,7 @@ export class DatasetStore {
       rows: parsed.rows,
       columns: parsed.columns,
       numericColumns: parsed.numeric_columns,
+      qualityNotes,
     };
     this.datasets.set(dataset.id, dataset);
     return this.describe(dataset);

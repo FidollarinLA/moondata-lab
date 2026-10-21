@@ -1,9 +1,15 @@
 # Changelog
 
+## 0.5.3
+
+- MoonBit `@csv.quality_notes` flags mixed numeric/non-numeric columns and ≥30% missing fields.
+- Profile/overview show mixed type, invalid-cell counts, and dirty-data warnings in the Chinese UI.
+
 ## 0.5.2
 
 - Official six-criteria acceptance map, AI usage note, iteration cadence, and `scripts/smoke.mjs`.
 - MoonBit summaries now expose sample standard deviation (N−1) alongside population stddev (N).
+- Fixed duplicate Summary `ToJson` extend that broke `--deny-warn` CI.
 
 ## 0.5.1
 

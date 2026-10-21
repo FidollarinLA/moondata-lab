@@ -1,6 +1,7 @@
 import { AppError, text, parseCsv, generateRows, summarize, aggregate, distribution, correlation } from './core.mjs';
 import { makePlot, recommendPlot } from './plot.mjs';
 import { parseXlsx } from './xlsx.mjs';
+import { qualityNotesFromColumns } from './quality.mjs';
 
 /** Reject buffers that are not valid UTF-8 (common when Excel saves GBK CSV). */
 export function decodeUtf8(buffer, label = '文件') {
@@ -149,12 +150,23 @@ export function profile(store, id) {
   const columns = d.columns.map((c, i) => {
     const values = d.rows.map(r => r[i]).filter(v => v.trim());
     const counts = new Map(); for (const v of values) counts.set(v, (counts.get(v) || 0) + 1);
-    const type = c.numeric && c.invalid === 0 ? 'number' : values.length && values.every(v => /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(Date.parse(v)) && new Date(v).toISOString().slice(0, 10) === v) ? 'date' : values.length && values.every(v => /^(true|false)$/i.test(v)) ? 'boolean' : 'text';
+    const mixed = c.numeric > 0 && c.invalid > 0;
+    const type = c.numeric && c.invalid === 0 ? 'number' : values.length && values.every(v => /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(Date.parse(v)) && new Date(v).toISOString().slice(0, 10) === v) ? 'date' : values.length && values.every(v => /^(true|false)$/i.test(v)) ? 'boolean' : mixed ? 'mixed' : 'text';
     let summary = null, warning = null;
     if (c.numeric) { try { summary = summarize(d.numericColumns[i].filter(v => v !== null)); } catch { warning = '数值范围过大，统计无法可靠计算'; } }
-    return { ...c, type, distinct: counts.size, top: [...counts].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([value, count]) => ({ value, count })), summary, warning };
+    const hints = qualityNotesFromColumns([c], d.rows.length);
+    return { ...c, type, mixed, hints, distinct: counts.size, top: [...counts].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([value, count]) => ({ value, count })), summary, warning };
   });
-  const result = { id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic, sourceFormat: d.sourceFormat, provenance: d.provenance, rowCount: d.rows.length, columns, missingCells: columns.reduce((s, c) => s + c.missing, 0), preview: d.rows.slice(0, 12) };
+  const qualityNotes = Array.isArray(d.qualityNotes) && d.qualityNotes.length
+    ? d.qualityNotes
+    : qualityNotesFromColumns(d.columns, d.rows.length);
+  const result = {
+    id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic, sourceFormat: d.sourceFormat, provenance: d.provenance,
+    rowCount: d.rows.length, columns, qualityNotes,
+    missingCells: columns.reduce((s, c) => s + c.missing, 0),
+    invalidCells: columns.reduce((s, c) => s + (c.name === '_synthetic' ? 0 : c.invalid), 0),
+    preview: d.rows.slice(0, 12),
+  };
   result.recommendation = recommendPlot(result);
   return result;
 }
@@ -169,8 +181,15 @@ export function explore(store, input) {
   const p = profile(store, d.id), warnings = ['描述统计与相关关系不证明因果。空白视为缺失；数值分析排除非数值单元格。'];
   const result = { contract: 'moondata.explore/1', engine: 'MoonBit', dataset: { id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic, rowCount: d.rows.length }, query: { datasetId: d.id, mode }, profile: p, excludedRows: 0, warnings, chart: null, table: [] };
   if (d.synthetic) warnings.push('此数据集为合成数据，不代表真实业务或测量结果。');
+  for (const note of p.qualityNotes ?? []) warnings.push(note);
   if (mode === 'plot') { const plot = makePlot(d, p, input); return { ...result, ...plot, warnings: [...warnings, ...plot.warnings] }; }
-  if (mode === 'overview') { result.table = p.columns.map(c => ({ field: c.name, type: c.type, missing: c.missing, numeric: c.numeric, distinct: c.distinct, mean: c.summary?.mean ?? null })); return result; }
+  if (mode === 'overview') {
+    result.table = p.columns.map(c => ({
+      field: c.name, type: c.type, missing: c.missing, invalid: c.invalid, numeric: c.numeric,
+      distinct: c.distinct, mean: c.summary?.mean ?? null, hint: c.hints?.[0] ?? '',
+    }));
+    return result;
+  }
   if (mode === 'group') {
     const g = column(d, input.group), reducer = input.reducer ?? 'count';
     if (!['count', 'sum', 'mean', 'min', 'max'].includes(reducer)) throw new AppError('不支持的聚合方式');
