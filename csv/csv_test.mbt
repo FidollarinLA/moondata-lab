@@ -38,24 +38,36 @@ test "missing values do not become zero" {
 
 ///|
 test "quality notes flag mixed and sparse columns with independent percents" {
-  let mixed = { name: "金额", numeric: 2, missing: 0, invalid: 2 }
-  let sparse = { name: "备注", numeric: 0, missing: 3, invalid: 1 }
-  let clean = { name: "id", numeric: 4, missing: 0, invalid: 0 }
-  let synthetic = { name: "_synthetic", numeric: 0, missing: 0, invalid: 4 }
+  let mixed_table = @csv.parse("金额\n1\n2\nbad\nNaN")
+  let mixed = @csv.describe(mixed_table)[0]
+  assert_eq(mixed.numeric, 2)
+  assert_eq(mixed.invalid, 2)
   assert_eq(
-    @csv.quality_notes(mixed, 4),
+    @csv.quality_notes(mixed, mixed_table.rows.length()),
     [
       "字段「金额」为混合列：2 个可解析数值、2 个非数值；数值分析只使用有效值。",
     ],
   )
+  let sparse_table = @csv.parse("备注\n\n\n\nx")
+  let sparse = @csv.describe(sparse_table)[0]
+  assert_eq(sparse.missing, 3)
   assert_eq(
-    @csv.quality_notes(sparse, 4),
+    @csv.quality_notes(sparse, sparse_table.rows.length()),
     ["字段「备注」缺失约 75%（空白视为缺失，0 不算缺失）。"],
   )
-  assert_eq(@csv.quality_notes(clean, 4), [])
-  assert_eq(@csv.quality_notes(synthetic, 4), [])
+  let clean_table = @csv.parse("id\n1\n2\n3\n4")
   assert_eq(
-    @csv.table_quality_notes([mixed, sparse, clean, synthetic], 4).length(),
+    @csv.quality_notes(@csv.describe(clean_table)[0], clean_table.rows.length()),
+    [],
+  )
+  let syn_table = @csv.parse("_synthetic\ntrue\ntrue\ntrue\ntrue")
+  assert_eq(
+    @csv.quality_notes(@csv.describe(syn_table)[0], syn_table.rows.length()),
+    [],
+  )
+  let both = @csv.parse("金额,备注\n1,\n2,\nbad,\nNaN,")
+  assert_eq(
+    @csv.table_quality_notes(@csv.describe(both), both.rows.length()).length(),
     2,
   )
 }
