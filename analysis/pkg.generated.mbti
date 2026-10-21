@@ -60,6 +60,7 @@ pub(all) struct Summary {
 }
 pub fn Summary::to_json(Self) -> Json
 pub impl ToJson for Summary
+pub extend Summary with ToJson::{to_json}
 
 // Type aliases
 
