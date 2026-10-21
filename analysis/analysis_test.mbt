@@ -3,9 +3,18 @@ test "independent population statistics" {
   let s = @analysis.summarize([1.0, 2.0, 3.0, 4.0])
   assert_true(s.mean.is_close(2.5))
   assert_true(s.stddev.is_close(1.25.sqrt()))
+  assert_true(s.sample_stddev.unwrap().is_close((5.0 / 3.0).sqrt()))
   assert_true(s.rms.is_close(7.5.sqrt()))
   assert_eq(s.min, 1.0)
   assert_eq(s.max, 4.0)
+}
+
+///|
+test "sample stddev unavailable for a single value" {
+  let s = @analysis.summarize([8.0])
+  assert_eq(s.count, 1)
+  assert_eq(s.stddev, 0.0)
+  assert_eq(s.sample_stddev, None)
 }
 
 ///|

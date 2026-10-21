@@ -40,7 +40,8 @@ test('source fingerprint uses exact UTF-8 content including BOM', () => {
 });
 test('population statistics agree with independent algebra', () => {
   const s = summarize([1, 2, 3, 4]);
-  close(s.mean, 2.5); close(s.stddev, Math.sqrt(1.25)); close(s.rms, Math.sqrt(7.5));
+  close(s.mean, 2.5); close(s.stddev, Math.sqrt(1.25)); close(s.sample_stddev, Math.sqrt(5 / 3)); close(s.rms, Math.sqrt(7.5));
+  assert.equal(summarize([8]).sample_stddev, null);
   assert.throws(() => summarize([])); assert.throws(() => summarize([Infinity]));
   assert.throws(() => summarize([1e308, -1e308]));
 });

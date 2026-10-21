@@ -60,6 +60,14 @@ GitHub 命令行尚未登录；已向用户说明只需登录或提供可写空�
 实际CPU推理与真实浏览器对话已经跑通；没有用模拟输出代替本地模型测试。新增Node多曲线、配对、日期、聚合、纯文本计数、协议与边界测试；新增浏览器自由选择及真模型路径。模型仍受8192上下文与16候选字段约束，不承诺任意格式或任意问题。
 
 
+## 2026-10-22：审核导向持续迭代机制
+
+产品：把「过审」拆成可核对门槛（克隆、提交数、MoonBit 核心可见、范围诚实、CI、材料一致），写入 [ITERATION](ITERATION.md)。工程：核对公开 `main`=`38e12a4`、匿名 clone 成功、Actions success；加长 [HACKATHON_REVIEW](HACKATHON_REVIEW.md) 十分钟路径（含 Windows 工具链一步）；申报书同步 v0.5（xlsx / 工作区 / `main`）。未扩大功能面。下一轮按 ITERATION P1 提高评审路径成功率，或等组委新意见再改 P0。
+
+## 官方六条对齐 + 持续迭代机制
+
+按官网验收条目补齐 OFFICIAL_ACCEPTANCE / AI_USAGE / SUBMISSION_TEMPLATE / ITERATION；增加 `scripts/smoke.mjs`。MoonBit `Summary` 新增 `sample_stddev`（N−1，N<2 为 null），与总体 `stddev` 分列。创建公开 Issues 跟踪截止前 backlog。Windows 本机 moonc 遇 `\\?\` ICE 时以 Linux CI 为准。
+
 ## 初审复审准备：公开面与默认分支
 
 产品侧：针对「无法克隆」补齐公开仓库、`main` 默认分支与 [HACKATHON_REVIEW](HACKATHON_REVIEW.md) 10 分钟验收路径；README 首屏突出 MoonBit 职责与克隆命令。工程侧：与 `codex/initial-workbench` 同步推送，验证匿名 clone 与 Actions。

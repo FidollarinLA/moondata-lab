@@ -89,7 +89,7 @@ function showResult(result) {
   $('statistics').textContent = result.statistics?.pearson !== undefined ? `Pearson r：${fmt(result.statistics.pearson)}　有效配对：${fmt(result.statistics.count)}` : result.statistics?.median !== undefined ? `中位数 ${fmt(result.statistics.median)}　Q1 ${fmt(result.statistics.q1)}　Q3 ${fmt(result.statistics.q3)}` : '';
   $('chart-caption').textContent = result.chart ? `${result.chart.totalPoints ? `显示 ${result.chart.points.length} / ${result.chart.totalPoints} 个有效点。` : ''}排除 ${result.excludedRows} 行。悬停查看点或柱的数值；报告保留计算依据。` : '';
   if (result.query.mode === 'plot') {
-    $('statistics').textContent = result.statistics.series.map(s => `${s.name}：${s.skipped ? '无有效配对（已跳过）' : s.summary ? `N=${s.summary.count}，均值 ${fmt(s.summary.mean)}${s.summary.pearson !== undefined ? `，r=${fmt(s.summary.pearson)}` : ''}` : '行数汇总'}，排除 ${s.excludedRows} 行`).join('　 /　');
+    $('statistics').textContent = result.statistics.series.map(s => `${s.name}：${s.skipped ? '无有效配对（已跳过）' : s.summary ? `N=${s.summary.count}，均值 ${fmt(s.summary.mean)}，总体σ ${fmt(s.summary.stddev)}${s.summary.sample_stddev != null ? `，样本σ ${fmt(s.summary.sample_stddev)}` : ''}${s.summary.pearson !== undefined ? `，r=${fmt(s.summary.pearson)}` : ''}` : '行数汇总'}，排除 ${s.excludedRows} 行`).join('　 /　');
     const shown = result.chart.series.reduce((n, s) => n + s.points.length, 0);
     const trunc = result.chart.truncatedGroups ? `柱图截断 ${result.chart.truncatedGroups} 组。` : '';
     $('chart-caption').textContent = `显示 ${shown} 个点 / 柱。${trunc}横轴无效 ${result.excludedRows} 行；每条序列的缺失分别处理。结果表预览前200行，报告保留完整结果表。`;

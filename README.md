@@ -9,16 +9,18 @@
 
 | 评审想看的 | 去哪里 |
 | --- | --- |
+| 官方六条对照 | [OFFICIAL_ACCEPTANCE](docs/OFFICIAL_ACCEPTANCE.md) |
 | 为什么用 MoonBit、怎么 10 分钟验收 | [黑客松 / 初审核对](docs/HACKATHON_REVIEW.md) |
+| 持续迭代节奏（到 10/31） | [ITERATION](docs/ITERATION.md) |
+| AI 如何用、红线是什么 | [AI_USAGE](docs/AI_USAGE.md) |
 | 只跑数值核心、不启网页 | [核心复用示例](docs/CORE_USAGE.md) · `node examples/core-only.mjs` |
 | 已知限制与证据 | [人工审阅](docs/HUMAN_REVIEW.md) · [验收](docs/ACCEPTANCE.md) |
 
 ```sh
 git clone https://github.com/FidollarinLA/moondata-lab.git
 cd moondata-lab
-node scripts/build.mjs
-node server/index.mjs
-# 打开 http://127.0.0.1:4321
+node scripts/smoke.mjs          # MoonBit 测试 + 构建 + core-only
+node server/index.mjs           # 打开 http://127.0.0.1:4321
 ```
 
 仓库 **Public**，默认分支 **`main`**。Windows 首次构建可先看 [Windows 构建说明](docs/WINDOWS_BUILD.md)。

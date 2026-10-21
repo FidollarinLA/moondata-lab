@@ -55,9 +55,11 @@ pub(all) struct Summary {
   max : Double
   mean : Double
   stddev : Double
+  sample_stddev : Double?
   rms : Double
-} derive(ToJson)
+}
 pub fn Summary::to_json(Self) -> Json
+pub impl ToJson for Summary
 
 // Type aliases
 

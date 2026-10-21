@@ -10,8 +10,9 @@ pub(all) struct Summary {
   max : Double
   mean : Double
   stddev : Double
+  sample_stddev : Double?
   rms : Double
-} derive(ToJson)
+}
 
 ///|
 fn finite(x : Double) -> Bool {
@@ -19,7 +20,9 @@ fn finite(x : Double) -> Bool {
 }
 
 ///|
-/// Population standard deviation; scaled RMS avoids squaring the input range.
+/// Population standard deviation in `stddev` (divisor N); sample standard
+/// deviation in `sample_stddev` (divisor N−1, None when N < 2). Scaled RMS
+/// avoids squaring the input range.
 pub fn summarize(values : Array[Double]) -> Summary raise AnalysisError {
   if values.is_empty() {
     raise AnalysisError("No finite numeric samples")
@@ -51,6 +54,15 @@ pub fn summarize(values : Array[Double]) -> Summary raise AnalysisError {
     }
   }
   let stddev = (m2 / values.length().to_double()).max(0.0).sqrt()
+  let sample_stddev = if values.length() < 2 {
+    None
+  } else {
+    let s = (m2 / (values.length() - 1).to_double()).max(0.0).sqrt()
+    if !finite(s) {
+      raise AnalysisError("Numeric range exceeds stable calculation limits")
+    }
+    Some(s)
+  }
   let rms = if scale == 0.0 {
     0.0
   } else {
@@ -59,7 +71,7 @@ pub fn summarize(values : Array[Double]) -> Summary raise AnalysisError {
   if !finite(mean) || !finite(stddev) || !finite(rms) {
     raise AnalysisError("Numeric range exceeds stable calculation limits")
   }
-  { count: values.length(), min: low, max: high, mean, stddev, rms, }
+  { count: values.length(), min: low, max: high, mean, stddev, sample_stddev, rms, }
 }
 
 ///|
@@ -299,7 +311,21 @@ pub fn AnalysisError::to_string(self : AnalysisError) -> String {
 }
 
 ///|
-pub extend Summary with ToJson::{to_json}
+/// JSON boundary uses numeric values or null for optional sample stddev.
+pub impl ToJson for Summary with fn to_json(self : Summary) -> Json {
+  {
+    "count": self.count,
+    "min": self.min,
+    "max": self.max,
+    "mean": self.mean,
+    "stddev": self.stddev,
+    "sample_stddev": match self.sample_stddev {
+      Some(v) => Json(v)
+      None => Json::null()
+    },
+    "rms": self.rms,
+  }
+}
 
 ///|
 pub extend StepConfig with ToJson::{to_json}

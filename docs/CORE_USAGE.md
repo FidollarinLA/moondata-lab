@@ -15,7 +15,7 @@ FFI入口接收和返回JSON字符串，返回含ok，失败含error。不要把
 | --- | --- |
 | csv / parse_csv | 严格CSV、原始字符串、数值/null和缺失计数 |
 | generator / generate_json | 固定种子、字段类型、逐行关系、合成标识 |
-| analysis / summarize_json | 均值、总体标准差、RMS等 |
+| analysis / summarize_json | 均值、总体标准差、样本标准差、RMS 等 |
 | explore / aggregate_json | count/sum/mean/min/max分组 |
 | explore / distribution_json | 等宽直方图与分位数 |
 | explore / correlation_json | 配对数值的Pearson相关 |

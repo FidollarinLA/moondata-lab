@@ -26,7 +26,7 @@ export function exportWorkspace(store, { datasetId = null, query = null } = {}) 
     : null;
   return {
     contract: CONTRACT,
-    version: '0.5.1',
+    version: '0.5.2',
     exportedAt: new Date().toISOString(),
     persistence: 'file-pack',
     note: '工作区包可在本机重新导入以恢复数据与可选视图；不证明数据真实性。',

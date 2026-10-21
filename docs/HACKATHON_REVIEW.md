@@ -1,6 +1,7 @@
 # 黑客松 / 初审快速核对
 
-面向评审与复审：本仓库已公开，可用标准 `git clone` 获取默认分支 `main`。
+面向评审与复审：本仓库已公开，可用标准 `git clone` 获取默认分支 `main`。  
+官方六条逐项证据：[OFFICIAL_ACCEPTANCE](OFFICIAL_ACCEPTANCE.md)。持续迭代节奏：[ITERATION](ITERATION.md)。
 
 ## 30 秒结论
 
@@ -9,25 +10,27 @@
 | 仓库可见性 | Public：https://github.com/FidollarinLA/moondata-lab |
 | 默认分支 | `main`（与开发分支内容同步） |
 | 问题 | 通用表格：生成可复现合成数据；上传已有表 → 图表 / 统计 / 可复核报告 |
-| MoonBit 角色 | CSV 解析、确定性生成、描述统计、聚合、分位数、相关；**不是**聊天框包装 |
-| 模型角色 | 可选；只规划受限工具参数，不编造数值，不执行任意代码 |
-| 本地可跑 | Node 22+；`node scripts/build.mjs` → `node server/index.mjs` → `http://127.0.0.1:4321` |
+| MoonBit 角色 | CSV 解析、确定性生成、描述统计（总体+样本标准差）、聚合、分位数、相关；**不是**聊天框包装 |
+| 模型角色 | 可选；只规划受限工具参数，不编造数值，不执行任意代码；见 [AI_USAGE](AI_USAGE.md) |
+| 本地可跑 | Node 22+；`node scripts/smoke.mjs` 或 `build` + `server/index.mjs` → `http://127.0.0.1:4321` |
 | 无 UI 核心 | `node examples/core-only.mjs`（见 [CORE_USAGE](CORE_USAGE.md)） |
 
 ## 建议评审路径（约 10 分钟）
 
-1. 克隆并打开 README，确认定位为「本地表格探索预览版」。
-2. 构建启动后：生成销售台账 → 分组求和 → 下载报告，核对 SHA-256 与方法局限。
-3. 或上传 `examples/sales-synthetic.csv`，用自由画图选坐标。
-4. 可选：`node examples/core-only.mjs` 验证 MoonBit 数值链路独立可用。
-5. 证据索引：[ACCEPTANCE](ACCEPTANCE.md)、[HUMAN_REVIEW](HUMAN_REVIEW.md)、`artifacts/`。
+1. 克隆并打开 README，确认定位为「本地表格探索预览版」（v0.5）。
+2. Windows 若本机无 MoonBit：先按 [WINDOWS_BUILD](WINDOWS_BUILD.md) 执行一次 `node scripts/setup-windows-toolchain.mjs`（固定哈希，写入项目 `.local`，不改系统安装）。
+3. `node scripts/build.mjs` → `node server/index.mjs` → 浏览器打开 `http://127.0.0.1:4321`。
+4. 点「我想生成数据」→ 用默认销售台账生成 → 自由画图或分组求和 → 下载 Markdown 报告，核对 SHA-256 与方法局限。
+5. 或点「我已有数据」上传 `examples/sales-synthetic.csv`，在自由画图选坐标。
+6. 可选：另开终端 `node examples/core-only.mjs`，确认不启网页也能跑 MoonBit 解析与计算。
+7. 证据索引：[ACCEPTANCE](ACCEPTANCE.md)、[HUMAN_REVIEW](HUMAN_REVIEW.md)、`artifacts/`；迭代节奏见 [ITERATION](ITERATION.md)。
 
 ## 明确不宣称
 
 - 不是任意格式 / 任意自然语言万能分析平台。
 - 合成数据不是真实业务或隐私合成保证。
 - 本地小模型可能选错字段；坐标与报告才是核对依据。
-- 相关不证明因果；总体标准差不是样本标准差。
+- 相关不证明因果；`stddev` 为总体标准差（N），`sample_stddev` 为样本标准差（N−1，不足两点则为空）。
 
 ## 复审说明（针对「无法克隆」）
 

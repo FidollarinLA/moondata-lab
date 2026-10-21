@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.2
+
+- Official six-criteria acceptance map, AI usage note, iteration cadence, and `scripts/smoke.mjs`.
+- MoonBit summaries now expose sample standard deviation (N−1) alongside population stddev (N).
+
 ## 0.5.1
 
 - Public GitHub default branch `main`, hackathon review checklist, and README first-screen clone path for resubmission.

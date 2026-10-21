@@ -21,7 +21,7 @@ export function makeReport(results, comparison = null) {
       `| 末段均值 | ${n(m.tail_mean, s.valueUnit)} |`,
       `| 末段误差（目标减均值） | ${n(m.steady_error, s.valueUnit)} |`,
       `| 绝对误差积分 IAE | ${n(m.iae, `${s.valueUnit || '响应单位'}·s`)} |`,
-      `| 全区间均值 / 总体标准差 | ${n(r.summary.mean)} / ${n(r.summary.stddev)} |`,
+      `| 全区间均值 / 总体标准差 / 样本标准差 | ${n(r.summary.mean)} / ${n(r.summary.stddev)} / ${n(r.summary.sample_stddev)} |`,
       `| 原始分析样本 / 阶跃后样本 | ${r.summary.count} / ${m.samples} |`, '',
       `末段样本数：${m.tail_samples}；末段起点：${n(m.tail_start, 's')}。`,
       ...m.warnings.map(w => `- ${clean(w)}`), '');
