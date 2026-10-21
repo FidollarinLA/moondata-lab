@@ -167,9 +167,9 @@ pub fn describe(table : Table) -> Array[Column] {
 pub fn quality_notes(column : Column, row_count : Int) -> Array[String] {
   let notes : Array[String] = []
   let rows = row_count
-  let numeric = column.numeric.to_int()
-  let missing = column.missing.to_int()
-  let invalid = column.invalid.to_int()
+  let numeric = column.numeric
+  let missing = column.missing
+  let invalid = column.invalid
   if rows <= 0 || column.name == "_synthetic" {
     return notes
   }
