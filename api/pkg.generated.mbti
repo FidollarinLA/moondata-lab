@@ -4,6 +4,8 @@ package "FidollarinLA/moondata_lab/api"
 // Values
 pub fn aggregate_json(String) -> String
 
+pub fn canonical_plan_json(String) -> String
+
 pub fn correlation_json(String) -> String
 
 pub fn distribution_json(String) -> String
@@ -15,6 +17,8 @@ pub fn parse_csv(String) -> String
 pub fn step_json(String) -> String
 
 pub fn summarize_json(String) -> String
+
+pub fn validate_tool_json(String) -> String
 
 // Errors
 

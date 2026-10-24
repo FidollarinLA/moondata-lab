@@ -22,14 +22,11 @@ test "tool allowlist rejects shell and accepts propose_generation" {
   assert_true(@contract.is_allowed_tool("propose_generation"))
   assert_true(!@contract.is_allowed_tool("run_shell"))
   let ok = try {
-    @contract.validate_tool_call(
-      "propose_generation",
-      {
-        "rows": 2,
-        "seed": 1,
-        "columns": [{ "name": "id", "kind": "sequence", "start": 1, "step": 1 }],
-      },
-    )
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 2,
+      "seed": 1,
+      "columns": [{ "name": "id", "kind": "sequence", "start": 1, "step": 1 }],
+    })
     true
   } catch {
     _ => false

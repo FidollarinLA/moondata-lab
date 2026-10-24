@@ -108,7 +108,10 @@ pub fn is_allowed_tool(name : String) -> Bool {
 }
 
 ///|
-pub fn validate_tool_call(name : String, args : Json) -> Unit raise ContractError {
+pub fn validate_tool_call(
+  name : String,
+  args : Json,
+) -> Unit raise ContractError {
   guard is_allowed_tool(name) else {
     raise ContractError("Tool not allowlisted: \{name}")
   }
@@ -129,6 +132,7 @@ pub fn validate_tool_call(name : String, args : Json) -> Unit raise ContractErro
   }
 }
 
+///|
 fn required_string(
   map : Map[String, Json],
   key : String,
@@ -142,7 +146,11 @@ fn required_string(
   }
 }
 
-fn required_int(map : Map[String, Json], key : String) -> Int raise ContractError {
+///|
+fn required_int(
+  map : Map[String, Json],
+  key : String,
+) -> Int32 raise ContractError {
   match map.get(key) {
     Some(Number(value, ..)) => {
       guard value == value.floor() else {
@@ -154,13 +162,19 @@ fn required_int(map : Map[String, Json], key : String) -> Int raise ContractErro
   }
 }
 
-fn push_num(parts : Array[String], map : Map[String, Json], key : String) -> Unit {
+///|
+fn push_num(
+  parts : Array[String],
+  map : Map[String, Json],
+  key : String,
+) -> Unit {
   match map.get(key) {
     Some(Number(value, ..)) => parts.push("\{key}=\{value}")
     _ => ()
   }
 }
 
+///|
 fn push_str(
   parts : Array[String],
   map : Map[String, Json],
