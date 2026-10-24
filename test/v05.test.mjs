@@ -71,7 +71,7 @@ test('status advertises preview edition and workspace HTTP round-trips', async t
     return r;
   }
   const status = await (await call('/api/status')).json();
-  assert.equal(status.version, '0.5.2');
+  assert.equal(status.version, '0.6.0');
   assert.equal(status.edition, 'local-table-preview');
   const buffer = buildXlsx(['组', '值'], [['A', 1], ['B', 2], ['A', 3]]);
   const imported = await (await call('/api/import', { name: 'demo.xlsx', format: 'xlsx', contentBase64: buffer.toString('base64') })).json();

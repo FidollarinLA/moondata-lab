@@ -32,5 +32,5 @@ test('MoonBit allowlist blocks shell and accepts sales template proposal', () =>
 test('workbench execute refuses non-allowlisted tools', () => {
   const store = new DatasetStore();
   const toolkit = workbenchTools(store, null);
-  assert.throws(() => toolkit.execute('run_shell', { cmd: 'echo' }), /允许|allow|Tool/i);
+  assert.throws(() => toolkit.execute('run_shell', { cmd: 'echo' }), /ContractError|allowlist|Tool/i);
 });

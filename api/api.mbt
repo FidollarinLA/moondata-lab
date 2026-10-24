@@ -183,7 +183,12 @@ priv struct ToolCallRequest {
 pub fn canonical_plan_json(text : String) -> String {
   try {
     let plan : Json = @json.parse(text)
-    let result : Json = { "ok": true, "canonical": @contract.canonical_plan(plan) }
+    let canonical = try {
+      @contract.canonical_plan(plan)
+    } catch {
+      e => return failure(@contract.ContractError::to_string(e))
+    }
+    let result : Json = { "ok": true, "canonical": canonical }
     result.stringify()
   } catch {
     e => failure(e.to_string())
@@ -195,7 +200,11 @@ pub fn canonical_plan_json(text : String) -> String {
 pub fn validate_tool_json(text : String) -> String {
   try {
     let request : ToolCallRequest = @json.from_json(@json.parse(text))
-    @contract.validate_tool_call(request.name, request.args)
+    try {
+      @contract.validate_tool_call(request.name, request.args)
+    } catch {
+      e => return failure(@contract.ContractError::to_string(e))
+    }
     let result : Json = { "ok": true, "allowed": true, "name": request.name }
     result.stringify()
   } catch {
