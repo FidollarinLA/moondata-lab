@@ -1,7 +1,8 @@
 # 报名申报书提纲（请人工改写后使用）
 
 > **不要把本文直接粘贴进官方报名表。**  
-> 赛事要求申报书由参赛者本人撰写。请用自己的话重写一页以内 Markdown，再提交。
+> 赛事要求申报书由参赛者本人撰写。请用自己的话重写一页以内 Markdown，再提交。  
+> 复审请先读 [RESUBMIT](RESUBMIT.md) 与 [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md)。
 
 建议结构：
 
@@ -12,28 +13,30 @@
 MoonData Lab
 
 ## 一句话简介
-（用你自己的话：本机表格工作台，MoonBit 做解析/生成/统计，可复核报告）
+（用你自己的话：可复现合成数据契约 + 证据链工作台；通用 DataFrame 不与 MoonFrame 抢定位）
 
 ## 参赛方向
 数据处理 / 新项目（或按表单选项填写）
 
-## 通用性
-不绑电机或单一行业；扁平 CSV/JSON/XLSX 台账、问卷、实验记录均可。
+## 与生态关系（复审必写）
+承认 MoonFrame 覆盖通用 CSV/聚合/Vega-Lite。本项目不做「又一个 DataFrame」。
+MoonBit 贡献在：确定性字段生成契约、方案规范化指纹、受限工具白名单、报告证据链。
 
 ## 至少三个完整场景
-1. 生成带种子的销售台账 → 分组求和 → 下载带 SHA-256 的报告  
-2. 上传已有 CSV/XLSX → 自由画图多曲线 → 修改聚合后旧导出失效  
-3. 无 UI：构建后运行 core-only 示例，独立核对均值与分组和  
+1. 固定方案+种子生成销售台账 → 两次 SHA-256 一致 → 报告含指纹  
+2. `node scripts/demo-jury.mjs`：无 UI 走通生成/分组/报告  
+3. 助手路径：非法工具名被 MoonBit contract 拒绝；合法 propose_generation 只出方案不落库  
 
 ## 核心功能
-- MoonBit：严格 CSV、确定性生成、描述统计（含总体/样本标准差）、聚合、分位数、相关  
-- 工作台：生成/导入、自由画图、工作区包、可选本地/远程模型规划  
+- MoonBit `generator` + `contract`：合成方案、规范化指纹、工具允许列表  
+- 工作台：证据型报告、可选本地模型只规划坐标  
+- 表格分析为工作台能力，不宣称替代 MoonFrame  
 
 ## 原创或参考
-原创实现。交互思路参考过通用数据探索工具（如 Data Formulator 一类），**未移植其代码**。第三方清单见仓库 THIRD_PARTY.md。许可证 Apache-2.0。
+生成契约与 Agent 边界为原创实现。交互参考过通用探索工具；MoonFrame / MoonCharts 为生态参考，未移植其源码。见 THIRD_PARTY.md。Apache-2.0。
 
 ## 公开仓库
 https://github.com/FidollarinLA/moondata-lab
 ```
 
-提交前自检：仓库 Public、能 clone、`main` 有 README、至少 10 条有效提交、群昵称=GitHub ID。
+提交前自检：仓库 Public、能 clone、`main` 有 README、至少 10 条有效提交、群昵称=GitHub ID、申报书已人工改写。

@@ -4,6 +4,7 @@ import {
   "FidollarinLA/moondata_lab/analysis",
   "FidollarinLA/moondata_lab/generator",
   "FidollarinLA/moondata_lab/explore",
+  "FidollarinLA/moondata_lab/contract",
 }
 
 pkgtype(kind: "foreign_library")

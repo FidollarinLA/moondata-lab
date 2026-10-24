@@ -1,33 +1,29 @@
-# 持续迭代节奏（对齐黑客松）
+# 持续迭代节奏（对齐黑客松复审）
 
-截止：2026-10-31。原则：每轮都有**可演示的实质增量** + **公开提交** + **对照官方六条更新** [OFFICIAL_ACCEPTANCE](OFFICIAL_ACCEPTANCE.md)。
+截止：2026-10-31。原则：每轮**可演示实质增量** + **公开提交** + 对照 [OFFICIAL_ACCEPTANCE](OFFICIAL_ACCEPTANCE.md) + [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md)。
 
-## 产品经理每周问三句
+## 产品经理每周三句
 
-1. 评委 / 新人 10 分钟内能否 clone → 跑通 → 看懂 MoonBit 贡献？
-2. 本周增量是否「有效工作」（非改文案凑提交）？
-3. 有没有新的夸大宣传需要删掉？
+1. 评委是否看懂「我们不是 MoonFrame 克隆」？
+2. 增量是否落在生成契约 / 证据 / Agent 边界（而非再写一遍聚合）？
+3. 有没有又把「自研 DataFrame」写回宣传？
 
-## 软件工程师每轮交付清单
+## 软件工程师每轮清单
 
-- [ ] 改动落在 MoonBit 契约或可运行路径上（优先）
-- [ ] 独立期望值测试，不拍快照
-- [ ] `node scripts/smoke.mjs` 通过
-- [ ] 更新 CHANGELOG / OFFICIAL_ACCEPTANCE 证据栏
-- [ ] 推送 `main`（及开发分支），确认 CI
-- [ ] 若有规划项，用 GitHub Issue 跟踪（保留公开开发记录）
+- [ ] MoonBit 契约或可运行路径有增量
+- [ ] 独立期望值测试
+- [ ] `node scripts/smoke.mjs` 与 `node scripts/demo-jury.mjs`
+- [ ] 更新 CHANGELOG / OFFICIAL_ACCEPTANCE / DIFF 若定位变化
+- [ ] 推送 `main` 并确认 CI
 
-## 到 10/31 的建议 backlog
+## Backlog（至 10/31）
 
-| 优先级 | 项 | 对应验收条 |
+| 优先级 | 项 | 验收条 |
 | --- | --- | --- |
-| P0 | 保持 Public + CI 绿 + 报名复审 | 2、3 |
-| P0 | 人工改写申报书并提交（≤3 次） | 报名 |
-| P1 | 加强 MoonBit 可复用文档与示例 | 1、3 |
-| P1 | ~~脏数据提示~~（v0.5.3）/ 列类型人工覆盖 | 4（实质新增） |
-| P2 | 模型拒答评测集 | 4、6 |
-| P2 | 多数据集比较（有验收数据再做） | 4 |
-
-## 和 AI 协作方式
-
-在 Cursor 对话中说：「按 ITERATION.md 做下一轮 P1」或贴官方新通知。每轮结束必须推送公开仓库；不要只在本地堆改动。
+| P0 | Public + CI 绿 + **人工改申报书复审** | 报名、2、3 |
+| P0 | 保持与 MoonFrame 差异叙事诚实 | 4 |
+| P1 | 加深生成契约（更多 kind / 属性测试） | 1、4 |
+| P1 | ~~contract 白名单 + demo-jury~~（v0.6） | 4、6 |
+| P2 | 可选：对 MoonFrame 的互操作示例（依赖生态包） | 1 |
+| P2 | 模型拒答评测集 | 6 |
+| — | 列类型覆盖等表格 UX：仅当不强化「我们是 DF 库」叙事时再做 | — |

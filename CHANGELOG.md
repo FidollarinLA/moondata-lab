@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0
+
+- Resubmission pivot: stop positioning as a general DataFrame/plot library vs MoonFrame.
+- Add MoonBit `contract` package: canonical generation-plan fingerprint and tool allowlist.
+- Workbench tool execution validated by MoonBit before Node runs; `scripts/demo-jury.mjs` for reviewers.
+- Docs: DIFF_VS_MOONFRAME, RESUBMIT, rewritten README / submission template / acceptance map.
+
 ## 0.5.3
 
 - MoonBit `@csv.quality_notes` flags mixed numeric/non-numeric columns and ≥30% missing fields.

@@ -171,3 +171,34 @@ pub fn correlation_json(text : String) -> String {
     e => failure(e.to_string())
   }
 }
+
+///|
+priv struct ToolCallRequest {
+  name : String
+  args : Json
+} derive(FromJson)
+
+///|
+#export_name("canonical_plan_json")
+pub fn canonical_plan_json(text : String) -> String {
+  try {
+    let plan : Json = @json.parse(text)
+    let result : Json = { "ok": true, "canonical": @contract.canonical_plan(plan) }
+    result.stringify()
+  } catch {
+    e => failure(e.to_string())
+  }
+}
+
+///|
+#export_name("validate_tool_json")
+pub fn validate_tool_json(text : String) -> String {
+  try {
+    let request : ToolCallRequest = @json.from_json(@json.parse(text))
+    @contract.validate_tool_call(request.name, request.args)
+    let result : Json = { "ok": true, "allowed": true, "name": request.name }
+    result.stringify()
+  } catch {
+    e => failure(e.to_string())
+  }
+}

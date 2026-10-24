@@ -8,12 +8,12 @@
 | 项 | 状态 |
 | --- | --- |
 | 仓库可见性 | Public：https://github.com/FidollarinLA/moondata-lab |
-| 默认分支 | `main`（与开发分支内容同步） |
-| 问题 | 通用表格：生成可复现合成数据；上传已有表 → 图表 / 统计 / 可复核报告 |
-| MoonBit 角色 | CSV 解析、确定性生成、描述统计（总体+样本标准差）、聚合、分位数、相关；**不是**聊天框包装 |
-| 模型角色 | 可选；只规划受限工具参数，不编造数值，不执行任意代码；见 [AI_USAGE](AI_USAGE.md) |
-| 本地可跑 | Node 22+；`node scripts/smoke.mjs` 或 `build` + `server/index.mjs` → `http://127.0.0.1:4321` |
-| 无 UI 核心 | `node examples/core-only.mjs`（见 [CORE_USAGE](CORE_USAGE.md)） |
+| 默认分支 | `main` |
+| 定位 | **合成契约 + 证据工作台**；不是 MoonFrame 式 DataFrame 库 → [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) |
+| MoonBit 角色 | `generator` 确定性生成、`contract` 指纹与工具白名单；工作台内统计；**不是**聊天包装 |
+| 模型角色 | 可选；白名单工具；不编造数值；见 [AI_USAGE](AI_USAGE.md) |
+| 本地可跑 | `node scripts/smoke.mjs`；`node scripts/demo-jury.mjs`；`server/index.mjs` → `:4321` |
+| 复审材料 | [RESUBMIT](RESUBMIT.md)（申报书须人工改写） |
 
 ## 建议评审路径（约 10 分钟）
 

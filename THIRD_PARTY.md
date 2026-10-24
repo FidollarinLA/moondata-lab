@@ -2,14 +2,14 @@
 
 ## 原创实现
 
-本项目的 MoonBit 解析/分析核心、Node.js 服务、Agent 调度、中文界面、SVG 绘图与测试为本仓库的独立实现。没有复制 Data Formulator、MoonFrame、MoonCharts 或 robust_stats 的源码，不将这些项目的功能或成熟度归为本项目已有成果。
+本项目的 MoonBit **生成契约 / contract 白名单**、Node.js 服务、Agent 调度、中文界面、工作台内计算路径与测试为本仓库的独立实现。没有复制 Data Formulator、MoonFrame、MoonCharts 或 robust_stats 的源码。**通用 DataFrame / 聚合 / Vega-Lite 能力以 MoonFrame 为生态主业**；本仓库不把自身表述为 MoonFrame 的替代品（见 docs/DIFF_VS_MOONFRAME.md）。
 
 许可证是标准 Apache-2.0 文本，见 LICENSE。`NOTICE` 记录本项目版权。
 
 ## 学习和选题参考
 
 - [Microsoft Data Formulator](https://github.com/microsoft/data-formulator)：自然语言、数据处理和可视化交互的应用参考。
-- [MoonFrame](https://github.com/ihb2032/MoonFrame)：MoonBit 表格处理生态参考。
+- [MoonFrame](https://mooncakes.io/docs/ihb2032/MoonFrame)（[源码](https://github.com/ihb2032/MoonFrame)）：MoonBit 通用 DataFrame / I/O / 聚合 / Vega-Lite；本项目复审后主动让位，避免能力叙述重叠。
 - [MoonCharts](https://github.com/pxgt/mooncharts)：MoonBit 图表库生态参考。
 - [MoonBit 官方 Agent 教程](https://www.moonbitlang.com/blog/moonbit-async-code-agent)：模型与工具循环的通用结构参考。
 - [MoonBit FFI 文档](https://docs.moonbitlang.com/en/latest/language/ffi.html)：JSON / JavaScript 交互和编译目标参考。

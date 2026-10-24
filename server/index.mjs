@@ -65,9 +65,9 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       }
       if (url.pathname === '/api/status' && req.method === 'GET') {
         send(res, 200, {
-          name: 'MoonData Lab', version: '0.5.2', engine: 'MoonBit', model: modelStatus(env),
-          persistence: 'memory+workspace-pack', edition: 'local-table-preview',
-          dataPolicy: '本地表格探索预览版：本地小模型仅接收问题、字段信息和当前选择，不发送原始数据行。远程模型模式会发送问题、字段方案和工具摘要，分组结果可能包含类别名称。不承诺任意格式或任意自然语言一次做对。',
+          name: 'MoonData Lab', version: '0.6.0', engine: 'MoonBit', model: modelStatus(env),
+          persistence: 'memory+workspace-pack', edition: 'synthetic-contract-workbench',
+          dataPolicy: '可复现合成数据 + 证据链工作台。通用 DataFrame 请用 MoonFrame。本地小模型仅接收问题、字段与当前选择，不发送原始数据行；工具经 MoonBit 白名单校验。不承诺任意格式或自然语言一次做对。',
         }); return;
       }
       const now = Date.now();

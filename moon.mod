@@ -1,6 +1,6 @@
 name = "FidollarinLA/moondata_lab"
 
-version = "0.4.0"
+version = "0.6.0"
 
 readme = "README.md"
 
@@ -10,12 +10,12 @@ license = "Apache-2.0"
 
 keywords = [
   "synthetic-data",
-  "data-analysis",
-  "csv",
-  "agent",
-  "visualization",
+  "reproducibility",
+  "agent-tools",
+  "evidence",
+  "moonbit",
 ]
 
 preferred_target = "js"
 
-description = "A reproducible synthetic-data generator and general analysis workbench powered by MoonBit."
+description = "Reproducible synthetic-data contracts and an evidence-bound agent workbench in MoonBit (not a MoonFrame DataFrame clone)."
