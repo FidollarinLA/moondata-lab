@@ -9,18 +9,18 @@ import { createServer } from '../server/index.mjs';
 const close = (a, b) => assert.ok(Math.abs(a - b) < 1e-9, `${a} != ${b}`);
 
 test('xlsx round-trip preserves headers numbers and text cells', () => {
-  const buffer = buildXlsx(['åœ°åŒº', 'é‡‘é¢', 'å¤‡æ³¨'], [['ä¸œ', 10, 'ok'], ['è¥¿', 20, ''], ['ä¸œ', 30, 'å°¾']]);
+  const buffer = buildXlsx(['µØÇø', '½ð¶î', '±¸×¢'], [['¶«', 10, 'ok'], ['Î÷', 20, ''], ['¶«', 30, 'Î²']]);
   const parsed = parseXlsx(buffer);
-  assert.deepEqual(parsed.headers, ['åœ°åŒº', 'é‡‘é¢', 'å¤‡æ³¨']);
+  assert.deepEqual(parsed.headers, ['µØÇø', '½ð¶î', '±¸×¢']);
   assert.equal(parsed.rows.length, 3);
   assert.equal(parsed.rows[0][1], '10');
   const store = new DatasetStore();
-  const d = importDataset(store, { name: 'å°è´¦.xlsx', format: 'xlsx', contentBase64: buffer.toString('base64') });
+  const d = importDataset(store, { name: 'Ì¨ÕË.xlsx', format: 'xlsx', contentBase64: buffer.toString('base64') });
   assert.equal(d.sourceFormat, 'xlsx');
   assert.equal(d.rowCount, 3);
-  const r = explore(store, { datasetId: d.id, mode: 'plot', x: 'åœ°åŒº', yColumns: ['é‡‘é¢'], kind: 'bar', reducer: 'sum' });
-  assert.deepEqual(r.chart.series[0].points.map(p => [p.x, p.y]), [['ä¸œ', 40], ['è¥¿', 20]]);
-  close(profile(store, d.id).columns.find(c => c.name === 'é‡‘é¢').summary.mean, 20);
+  const r = explore(store, { datasetId: d.id, mode: 'plot', x: 'µØÇø', yColumns: ['½ð¶î'], kind: 'bar', reducer: 'sum' });
+  assert.deepEqual(r.chart.series[0].points.map(p => [p.x, p.y]), [['¶«', 40], ['Î÷', 20]]);
+  close(profile(store, d.id).columns.find(c => c.name === '½ð¶î').summary.mean, 20);
 });
 
 test('invalid utf-8 csv is rejected with actionable message', () => {
@@ -36,12 +36,12 @@ test('multi-series plot skips empty series instead of failing the chart', () => 
   assert.equal(r.chart.series[0].totalPoints, 3);
   assert.equal(r.chart.series[1].skipped, true);
   assert.equal(r.chart.series[1].points.length, 0);
-  assert.match(r.warnings.join(' '), /å·²è·³è¿‡/);
+  assert.match(r.warnings.join(' '), /ÒÑÌø¹ý/);
 });
 
 test('workspace export import restores records query mapping and replaces session', () => {
   const store = new DatasetStore();
-  const d = generateDataset(store, { name: 'æ¼”ç¤º', rows: 5, seed: 3, columns: [{ name: 'x', kind: 'sequence' }, { name: 'y', kind: 'linear', source: 'x', slope: 2 }] });
+  const d = generateDataset(store, { name: 'ÑÝÊ¾', rows: 5, seed: 3, columns: [{ name: 'x', kind: 'sequence' }, { name: 'y', kind: 'linear', source: 'x', slope: 2 }] });
   const pack = exportWorkspace(store, { datasetId: d.id, query: { mode: 'plot', x: 'x', yColumns: ['y'], kind: 'line' } });
   assert.equal(pack.contract, 'moondata.workspace/1');
   assert.equal(pack.datasets.length, 1);
@@ -72,8 +72,8 @@ test('status advertises preview edition and workspace HTTP round-trips', async t
   }
   const status = await (await call('/api/status')).json();
   assert.equal(status.version, '0.6.0');
-  assert.equal(status.edition, 'local-table-preview');
-  const buffer = buildXlsx(['ç»„', 'å€¼'], [['A', 1], ['B', 2], ['A', 3]]);
+  assert.equal(status.edition, 'synthetic-contract-workbench');
+  const buffer = buildXlsx(['×é', 'Öµ'], [['A', 1], ['B', 2], ['A', 3]]);
   const imported = await (await call('/api/import', { name: 'demo.xlsx', format: 'xlsx', contentBase64: buffer.toString('base64') })).json();
   assert.equal(imported.dataset.rowCount, 3);
   const exported = await (await call('/api/workspace/export', { datasetId: imported.dataset.id })).json();
