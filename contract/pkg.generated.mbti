@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "FidollarinLA/moondata_lab/contract"
 
+import {
+  "moonbitlang/core/json",
+}
+
 // Values
 pub fn canonical_column(Json) -> String raise ContractError
 

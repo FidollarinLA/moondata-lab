@@ -26,26 +26,24 @@ fn join_parts(parts : Array[String], sep : String) -> String {
 }
 
 ///|
-fn escape(text : String) -> String {
-  let out = StringBuilder()
+fn assert_token(text : String, label : String) -> String raise ContractError {
   for ch in text.to_array() {
-    if ch == '\\' || ch == '|' || ch == ',' || ch == '{' || ch == '}' {
-      out.write_char('\\')
+    guard ch != '|' && ch != ',' && ch != '{' && ch != '}' else {
+      raise ContractError("\{label} contains reserved fingerprint characters")
     }
-    out.write_char(ch)
   }
-  out.to_string()
+  text
 }
 
 ///|
 /// Stable encoding of one generation column. Key order is fixed here.
 pub fn canonical_column(spec : Json) -> String raise ContractError {
-  guard spec is Object(map) else {
+  guard spec is Object(map, ..) else {
     raise ContractError("Column spec must be a JSON object")
   }
-  let name = required_string(map, "name")
-  let kind = required_string(map, "kind")
-  let parts : Array[String] = ["name=\{escape(name)}", "kind=\{escape(kind)}"]
+  let name = assert_token(required_string(map, "name"), "name")
+  let kind = assert_token(required_string(map, "kind"), "kind")
+  let parts : Array[String] = ["name=\{name}", "kind=\{kind}"]
   push_num(parts, map, "min")
   push_num(parts, map, "max")
   push_num(parts, map, "start")
@@ -60,11 +58,11 @@ pub fn canonical_column(spec : Json) -> String raise ContractError {
   push_num(parts, map, "intercept")
   push_num(parts, map, "noise")
   match map.get("choices") {
-    Some(Array(items)) => {
+    Some(Array(items, ..)) => {
       let rendered : Array[String] = []
       for item in items {
         match item {
-          String(s) => rendered.push(escape(s))
+          String(s, ..) => rendered.push(assert_token(s, "choice"))
           _ => raise ContractError("Category choices must be strings")
         }
       }
@@ -73,13 +71,13 @@ pub fn canonical_column(spec : Json) -> String raise ContractError {
     Some(_) => raise ContractError("choices must be an array")
     None => ()
   }
-  "\{" + join_parts(parts, ",") + "\}"
+  "{" + join_parts(parts, ",") + "}"
 }
 
 ///|
 /// Canonical plan body for reproducibility evidence (not a cryptographic hash).
 pub fn canonical_plan(plan : Json) -> String raise ContractError {
-  guard plan is Object(map) else {
+  guard plan is Object(map, ..) else {
     raise ContractError("Plan must be a JSON object")
   }
   let rows = required_int(map, "rows")
@@ -87,7 +85,7 @@ pub fn canonical_plan(plan : Json) -> String raise ContractError {
   guard rows >= 1 && rows <= 10000 && seed >= 1 && seed < 2147483647 else {
     raise ContractError("Plan rows/seed out of generation contract range")
   }
-  guard map.get("columns") is Some(Array(columns)) else {
+  guard map.get("columns") is Some(Array(columns, ..)) else {
     raise ContractError("Plan requires columns array")
   }
   guard columns.length() >= 1 && columns.length() <= 32 else {
@@ -114,7 +112,7 @@ pub fn validate_tool_call(name : String, args : Json) -> Unit raise ContractErro
   guard is_allowed_tool(name) else {
     raise ContractError("Tool not allowlisted: \{name}")
   }
-  guard args is Object(map) else {
+  guard args is Object(map, ..) else {
     raise ContractError("Tool args must be a JSON object")
   }
   match name {
@@ -122,7 +120,7 @@ pub fn validate_tool_call(name : String, args : Json) -> Unit raise ContractErro
       let _ = canonical_plan(args)
     }
     "plot_dataset" | "explore_dataset" => {
-      guard map.get("datasetId") is Some(String(id)) && !id.is_empty() else {
+      guard map.get("datasetId") is Some(String(id, ..)) && !id.is_empty() else {
         raise ContractError("\{name} requires non-empty datasetId")
       }
     }
@@ -136,7 +134,7 @@ fn required_string(
   key : String,
 ) -> String raise ContractError {
   match map.get(key) {
-    Some(String(value)) => {
+    Some(String(value, ..)) => {
       guard !value.is_empty() else { raise ContractError("Missing \{key}") }
       value
     }
@@ -146,7 +144,7 @@ fn required_string(
 
 fn required_int(map : Map[String, Json], key : String) -> Int raise ContractError {
   match map.get(key) {
-    Some(Number(value)) => {
+    Some(Number(value, ..)) => {
       guard value == value.floor() else {
         raise ContractError("\{key} must be an integer")
       }
@@ -156,13 +154,9 @@ fn required_int(map : Map[String, Json], key : String) -> Int raise ContractErro
   }
 }
 
-fn push_num(
-  parts : Array[String],
-  map : Map[String, Json],
-  key : String,
-) -> Unit {
+fn push_num(parts : Array[String], map : Map[String, Json], key : String) -> Unit {
   match map.get(key) {
-    Some(Number(value)) => parts.push("\{key}=\{value}")
+    Some(Number(value, ..)) => parts.push("\{key}=\{value}")
     _ => ()
   }
 }
@@ -171,9 +165,12 @@ fn push_str(
   parts : Array[String],
   map : Map[String, Json],
   key : String,
-) -> Unit {
+) -> Unit raise ContractError {
   match map.get(key) {
-    Some(String(value)) => parts.push("\{key}=\{escape(value)}")
+    Some(String(value, ..)) => {
+      let safe = assert_token(value, key)
+      parts.push("\{key}=\{safe}")
+    }
     _ => ()
   }
 }
