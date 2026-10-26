@@ -63,6 +63,7 @@
 - [x] 建立审核导向持续迭代说明：[ITERATION](ITERATION.md)（过审门槛、P0/P1/P2 backlog、每轮节奏）。
 - [x] v0.5.3：MoonBit 脏数据提示（混合列 / 高缺失），概览与界面可见。
 - [x] v0.6.0：正视 MoonFrame 驳回意见；`contract` 包 + demo-jury + 申报/README 口径转向合成契约与证据工作台。
+- [x] v0.6.1：生成 provenance 写入 `planCanonical`；拒答评测集；demo-jury 校验白名单拒 `run_shell`。
 
 ## 下一版本候选（不作为已完成能力）
 

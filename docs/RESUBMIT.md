@@ -16,7 +16,9 @@
 | 与 MoonFrame 差异对照 | [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) |
 | MoonBit `contract`：方案规范化指纹、工具白名单 | `contract/` |
 | 工具调用在执行前经 MoonBit 校验 | `server/workbench-agent.mjs` + `validate_tool_json` |
-| 5 分钟无 UI 演示 | `node scripts/demo-jury.mjs` |
+| 生成结果携带 `planCanonical` 指纹 | `provenance.planCanonical`（JSON 导出） |
+| 拒答评测（shell / 缺参工具） | `test/agent-reject.test.mjs` |
+| 5 分钟无 UI 演示 | `node scripts/demo-jury.mjs`（含拒答断言） |
 
 ## 申报书应怎么改（你自己写）
 

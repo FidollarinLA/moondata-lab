@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1
+
+- Generated datasets embed MoonBit `planCanonical` in provenance (export JSON / evidence chain).
+- Reject-tool evaluation set (`test/agent-reject.test.mjs`); `demo-jury.mjs` asserts allowlist denial of `run_shell`.
+- Iteration cadence docs: P2 model-refusal eval marked done for the allowlist surface.
+
 ## 0.6.0
 
 - Resubmission pivot: stop positioning as a general DataFrame/plot library vs MoonFrame.

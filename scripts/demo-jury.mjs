@@ -5,8 +5,8 @@
  */
 import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
-import { templates, generateDataset, explore, dataReport } from '../server/data.mjs';
-import { canonicalPlan } from '../server/core.mjs';
+import { templates, generateDataset, explore, dataReport, downloadDataset } from '../server/data.mjs';
+import { validateToolCall, AppError } from '../server/core.mjs';
 
 const store = new DatasetStore();
 const plan = templates.find(t => t.id === 'sales');
@@ -18,22 +18,18 @@ const group = explore(store, {
 const report = dataReport(store, {
   datasetId: dataset.id, mode: 'group', group: '地区', value: '销售金额', reducer: 'sum',
 });
-const canon = canonicalPlan({
-  rows: plan.rows,
-  seed: plan.seed,
-  columns: plan.columns.map(c => ({
-    name: c.name,
-    kind: c.kind,
-    ...(c.min !== undefined ? { min: c.min } : {}),
-    ...(c.max !== undefined ? { max: c.max } : {}),
-    ...(c.slope !== undefined ? { slope: c.slope } : {}),
-    ...(c.source !== undefined ? { source: c.source } : {}),
-    ...(c.noise !== undefined ? { noise: c.noise } : {}),
-    ...(c.decimals !== undefined ? { decimals: c.decimals } : {}),
-    ...(c.choices ? { choices: c.choices } : {}),
-    ...(c.prefix !== undefined ? { prefix: c.prefix } : {}),
-  })),
-});
+const exported = JSON.parse(downloadDataset(store, dataset.id, 'json').content);
+const canon = exported.provenance.planCanonical;
+if (!canon || !String(canon).startsWith('moondata.generate/1|')) {
+  throw new Error('missing planCanonical fingerprint on generated dataset');
+}
+let rejectShell = false;
+try {
+  validateToolCall('run_shell', { cmd: 'ls' });
+} catch (e) {
+  rejectShell = e instanceof AppError || /ContractError|allowlist|允许/i.test(String(e?.message || e));
+}
+if (!rejectShell) throw new Error('allowlist failed to reject run_shell');
 
 const east = group.table.find(r => r.group === '华东');
 console.log(JSON.stringify({
@@ -42,6 +38,7 @@ console.log(JSON.stringify({
   notADataFrameLibrary: 'Use MoonFrame for general DF; see docs/DIFF_VS_MOONFRAME.md',
   dataset: { name: dataset.name, rows: dataset.rowCount, sha256: dataset.sha256, synthetic: dataset.synthetic },
   planCanonical: canon,
+  rejectShellOk: rejectShell,
   overviewFields: overview.table.length,
   groupSumEast: east?.value ?? null,
   reportSha256InMarkdown: report.markdown.includes(dataset.sha256),

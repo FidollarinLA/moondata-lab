@@ -1,4 +1,4 @@
-import { AppError, text, parseCsv, generateRows, summarize, aggregate, distribution, correlation } from './core.mjs';
+import { AppError, text, parseCsv, generateRows, summarize, aggregate, distribution, correlation, canonicalPlan } from './core.mjs';
 import { makePlot, recommendPlot } from './plot.mjs';
 import { parseXlsx } from './xlsx.mjs';
 import { qualityNotesFromColumns } from './quality.mjs';
@@ -81,12 +81,41 @@ export function normalizePlan(input) {
   });
   return { name: typeof input.name === 'string' ? text(input.name, '数据集名称', 100) : '自定义数据集', rows, seed, columns };
 }
+/** Strip plan to kind-relevant fields for MoonBit fingerprint (order-stable via contract). */
+export function planForFingerprint(plan) {
+  return {
+    rows: plan.rows,
+    seed: plan.seed,
+    columns: plan.columns.map(c => {
+      const col = { name: c.name, kind: c.kind };
+      const add = (key, when = true) => {
+        if (when && c[key] !== undefined && c[key] !== null && c[key] !== '') col[key] = c[key];
+      };
+      if (['number', 'integer'].includes(c.kind)) { add('min'); add('max'); }
+      if (['sequence', 'text'].includes(c.kind)) { add('start'); add('step'); add('prefix'); }
+      if (c.kind === 'category' && Array.isArray(c.choices) && c.choices.length) col.choices = c.choices;
+      if (c.kind === 'boolean') add('probability');
+      if (c.kind === 'date') { add('start_day'); add('step'); }
+      if (c.kind === 'linear') { add('source'); add('slope'); add('intercept'); add('noise'); }
+      add('decimals', ['number', 'linear'].includes(c.kind));
+      add('missing', typeof c.missing === 'number' && c.missing > 0);
+      return col;
+    }),
+  };
+}
 export function generateDataset(store, input) {
   const plan = normalizePlan(input);
   const generated = generateRows(plan);
   const records = generated.rows.map(row => Object.fromEntries(generated.headers.map((h, i) => [h, plan.columns[i]?.kind === 'date' && row[i] !== null ? new Date(row[i] * DAY).toISOString().slice(0, 10) : row[i]])));
   const csv = toCsv(generated.headers, records.map(r => generated.headers.map(h => r[h])));
-  return store.add({ name: `${plan.name}-synthetic.csv`, csv, synthetic: true, sourceFormat: 'generated', records, provenance: { contract: 'moondata.generate/1', engine: 'MoonBit', algorithm: 'Park–Miller 16807 / Schrage', plan, synthetic: true } });
+  const planCanonical = canonicalPlan(planForFingerprint(plan));
+  return store.add({
+    name: `${plan.name}-synthetic.csv`, csv, synthetic: true, sourceFormat: 'generated', records,
+    provenance: {
+      contract: 'moondata.generate/1', engine: 'MoonBit', algorithm: 'Park–Miller 16807 / Schrage',
+      plan, planCanonical, synthetic: true,
+    },
+  });
 }
 export function toCsv(headers, rows, safe = false) {
   const cell = value => {
