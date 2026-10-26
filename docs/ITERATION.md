@@ -32,7 +32,8 @@
 | P1 | ~~申报辅助：README/RESUBMIT 评委三步压缩~~（v0.6.6） | 2、3、4 |
 | P1 | ~~boolean/date 独立期望值 + METHODS 交叉引用~~（v0.6.7） | 1 |
 | P1 | ~~证据面：UI 指纹行展示 planCanonical 摘要~~（v0.6.8） | 4、3 |
-| P1 | 可选：category 等概率独立期望值（小 choices 闭式） | 1 |
+| P1 | ~~category 等概率独立期望值~~（v0.6.9） | 1 |
+| P1 | 证据/边界：status API 暴露 edition + contract 版本字段给评委冒烟 | 2、4 |
 | P2 | 可选：对 MoonFrame 的互操作示例（依赖生态包） | 1 |
 | P2 | ~~工具拒答评测集（allowlist 面）~~（v0.6.1）；模型语义拒答另开 | 6 |
 | — | 列类型覆盖等表格 UX：仅当不强化「我们是 DF 库」叙事时再做 | — |

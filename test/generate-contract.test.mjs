@@ -93,6 +93,22 @@ test('planForFingerprint matches MoonBit canonical surface used in provenance', 
 const EXPECTED_DATE_BOOL_MISS =
   'moondata.generate/1|rows=4|seed=11|columns=[{name=day,kind=date,step=1,start_day=20454},{name=ok,kind=boolean,probability=0.25},{name=n,kind=integer,min=1,max=5,missing=0.1}]';
 
+test('category equal-probability rows match Park–Miller index closed form', () => {
+  // index = floor(u * n); seed=1 → u-seq as in METHODS; [A,B] → A,A,B; [X,Y,Z] → X,X,Z.
+  const two = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'g', kind: 'category', choices: ['A', 'B'] }],
+  });
+  assert.deepEqual(generateRows(two).rows.map(r => r[0]), ['A', 'A', 'B']);
+  const three = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'g', kind: 'category', choices: ['X', 'Y', 'Z'] }],
+  });
+  assert.deepEqual(generateRows(three).rows.map(r => r[0]), ['X', 'X', 'Z']);
+  const weighted = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'g', kind: 'category', choices: ['A', 'A', 'B'] }],
+  });
+  assert.deepEqual(generateRows(weighted).rows.map(r => r[0]), ['A', 'A', 'B']);
+});
+
 test('boolean and date rows match independent Park–Miller / day arithmetic', () => {
   // seed=1 → u = [16807, 282475249, 1622650073] / 2147483647
   // boolean true iff u < probability; date = start_day + i*step (no RNG when missing=0).

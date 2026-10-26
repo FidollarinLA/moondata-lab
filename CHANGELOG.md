@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.9
+
+- Category equal-probability (and weighted-repeat) independent expected values via Park–Miller index closed form.
+- METHODS.md documents `floor(u * |choices|)` with seed-1 examples.
+
 ## 0.6.8
 
 - UI fingerprint row shows truncated `planCanonical` (full string in `title`) for synthetic datasets; imports state they have none.

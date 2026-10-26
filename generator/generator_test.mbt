@@ -115,3 +115,46 @@ test "boolean and date match independent Park Miller and day arithmetic" {
     ],
   )
 }
+
+///|
+fn category_column(choices : Array[String]) -> @generator.ColumnSpec {
+  {
+    name: "g",
+    kind: "category",
+    source: "",
+    min: 0.0,
+    max: 1.0,
+    start: 0.0,
+    step: 1.0,
+    decimals: 0,
+    prefix: "",
+    choices,
+    probability: 0.5,
+    missing: 0.0,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// category index = floor(u * |choices|); repeated labels act as weight.
+/// seed=1 → A,A,B for [A,B]; X,X,Z for [X,Y,Z]; A,A,B for weighted [A,A,B].
+test "category equal probability matches Park Miller index closed form" {
+  assert_eq(@generator.generate([category_column(["A", "B"])], 3, 1), [
+    [Json("A"), Json(true)],
+    [Json("A"), Json(true)],
+    [Json("B"), Json(true)],
+  ])
+  assert_eq(@generator.generate([category_column(["X", "Y", "Z"])], 3, 1), [
+    [Json("X"), Json(true)],
+    [Json("X"), Json(true)],
+    [Json("Z"), Json(true)],
+  ])
+  assert_eq(@generator.generate([category_column(["A", "A", "B"])], 3, 1), [
+    [Json("A"), Json(true)],
+    [Json("A"), Json(true)],
+    [Json("B"), Json(true)],
+  ])
+}
