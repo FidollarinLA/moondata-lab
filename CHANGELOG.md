@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.20
+
+- Independent expected values: linear null-source → null (no noise draw); `noise=0` still consumes RNG when source is present.
+- METHODS + RESUBMIT cite the `(null,null)×2,(5,11),(null,null)×2` example and jury `queryCanonical` path.
+
 ## 0.6.19
 
 - Independent expected values for missing×integer RNG order (null skips the integer draw).

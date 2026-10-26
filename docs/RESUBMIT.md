@@ -9,8 +9,8 @@
 
 ## 评委三步（与 README 一致）
 
-1. `node scripts/demo-jury.mjs` → 生成 / 分组 / 报告含 `planCanonical`；拒 shell  
-2. `node scripts/fingerprint-check.mjs` → 指纹与 CSV SHA-256 自洽  
+1. `node scripts/demo-jury.mjs` → 生成 / 分组 / 报告含 `planCanonical` + `queryCanonical`；拒 shell  
+2. `node scripts/fingerprint-check.mjs` → 生成指纹、分析指纹与 CSV SHA-256 自洽  
 3. [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) → 定位一句话
 
 也可一条龙：`node scripts/smoke.mjs`（含上两项）。
@@ -22,9 +22,10 @@
 | 与 MoonFrame 差异 | [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) |
 | MoonBit `contract` 指纹 + 白名单 | `contract/` |
 | 工具执行前 MoonBit 校验 | `workbench-agent` / `local-planner` + `validate_tool_json` |
-| `planCanonical` 进 provenance / Markdown / JSON `evidence` / UI 指纹行 | 生成、报告、工作台 |
+| `planCanonical` / `queryCanonical` 进 provenance、报告 `evidence`、UI 指纹行 | 生成、explore、报告、工作台 |
+| 工具轨迹 `trace.contract` / `evidence.toolsValidated`（MoonBit 白名单，非模型自述） | Agent / builtin / local-planner |
 | 拒答评测（shell / 空 datasetId / plan_chart） | `test/agent-reject.test.mjs` |
-| 指纹属性与 date/boolean/missing 面 | `contract_test` + `generate-contract` 测试 |
+| 独立期望值（number/linear/integer/missing 次序等） | `generator_test` + `generate-contract` |
 | 离线自检 | `scripts/fingerprint-check.mjs` |
 | 5 分钟演示 | `scripts/demo-jury.mjs` |
 | status 冒烟（edition/contracts/jury） | `GET /api/status` 或 `node scripts/status-check.mjs` |

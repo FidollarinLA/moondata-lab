@@ -123,6 +123,22 @@ test('category equal-probability rows match Park–Miller index closed form', ()
   assert.deepEqual(generateRows(weighted).rows.map(r => r[0]), ['A', 'A', 'B']);
 });
 
+test('linear null source skips noise draw; noise zero still consumes RNG', () => {
+  // Independent: miss then maybe int; on present source linear always draws noise u even if noise=0.
+  // seed=1 → (null,null),(null,null),(5,11),(null,null),(null,null)
+  const plan = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [
+      { name: 'x', kind: 'integer', min: 0, max: 10, missing: 0.3 },
+      { name: 'y', kind: 'linear', source: 'x', slope: 2, intercept: 1, noise: 0, decimals: 2 },
+    ],
+  });
+  assert.deepEqual(
+    generateRows(plan).rows.map((r) => [r[0], r[1]]),
+    [[null, null], [null, null], [5, 11], [null, null], [null, null]],
+  );
+});
+
 test('missing then integer consumes RNG in documented order', () => {
   // missing draw first; null skips integer floor draw.
   // seed=1, missing=0.3, [0,10], five rows → null,null,5,2,null

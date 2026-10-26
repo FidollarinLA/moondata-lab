@@ -177,6 +177,63 @@ fn integer_missing(
 }
 
 ///|
+/// linear with noise=0 still draws one RNG when source is present; null source → null, no draw.
+/// seed=1, x missing=0.3 [0,10], y=2x+1 → (null,null),(null,null),(5,11),(null,null),(null,null).
+test "linear null source skips noise draw; noise zero still consumes RNG" {
+  assert_eq(
+    @generator.generate(
+      [
+        {
+          name: "x",
+          kind: "integer",
+          source: "",
+          min: 0.0,
+          max: 10.0,
+          start: 0.0,
+          step: 1.0,
+          decimals: 0,
+          prefix: "",
+          choices: ([] : Array[String]),
+          probability: 0.5,
+          missing: 0.3,
+          start_day: 0,
+          slope: 1.0,
+          intercept: 0.0,
+          noise: 0.0,
+        },
+        {
+          name: "y",
+          kind: "linear",
+          source: "x",
+          min: 0.0,
+          max: 10.0,
+          start: 1.0,
+          step: 1.0,
+          decimals: 2,
+          prefix: "",
+          choices: ["A", "B"],
+          probability: 0.5,
+          missing: 0.0,
+          start_day: 0,
+          slope: 2.0,
+          intercept: 1.0,
+          noise: 0.0,
+        },
+      ],
+      5,
+      1,
+    ),
+    [
+      [Json::null(), Json::null(), Json(true)],
+      [Json::null(), Json::null(), Json(true)],
+      [Json(5.0), Json(11.0), Json(true)],
+      [Json::null(), Json::null(), Json(true)],
+      [Json::null(), Json::null(), Json(true)],
+    ],
+  )
+}
+
+///|
 /// missing draw first: null skips the integer floor draw.
 /// seed=1, missing=0.3, [0,10], five rows → null,null,5,2,null.
 test "missing then integer consumes RNG in documented order" {
