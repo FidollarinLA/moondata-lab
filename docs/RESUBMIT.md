@@ -18,6 +18,7 @@
 | 工具调用在执行前经 MoonBit 校验 | `server/workbench-agent.mjs` + `validate_tool_json` |
 | 生成结果携带 `planCanonical` 指纹 | `provenance.planCanonical`（JSON 导出） |
 | 拒答评测（shell / 缺参工具） | `test/agent-reject.test.mjs` |
+| 指纹属性测试（键序 / 种子） | `contract/contract_test.mbt` + `test/generate-contract.test.mjs` |
 | 5 分钟无 UI 演示 | `node scripts/demo-jury.mjs`（含拒答断言） |
 
 ## 申报书应怎么改（你自己写）

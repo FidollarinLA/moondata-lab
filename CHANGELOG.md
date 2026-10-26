@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.2
+
+- Property tests: multi-kind `planCanonical` is key-order stable with an independent expected wire form.
+- Same plan → same CSV SHA-256 and fingerprint; seed change diverges both (MoonBit + Node).
+- Fingerprint rejects reserved characters in column names.
+
 ## 0.6.1
 
 - Generated datasets embed MoonBit `planCanonical` in provenance (export JSON / evidence chain).
