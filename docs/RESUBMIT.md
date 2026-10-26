@@ -28,6 +28,7 @@
 | 离线自检 | `scripts/fingerprint-check.mjs` |
 | 5 分钟演示 | `scripts/demo-jury.mjs` |
 | status 冒烟（edition/contracts/jury） | `GET /api/status` 或 `node scripts/status-check.mjs` |
+| 工作区证据摘要 | 导出包顶层 `evidence[]`（含 planCanonical / verified） |
 
 ## 申报书应怎么改（你自己写）
 

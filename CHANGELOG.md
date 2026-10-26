@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.12
+
+- Workspace packs include top-level `evidence[]` (`sha256`, `planCanonical`, `verified`).
+- UI fingerprint shows claimed (unverified) `planCanonical` after import/workspace restore.
+
 ## 0.6.11
 
 - Independent expected values for missing×boolean RNG order (null skips the boolean draw).

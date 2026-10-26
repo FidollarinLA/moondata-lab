@@ -125,11 +125,14 @@ async function selectDataset(id) {
   $('plot-y-hint').textContent = numeric.length ? '选择多个数值字段可叠加比较；留空时画横轴类别行数。' : '未发现数值列：可按横轴类别画行数柱状图。';
   applyPlotQuery(p.recommendation);
   const fp = $('fingerprint');
-  const canon = p.provenance?.planCanonical;
+  const verifiedCanon = p.provenance?.planCanonical;
+  const claimedCanon = p.provenance?.claimed?.planCanonical;
+  const canon = verifiedCanon || claimedCanon;
   const base = `来源：${p.name} · ${p.sourceFormat} · SHA-256 ${p.sha256}`;
   if (canon) {
     const short = canon.length > 80 ? `${canon.slice(0, 80)}…` : canon;
-    fp.textContent = `${base} · planCanonical ${short}`;
+    const tag = verifiedCanon ? 'planCanonical' : '声称 planCanonical（未验证）';
+    fp.textContent = `${base} · ${tag} ${short}`;
     fp.title = canon;
   } else {
     fp.textContent = `${base} · ${p.synthetic ? '合成声明未经验证指纹' : '导入数据（无 planCanonical）'}`;

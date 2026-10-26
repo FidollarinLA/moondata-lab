@@ -44,7 +44,12 @@ test('workspace export import restores records query mapping and replaces sessio
   const d = generateDataset(store, { name: '演示', rows: 5, seed: 3, columns: [{ name: 'x', kind: 'sequence' }, { name: 'y', kind: 'linear', source: 'x', slope: 2 }] });
   const pack = exportWorkspace(store, { datasetId: d.id, query: { mode: 'plot', x: 'x', yColumns: ['y'], kind: 'line' } });
   assert.equal(pack.contract, 'moondata.workspace/1');
+  assert.equal(pack.version, '0.6.12');
   assert.equal(pack.datasets.length, 1);
+  assert.equal(pack.evidence.length, 1);
+  assert.equal(pack.evidence[0].verified, true);
+  assert.match(pack.evidence[0].planCanonical, /^moondata\.generate\/1\|/);
+  assert.equal(pack.evidence[0].sha256, d.sha256);
   const other = new DatasetStore();
   importDataset(other, { name: 'old.csv', content: 'a,b\n1,2\n' });
   const restored = importWorkspace(other, { workspace: pack, replace: true });
@@ -57,6 +62,11 @@ test('workspace export import restores records query mapping and replaces sessio
   assert.equal(again.chart.kind, 'line');
   assert.equal(again.statistics.series[0].summary.count, 5);
   close(again.statistics.series[0].summary.mean, 6);
+  // Re-import is claimed-only: pack evidence after re-export is unverified but still carries the fingerprint.
+  const claimed = exportWorkspace(other);
+  assert.equal(claimed.evidence[0].verified, false);
+  assert.equal(claimed.evidence[0].planCanonical, pack.evidence[0].planCanonical);
+  assert.equal(other.get(restored.datasets[0].id).provenance.claimed.planCanonical, pack.evidence[0].planCanonical);
 });
 
 test('status advertises preview edition and workspace HTTP round-trips', async t => {
@@ -71,7 +81,7 @@ test('status advertises preview edition and workspace HTTP round-trips', async t
     return r;
   }
   const status = await (await call('/api/status')).json();
-  assert.equal(status.version, '0.6.11');
+  assert.equal(status.version, '0.6.12');
   assert.equal(status.edition, 'synthetic-contract-workbench');
   assert.equal(status.positioning, 'not-a-dataframe-library');
   assert.equal(status.contracts.generate, 'moondata.generate/1');

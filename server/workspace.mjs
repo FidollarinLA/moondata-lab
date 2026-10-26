@@ -21,16 +21,29 @@ export function exportWorkspace(store, { datasetId = null, query = null } = {}) 
       csv: toCsv(full.headers, full.rows),
     };
   });
+  const evidence = datasets.map(d => {
+    const prov = d.provenance;
+    const planCanonical = prov?.planCanonical ?? prov?.claimed?.planCanonical ?? null;
+    const verified = typeof prov?.planCanonical === 'string' && !prov?.imported;
+    return {
+      name: d.name,
+      sha256: d.sha256,
+      synthetic: !!d.synthetic,
+      planCanonical,
+      verified,
+    };
+  });
   const view = datasetId && list.some(d => d.id === datasetId)
     ? { datasetId, query: query && typeof query === 'object' ? query : null }
     : null;
   return {
     contract: CONTRACT,
-    version: '0.5.2',
+    version: '0.6.12',
     exportedAt: new Date().toISOString(),
     persistence: 'file-pack',
-    note: '工作区包可在本机重新导入以恢复数据与可选视图；不证明数据真实性。',
+    note: '工作区包可在本机重新导入以恢复数据与可选视图；evidence.planCanonical 仅在本会话生成时为已验证，导入后降为声称。不证明数据真实性。',
     datasets,
+    evidence,
     view,
   };
 }
