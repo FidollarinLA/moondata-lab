@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.14
+
+- Independent expected values for `linear` with uniform noise half-width (`noise*(2u-1)`).
+- METHODS.md documents seed=1 examples `2.5, 4.63, 7.26` (noise=0.5) and `3, 5, 7` (noise=0).
+
 ## 0.6.13
 
 - Independent expected values for `number` lerp + decimals rounding (Park–Miller closed form).

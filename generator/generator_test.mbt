@@ -50,6 +50,64 @@ test "sequence linear relation and marker independent expected rows" {
 }
 
 ///|
+fn linear_noise_pair(noise : Double) -> Array[@generator.ColumnSpec] {
+  [
+    {
+      name: "x",
+      kind: "sequence",
+      source: "",
+      min: 0.0,
+      max: 10.0,
+      start: 1.0,
+      step: 1.0,
+      decimals: 2,
+      prefix: "",
+      choices: ["A", "B"],
+      probability: 0.5,
+      missing: 0.0,
+      start_day: 0,
+      slope: 2.0,
+      intercept: 1.0,
+      noise: 0.0,
+    },
+    {
+      name: "y",
+      kind: "linear",
+      source: "x",
+      min: 0.0,
+      max: 10.0,
+      start: 1.0,
+      step: 1.0,
+      decimals: 2,
+      prefix: "",
+      choices: ["A", "B"],
+      probability: 0.5,
+      missing: 0.0,
+      start_day: 0,
+      slope: 2.0,
+      intercept: 1.0,
+      noise,
+    },
+  ]
+}
+
+///|
+/// linear = round(slope*src + intercept + noise*(2u-1), decimals).
+/// sequence x=1..3 uses no RNG; seed=1 noise=0.5 → y = 2.5, 4.63, 7.26.
+test "linear with noise matches independent Park Miller closed form" {
+  assert_eq(@generator.generate(linear_noise_pair(0.5), 3, 1), [
+    [Json(1.0), Json(2.5), Json(true)],
+    [Json(2.0), Json(4.63), Json(true)],
+    [Json(3.0), Json(7.26), Json(true)],
+  ])
+  assert_eq(@generator.generate(linear_noise_pair(0.0), 3, 1), [
+    [Json(1.0), Json(3.0), Json(true)],
+    [Json(2.0), Json(5.0), Json(true)],
+    [Json(3.0), Json(7.0), Json(true)],
+  ])
+}
+
+///|
 test "uniform integer reference uses one RNG draw per cell" {
   assert_eq(@generator.generate([column("n", "integer", "")], 3, 1), [
     [Json(0.0), Json(true)],

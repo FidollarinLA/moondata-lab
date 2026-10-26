@@ -123,6 +123,36 @@ test('category equal-probability rows match Park–Miller index closed form', ()
   assert.deepEqual(generateRows(weighted).rows.map(r => r[0]), ['A', 'A', 'B']);
 });
 
+test('linear with noise matches independent Park–Miller closed form', () => {
+  // y = round(slope*src + intercept + noise*(2u-1), decimals); sequence uses no RNG.
+  const M = 2147483647;
+  const u = [16807 / M, 282475249 / M, 1622650073 / M];
+  const round = (x, d) => {
+    const s = 10 ** d;
+    return Math.round(x * s) / s;
+  };
+  const expected = u.map((ui, i) => round(2 * (i + 1) + 1 + 0.5 * (2 * ui - 1), 2));
+  assert.deepEqual(expected, [2.5, 4.63, 7.26]);
+
+  const noisy = normalizePlan({
+    rows: 3, seed: 1,
+    columns: [
+      { name: 'x', kind: 'sequence', start: 1, step: 1 },
+      { name: 'y', kind: 'linear', source: 'x', slope: 2, intercept: 1, noise: 0.5, decimals: 2 },
+    ],
+  });
+  assert.deepEqual(generateRows(noisy).rows.map((r) => r[1]), expected);
+
+  const quiet = normalizePlan({
+    rows: 3, seed: 1,
+    columns: [
+      { name: 'x', kind: 'sequence', start: 1, step: 1 },
+      { name: 'y', kind: 'linear', source: 'x', slope: 2, intercept: 1, noise: 0, decimals: 2 },
+    ],
+  });
+  assert.deepEqual(generateRows(quiet).rows.map((r) => r[1]), [3, 5, 7]);
+});
+
 test('number lerp rows match independent Park–Miller closed form', () => {
   // raw = min*(1-u)+max*u; round to decimals then clamp. seed=1 → u as in METHODS.
   const M = 2147483647;
