@@ -127,6 +127,43 @@ test "date boolean missing fingerprint surface" {
 }
 
 ///|
+test "explore queryCanonical is order-stable with independent expected wire form" {
+  let expected_group =
+    "moondata.explore/1|mode=group|group=地区|reducer=sum|value=金额"
+  let a = @contract.canonical_explore_query({
+    "mode": "group",
+    "group": "地区",
+    "reducer": "sum",
+    "value": "金额",
+    "datasetId": "ignored-session-id",
+  })
+  let b = @contract.canonical_explore_query({
+    "value": "金额",
+    "reducer": "sum",
+    "group": "地区",
+    "mode": "group",
+  })
+  assert_eq(a, expected_group)
+  assert_eq(b, expected_group)
+  assert_eq(
+    @contract.canonical_explore_query({ "mode": "overview" }),
+    "moondata.explore/1|mode=overview",
+  )
+  let expected_plot =
+    "moondata.explore/1|mode=plot|x=地区|yColumns=[金额]|kind=bar|reducer=sum"
+  assert_eq(
+    @contract.canonical_explore_query({
+      "reducer": "sum",
+      "kind": "bar",
+      "yColumns": ["金额"],
+      "x": "地区",
+      "mode": "plot",
+    }),
+    expected_plot,
+  )
+}
+
+///|
 test "tool allowlist rejects shell and accepts propose_generation" {
   assert_true(@contract.is_allowed_tool("propose_generation"))
   assert_true(!@contract.is_allowed_tool("run_shell"))

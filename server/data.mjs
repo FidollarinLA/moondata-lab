@@ -1,4 +1,4 @@
-import { AppError, text, parseCsv, generateRows, summarize, aggregate, distribution, correlation, canonicalPlan } from './core.mjs';
+import { AppError, text, parseCsv, generateRows, summarize, aggregate, distribution, correlation, canonicalPlan, canonicalExploreQuery } from './core.mjs';
 import { makePlot, recommendPlot } from './plot.mjs';
 import { parseXlsx } from './xlsx.mjs';
 import { qualityNotesFromColumns } from './quality.mjs';
@@ -272,11 +272,22 @@ export function dataReport(store, query) {
   const canonLine = result.dataset.planCanonical
     ? ['生成指纹 planCanonical：', '```', String(result.dataset.planCanonical).replace(/```/g, "'''"), '```', '']
     : [];
+  // Analysis params only — datasetId is session-local and must not enter the wire form.
+  const { datasetId: _datasetId, ...queryParams } = result.query;
+  const queryCanonical = canonicalExploreQuery(queryParams);
+  const queryCanonLine = [
+    '分析指纹 queryCanonical：',
+    '```',
+    String(queryCanonical).replace(/```/g, "'''"),
+    '```',
+    '',
+  ];
   const md = [
     `# MoonData Lab 数据报告`, '',
     `来源：${clean(result.dataset.name)}`, '',
     `SHA-256：${result.dataset.sha256}`, '',
     ...canonLine,
+    ...queryCanonLine,
     `数据性质：${result.dataset.synthetic ? '合成数据，不代表实测' : '用户导入；真实性未验证'}`, '',
     `计算核心：MoonBit；契约：${result.contract}`, '',
     `查询：${clean(JSON.stringify(result.query))}`, '',
@@ -292,6 +303,7 @@ export function dataReport(store, query) {
     engine: result.engine,
     sourceSha256: result.dataset.sha256,
     planCanonical: result.dataset.planCanonical ?? null,
+    queryCanonical,
     synthetic: !!result.dataset.synthetic,
   };
   // Spread analysis fields for existing UI/browser consumers; evidence sits beside them.

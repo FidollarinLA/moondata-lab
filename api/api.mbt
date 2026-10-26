@@ -194,6 +194,21 @@ pub fn canonical_plan_json(text : String) -> String {
 }
 
 ///|
+#export_name("canonical_explore_query_json")
+pub fn canonical_explore_query_json(text : String) -> String {
+  try {
+    let query : Json = @json.parse(text)
+    let canonical = @contract.canonical_explore_query(query) catch {
+      e => return failure(@contract.ContractError::to_string(e))
+    }
+    let result : Json = { "ok": true, "canonical": canonical }
+    result.stringify()
+  } catch {
+    e => failure(e.to_string())
+  }
+}
+
+///|
 #export_name("validate_tool_json")
 pub fn validate_tool_json(text : String) -> String {
   try {

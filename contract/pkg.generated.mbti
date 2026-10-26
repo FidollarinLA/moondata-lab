@@ -4,6 +4,8 @@ package "FidollarinLA/moondata_lab/contract"
 // Values
 pub fn canonical_column(Json) -> String raise ContractError
 
+pub fn canonical_explore_query(Json) -> String raise ContractError
+
 pub fn canonical_plan(Json) -> String raise ContractError
 
 pub fn is_allowed_tool(String) -> Bool

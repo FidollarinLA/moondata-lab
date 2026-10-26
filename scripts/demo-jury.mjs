@@ -6,7 +6,7 @@
 import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
 import { templates, generateDataset, explore, dataReport, downloadDataset } from '../server/data.mjs';
-import { validateToolCall, AppError } from '../server/core.mjs';
+import { validateToolCall, AppError, canonicalExploreQuery } from '../server/core.mjs';
 
 const store = new DatasetStore();
 const plan = templates.find(t => t.id === 'sales');
@@ -44,6 +44,8 @@ console.log(JSON.stringify({
   reportSha256InMarkdown: report.markdown.includes(dataset.sha256),
   reportPlanCanonicalOk: report.markdown.includes(canon) && report.result.dataset.planCanonical === canon,
   reportEvidenceOk: report.evidence?.planCanonical === canon && JSON.parse(report.json).evidence?.planCanonical === canon && Array.isArray(JSON.parse(report.json).table),
+  queryCanonical: report.evidence?.queryCanonical ?? null,
+  reportQueryCanonicalOk: !!report.evidence?.queryCanonical?.startsWith('moondata.explore/1|'),
   reportBytes: Buffer.byteLength(report.markdown),
   selfCheck: createHash('sha256').update(canon).digest('hex').slice(0, 12),
 }, null, 2));
@@ -52,4 +54,10 @@ if (!report.markdown.includes(canon) || report.result.dataset.planCanonical !== 
 }
 if (report.evidence?.planCanonical !== canon || JSON.parse(report.json).evidence?.planCanonical !== canon) {
   throw new Error('JSON report evidence.planCanonical missing or mismatched');
+}
+const expectedQuery = canonicalExploreQuery({
+  mode: 'group', group: '地区', reducer: 'sum', value: '销售金额',
+});
+if (report.evidence?.queryCanonical !== expectedQuery || !report.markdown.includes(expectedQuery)) {
+  throw new Error('report must cite MoonBit queryCanonical evidence');
 }

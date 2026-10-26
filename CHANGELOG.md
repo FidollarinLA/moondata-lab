@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.16
+
+- MoonBit `canonical_explore_query`: stable `queryCanonical` wire form (no session `datasetId`).
+- Reports cite `evidence.queryCanonical` beside `planCanonical` (markdown + JSON).
+
 ## 0.6.15
 
 - Successful tool traces carry `contract` evidence (`moondata.contract/validate_tool_call`); responses expose `evidence.toolsValidated`.

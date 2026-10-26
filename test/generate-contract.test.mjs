@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
-import { canonicalPlan, generateRows } from '../server/core.mjs';
+import { canonicalPlan, canonicalExploreQuery, generateRows } from '../server/core.mjs';
 import {
   normalizePlan, planForFingerprint, generateDataset, downloadDataset, templates, dataReport,
 } from '../server/data.mjs';
@@ -204,6 +204,34 @@ test('boolean and date rows match independent Park–Miller / day arithmetic', (
     columns: [{ name: 'day', kind: 'date', startDate: '2026-01-03', step: -1 }],
   });
   assert.deepEqual(store.get(back.id).records.map(r => r.day), ['2026-01-03', '2026-01-02', '2026-01-01']);
+});
+
+test('explore queryCanonical is order-stable and cited in report evidence', () => {
+  const expected =
+    'moondata.explore/1|mode=group|group=地区|reducer=sum|value=金额';
+  assert.equal(
+    canonicalExploreQuery({
+      mode: 'group', group: '地区', reducer: 'sum', value: '金额', datasetId: 'sess',
+    }),
+    expected,
+  );
+  assert.equal(
+    canonicalExploreQuery({
+      value: '金额', reducer: 'sum', group: '地区', mode: 'group',
+    }),
+    expected,
+  );
+  assert.equal(canonicalExploreQuery({ mode: 'overview' }), 'moondata.explore/1|mode=overview');
+
+  const store = new DatasetStore();
+  const d = generateDataset(store, { ...templates[0], rows: 20 });
+  const report = dataReport(store, {
+    datasetId: d.id, mode: 'group', group: '地区', value: '销售金额', reducer: 'sum',
+  });
+  const qCanon = 'moondata.explore/1|mode=group|group=地区|reducer=sum|value=销售金额';
+  assert.equal(report.evidence.queryCanonical, qCanon);
+  assert.ok(report.markdown.includes(qCanon));
+  assert.equal(JSON.parse(report.json).evidence.queryCanonical, qCanon);
 });
 
 test('date/boolean/missing fingerprint surface and report cites planCanonical', () => {

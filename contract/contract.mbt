@@ -96,6 +96,66 @@ pub fn canonical_plan(plan : Json) -> String raise ContractError {
 }
 
 ///|
+/// Stable explore-query fingerprint (analysis params only; datasetId excluded).
+pub fn canonical_explore_query(query : Json) -> String raise ContractError {
+  guard query is Object(map) else {
+    raise ContractError("Explore query must be a JSON object")
+  }
+  let mode = assert_token(required_string(map, "mode"), "mode")
+  let parts : Array[String] = ["mode=\{mode}"]
+  match mode {
+    "overview" => ()
+    "group" => {
+      parts.push(
+        "group=\{assert_token(required_string(map, "group"), "group")}",
+      )
+      parts.push(
+        "reducer=\{assert_token(required_string(map, "reducer"), "reducer")}",
+      )
+      push_str(parts, map, "value")
+    }
+    "distribution" => {
+      parts.push(
+        "value=\{assert_token(required_string(map, "value"), "value")}",
+      )
+      match map.get("bins") {
+        Some(Number(value, ..)) => {
+          guard value == value.floor() else {
+            raise ContractError("bins must be an integer")
+          }
+          parts.push("bins=\{value.to_int()}")
+        }
+        _ => raise ContractError("Missing integer field bins")
+      }
+    }
+    "scatter" | "line" => {
+      parts.push("x=\{assert_token(required_string(map, "x"), "x")}")
+      parts.push("y=\{assert_token(required_string(map, "y"), "y")}")
+    }
+    "plot" => {
+      parts.push("x=\{assert_token(required_string(map, "x"), "x")}")
+      match map.get("yColumns") {
+        Some(Array(items)) => {
+          let rendered : Array[String] = []
+          for item in items {
+            match item {
+              String(s) => rendered.push(assert_token(s, "yColumn"))
+              _ => raise ContractError("yColumns must be strings")
+            }
+          }
+          parts.push("yColumns=[\{join_parts(rendered, ",")}]")
+        }
+        _ => raise ContractError("plot requires yColumns array")
+      }
+      push_str(parts, map, "kind")
+      push_str(parts, map, "reducer")
+    }
+    _ => raise ContractError("Unsupported explore mode")
+  }
+  "moondata.explore/1|" + join_parts(parts, "|")
+}
+
+///|
 pub fn is_allowed_tool(name : String) -> Bool {
   match name {
     "profile_dataset"
