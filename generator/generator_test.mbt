@@ -50,10 +50,7 @@ test "sequence linear relation and marker independent expected rows" {
 }
 
 ///|
-fn seq_column(
-  start : Double,
-  step : Double,
-) -> @generator.ColumnSpec {
+fn seq_column(start : Double, step : Double) -> @generator.ColumnSpec {
   {
     name: "id",
     kind: "sequence",
