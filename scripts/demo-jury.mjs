@@ -43,7 +43,7 @@ console.log(JSON.stringify({
   groupSumEast: east?.value ?? null,
   reportSha256InMarkdown: report.markdown.includes(dataset.sha256),
   reportPlanCanonicalOk: report.markdown.includes(canon) && report.result.dataset.planCanonical === canon,
-  reportEvidenceOk: report.evidence?.planCanonical === canon && JSON.parse(report.json).evidence?.planCanonical === canon,
+  reportEvidenceOk: report.evidence?.planCanonical === canon && JSON.parse(report.json).evidence?.planCanonical === canon && Array.isArray(JSON.parse(report.json).table),
   reportBytes: Buffer.byteLength(report.markdown),
   selfCheck: createHash('sha256').update(canon).digest('hex').slice(0, 12),
 }, null, 2));

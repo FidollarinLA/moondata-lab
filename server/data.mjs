@@ -294,12 +294,12 @@ export function dataReport(store, query) {
     planCanonical: result.dataset.planCanonical ?? null,
     synthetic: !!result.dataset.synthetic,
   };
-  // JSON report carries evidence at top level so reviewers need not dig through result.dataset.
+  // Spread analysis fields for existing UI/browser consumers; evidence sits beside them.
   return {
     result,
     markdown: md,
     evidence,
-    json: JSON.stringify({ evidence, result }, null, 2),
+    json: JSON.stringify({ ...result, evidence }, null, 2),
   };
 }
 export function downloadDataset(store, id, format) {

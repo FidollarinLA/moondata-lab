@@ -100,7 +100,7 @@ test('Pearson handles positive negative and constant columns; pairwise deletion 
 test('plot limit does not reduce statistical sample and report recomputes rather than trusts metrics', () => {
   const store = new DatasetStore(), d = generateDataset(store, { rows: 2000, seed: 1, columns: [{ name: 'x', kind: 'sequence' }, { name: 'y', kind: 'linear', source: 'x', slope: -2 }] });
   const query = { datasetId: d.id, mode: 'scatter', x: 'x', y: 'y', statistics: { pearson: 999 } };
-  const r = dataReport(store, query); assert.equal(r.result.chart.points.length, 1500); assert.equal(r.result.statistics.count, 2000); close(r.result.statistics.pearson, -1); assert.match(r.markdown, /SHA-256/); assert.match(r.markdown, /合成数据/); assert.equal(JSON.parse(r.json).result.query.statistics, undefined); assert.equal(r.evidence.sourceSha256, r.result.dataset.sha256);
+  const r = dataReport(store, query); assert.equal(r.result.chart.points.length, 1500); assert.equal(r.result.statistics.count, 2000); close(r.result.statistics.pearson, -1); assert.match(r.markdown, /SHA-256/); assert.match(r.markdown, /合成数据/); assert.equal(JSON.parse(r.json).query.statistics, undefined); assert.equal(JSON.parse(r.json).evidence.sourceSha256, r.result.dataset.sha256); assert.equal(r.evidence.sourceSha256, r.result.dataset.sha256);
 });
 test('offline commands propose without generating and never pretend free natural language', async () => {
   const store = new DatasetStore(); const r = await workbenchAgent({ store, message: '生成销售台账示例', config: null });
