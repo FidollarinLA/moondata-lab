@@ -80,6 +80,7 @@
 - [x] v0.6.15：Agent/builtin 工具轨迹写入 MoonBit allowlist evidence。
 - [x] v0.6.16：MoonBit `queryCanonical` + 报告 evidence（与 planCanonical 并列）。
 - [x] v0.6.17：`integer` 闭区间独立期望值（METHODS 闭合式）。
+- [x] v0.6.18：explore 附带 queryCanonical；UI + fingerprint-check 验收。
 
 ## 下一版本候选（不作为已完成能力）
 

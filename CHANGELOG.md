@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.18
+
+- `explore` responses attach `queryCanonical`; UI fingerprint shows it after analysis.
+- `fingerprint-check` and browser acceptance assert explore/report queryCanonical evidence.
+
 ## 0.6.17
 
 - Independent expected values for `integer` closed intervals via `min + floor(u*(max-min+1))`.

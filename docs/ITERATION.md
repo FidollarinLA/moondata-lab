@@ -42,6 +42,7 @@
 | P1 | ~~报告/工具轨迹：allowlist 校验结果写入 evidence~~（v0.6.15） | 4、6 |
 | P1 | ~~explore queryCanonical 进入报告 evidence~~（v0.6.16） | 4 |
 | P1 | ~~integer 闭区间独立期望值~~（v0.6.17） | 1 |
+| P1 | ~~UI/fingerprint-check 展示 queryCanonical~~（v0.6.18） | 3、4 |
 | P2 | 可选：对 MoonFrame 的互操作示例（依赖生态包） | 1 |
 | P2 | ~~工具拒答评测集（allowlist 面）~~（v0.6.1）；模型语义拒答另开 | 6 |
 | — | 列类型覆盖等表格 UX：仅当不强化「我们是 DF 库」叙事时再做 | — |

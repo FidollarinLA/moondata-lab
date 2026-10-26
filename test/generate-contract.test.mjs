@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
 import { canonicalPlan, canonicalExploreQuery, generateRows } from '../server/core.mjs';
 import {
-  normalizePlan, planForFingerprint, generateDataset, downloadDataset, templates, dataReport,
+  normalizePlan, planForFingerprint, generateDataset, downloadDataset, templates, dataReport, explore,
 } from '../server/data.mjs';
 
 /** Independent expected fingerprint (includes decimals on linear — matches normalizePlan defaults). */
@@ -247,10 +247,14 @@ test('explore queryCanonical is order-stable and cited in report evidence', () =
 
   const store = new DatasetStore();
   const d = generateDataset(store, { ...templates[0], rows: 20 });
+  const qCanon = 'moondata.explore/1|mode=group|group=地区|reducer=sum|value=销售金额';
+  const explored = explore(store, {
+    datasetId: d.id, mode: 'group', group: '地区', value: '销售金额', reducer: 'sum',
+  });
+  assert.equal(explored.queryCanonical, qCanon);
   const report = dataReport(store, {
     datasetId: d.id, mode: 'group', group: '地区', value: '销售金额', reducer: 'sum',
   });
-  const qCanon = 'moondata.explore/1|mode=group|group=地区|reducer=sum|value=销售金额';
   assert.equal(report.evidence.queryCanonical, qCanon);
   assert.ok(report.markdown.includes(qCanon));
   assert.equal(JSON.parse(report.json).evidence.queryCanonical, qCanon);

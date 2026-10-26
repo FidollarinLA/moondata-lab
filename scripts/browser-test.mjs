@@ -39,6 +39,8 @@ try {
   record('same schema and seed reproduce exact dataset hash through UI');
   await page.locator('#advanced-analysis > summary').click(); await page.locator('#mode').selectOption('group'); await page.locator('#group').selectOption('地区'); await page.locator('#reducer').selectOption('sum'); await page.locator('#value').selectOption('销售金额'); await update();
   assert.equal(await page.locator('#chart rect').count(), 4); assert.match(await download('#svg-button'), /<svg/);
+  assert.match(await page.locator('#fingerprint').innerText(), /queryCanonical/);
+  assert.match(await page.locator('#fingerprint').getAttribute('title'), /moondata\.explore\/1\|mode=group/);
   await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({ path: new URL('browser-analysis.png', directory).pathname.replace(/^\/(\w:)/, '$1'), fullPage: true });
   record('generated sales ledger groups and renders an exportable bar chart');

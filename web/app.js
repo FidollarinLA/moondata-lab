@@ -98,6 +98,15 @@ function showResult(result) {
   const labels = { series: '序列', x: '横轴', xLabel: '横轴原值', y: '纵轴数值', row: '原始行号', group: '分组', rows: '行数', valid: '有效数', value: '聚合值', field: '字段', type: '类型', missing: '缺失', invalid: '不可解析', numeric: '数值个数', distinct: '不同值', mean: '平均值', lower: '区间下界', upper: '区间上界', count: '频数', hint: '质量提示' };
   table($('result-table'), headers.map(h => labels[h] ?? h), result.table.slice(0, 200).map(r => headers.map(h => h === 'type' ? ({ number: '数值', text: '文本', date: '日期', boolean: '是/否' })[r[h]] ?? r[h] : r[h])));
   $('warnings').replaceChildren(...result.warnings.map(w => el('p', w)));
+  const fp = $('fingerprint');
+  if (fp && result.queryCanonical) {
+    const base = fp.textContent.replace(/\s·\squeryCanonical\s.*$/, '');
+    const q = result.queryCanonical;
+    const short = q.length > 72 ? `${q.slice(0, 72)}…` : q;
+    fp.textContent = `${base} · queryCanonical ${short}`;
+    const titles = [fp.title, q].filter(Boolean);
+    fp.title = [...new Set(titles.join('\n').split('\n').filter(Boolean))].join('\n');
+  }
 }
 async function selectDataset(id) {
   invalidate(); state.id = id; state.history = []; renderDatasets();

@@ -204,6 +204,12 @@ function plotted(points, limit = 1500) {
   if (points.length <= limit) return points;
   return Array.from({ length: limit }, (_, i) => points[Math.floor(i * (points.length - 1) / (limit - 1))]);
 }
+function attachQueryCanonical(result) {
+  const { datasetId: _id, ...params } = result.query;
+  result.queryCanonical = canonicalExploreQuery(params);
+  return result;
+}
+
 export function explore(store, input) {
   if (!input || typeof input !== 'object') throw new AppError('无效分析请求');
   const d = store.get(input.datasetId), mode = input.mode ?? 'overview';
@@ -216,13 +222,16 @@ export function explore(store, input) {
   };
   if (d.synthetic) warnings.push('此数据集为合成数据，不代表真实业务或测量结果。');
   for (const note of p.qualityNotes ?? []) warnings.push(note);
-  if (mode === 'plot') { const plot = makePlot(d, p, input); return { ...result, ...plot, warnings: [...warnings, ...plot.warnings] }; }
+  if (mode === 'plot') {
+    const plot = makePlot(d, p, input);
+    return attachQueryCanonical({ ...result, ...plot, warnings: [...warnings, ...plot.warnings] });
+  }
   if (mode === 'overview') {
     result.table = p.columns.map(c => ({
       field: c.name, type: c.type, missing: c.missing, invalid: c.invalid, numeric: c.numeric,
       distinct: c.distinct, mean: c.summary?.mean ?? null, hint: c.hints?.[0] ?? '',
     }));
-    return result;
+    return attachQueryCanonical(result);
   }
   if (mode === 'group') {
     const g = column(d, input.group), reducer = input.reducer ?? 'count';
@@ -261,7 +270,7 @@ export function explore(store, input) {
     if (points.length > 1500) warnings.push(`图和报告点表最多等距抽取 1500 点（已截断 ${points.length - 1500}）；统计使用全部有效配对，完整数据请另行下载。`);
     if (mode === 'scatter' && result.statistics.pearson === null) warnings.push('常数列的 Pearson 相关系数不可用。');
   } else throw new AppError('未知分析模式');
-  return result;
+  return attachQueryCanonical(result);
 }
 export function fmt(v) { return v === null || v === undefined ? '不可用' : typeof v === 'number' ? Number(v.toPrecision(7)).toString() : String(v); }
 export function dataReport(store, query) {
@@ -272,9 +281,9 @@ export function dataReport(store, query) {
   const canonLine = result.dataset.planCanonical
     ? ['生成指纹 planCanonical：', '```', String(result.dataset.planCanonical).replace(/```/g, "'''"), '```', '']
     : [];
-  // Analysis params only — datasetId is session-local and must not enter the wire form.
-  const { datasetId: _datasetId, ...queryParams } = result.query;
-  const queryCanonical = canonicalExploreQuery(queryParams);
+  // Prefer explore-attached fingerprint; recompute only if a caller stripped it.
+  const queryCanonical = result.queryCanonical
+    ?? canonicalExploreQuery((({ datasetId: _datasetId, ...params }) => params)(result.query));
   const queryCanonLine = [
     '分析指纹 queryCanonical：',
     '```',

@@ -6,9 +6,9 @@
  */
 import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
-import { canonicalPlan } from '../server/core.mjs';
+import { canonicalPlan, canonicalExploreQuery } from '../server/core.mjs';
 import {
-  templates, normalizePlan, planForFingerprint, generateDataset, downloadDataset, dataReport,
+  templates, normalizePlan, planForFingerprint, generateDataset, downloadDataset, dataReport, explore,
 } from '../server/data.mjs';
 
 const store = new DatasetStore();
@@ -21,9 +21,12 @@ const b = generateDataset(store, plan);
 const jsonA = JSON.parse(downloadDataset(store, a.id, 'json').content);
 const csvA = downloadDataset(store, a.id, 'csv').content;
 const csvHash = createHash('sha256').update(csvA).digest('hex');
-const report = dataReport(store, {
-  datasetId: a.id, mode: 'group', group: '地区', value: '销售金额', reducer: 'sum',
+const groupQuery = { datasetId: a.id, mode: 'group', group: '地区', value: '销售金额', reducer: 'sum' };
+const expectedQuery = canonicalExploreQuery({
+  mode: 'group', group: '地区', value: '销售金额', reducer: 'sum',
 });
+const explored = explore(store, groupQuery);
+const report = dataReport(store, groupQuery);
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -33,6 +36,9 @@ const checks = {
   reportEvidencePlanCanonical: report.evidence?.planCanonical === expectedCanon,
   reportJsonEvidence: JSON.parse(report.json).evidence?.planCanonical === expectedCanon,
   reportMarkdownCitesCanon: report.markdown.includes(expectedCanon),
+  exploreAttachesQueryCanonical: explored.queryCanonical === expectedQuery,
+  reportEvidenceQueryCanonical: report.evidence?.queryCanonical === expectedQuery,
+  reportMarkdownCitesQueryCanonical: report.markdown.includes(expectedQuery),
 };
 
 const ok = Object.values(checks).every(Boolean);
