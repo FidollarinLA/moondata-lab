@@ -151,6 +151,52 @@ test "integer closed interval matches independent Park Miller floor form" {
 }
 
 ///|
+fn integer_missing(
+  min : Double,
+  max : Double,
+  missing : Double,
+) -> @generator.ColumnSpec {
+  {
+    name: "n",
+    kind: "integer",
+    source: "",
+    min,
+    max,
+    start: 0.0,
+    step: 1.0,
+    decimals: 0,
+    prefix: "",
+    choices: ([] : Array[String]),
+    probability: 0.5,
+    missing,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// missing draw first: null skips the integer floor draw.
+/// seed=1, missing=0.3, [0,10], five rows → null,null,5,2,null.
+test "missing then integer consumes RNG in documented order" {
+  assert_eq(@generator.generate([integer_missing(0.0, 10.0, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json(5.0), Json(true)],
+    [Json(2.0), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+  assert_eq(@generator.generate([integer_missing(0.0, 10.0, 0.8)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+}
+
+///|
 fn typed_column(
   name : String,
   kind : String,

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.19
+
+- Independent expected values for missing×integer RNG order (null skips the integer draw).
+- METHODS.md documents seed=1 five-row example `null,null,5,2,null` for `[0,10]` with `missing=0.3`.
+
 ## 0.6.18
 
 - `explore` responses attach `queryCanonical`; UI fingerprint shows it after analysis.

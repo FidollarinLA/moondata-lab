@@ -123,6 +123,21 @@ test('category equal-probability rows match Park–Miller index closed form', ()
   assert.deepEqual(generateRows(weighted).rows.map(r => r[0]), ['A', 'A', 'B']);
 });
 
+test('missing then integer consumes RNG in documented order', () => {
+  // missing draw first; null skips integer floor draw.
+  // seed=1, missing=0.3, [0,10], five rows → null,null,5,2,null
+  const plan = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'n', kind: 'integer', min: 0, max: 10, missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(plan).rows.map((r) => r[0]), [null, null, 5, 2, null]);
+  const heavy = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'n', kind: 'integer', min: 0, max: 10, missing: 0.8 }],
+  });
+  assert.deepEqual(generateRows(heavy).rows.map((r) => r[0]), [null, null, null, null, null]);
+});
+
 test('integer closed interval matches independent Park–Miller floor form', () => {
   // value = min + floor(u * (max-min+1)); seed=1 → u as in METHODS.
   const M = 2147483647;
