@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.13
+
+- Independent expected values for `number` lerp + decimals rounding (Park–Miller closed form).
+- METHODS.md documents seed=1 examples `[0,10]@2 → 0, 1.32, 7.56` and `[1,2]@3 → 1, 1.132, 1.756`.
+
 ## 0.6.12
 
 - Workspace packs include top-level `evidence[]` (`sha256`, `planCanonical`, `verified`).

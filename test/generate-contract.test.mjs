@@ -123,6 +123,33 @@ test('category equal-probability rows match Park–Miller index closed form', ()
   assert.deepEqual(generateRows(weighted).rows.map(r => r[0]), ['A', 'A', 'B']);
 });
 
+test('number lerp rows match independent Park–Miller closed form', () => {
+  // raw = min*(1-u)+max*u; round to decimals then clamp. seed=1 → u as in METHODS.
+  const M = 2147483647;
+  const u = [16807 / M, 282475249 / M, 1622650073 / M];
+  const round = (x, d) => {
+    const s = 10 ** d;
+    return Math.round(x * s) / s;
+  };
+  const expected10 = u.map((ui) => round(0 * (1 - ui) + 10 * ui, 2));
+  assert.deepEqual(expected10, [0, 1.32, 7.56]);
+
+  const wide = normalizePlan({
+    rows: 3, seed: 1,
+    columns: [{ name: 'x', kind: 'number', min: 0, max: 10, decimals: 2 }],
+  });
+  assert.deepEqual(generateRows(wide).rows.map((r) => r[0]), expected10);
+
+  const narrow = normalizePlan({
+    rows: 3, seed: 1,
+    columns: [{ name: 'x', kind: 'number', min: 1, max: 2, decimals: 3 }],
+  });
+  assert.deepEqual(
+    generateRows(narrow).rows.map((r) => r[0]),
+    u.map((ui) => round(1 * (1 - ui) + 2 * ui, 3)),
+  );
+});
+
 test('boolean and date rows match independent Park–Miller / day arithmetic', () => {
   // seed=1 → u = [16807, 282475249, 1622650073] / 2147483647
   // boolean true iff u < probability; date = start_day + i*step (no RNG when missing=0).

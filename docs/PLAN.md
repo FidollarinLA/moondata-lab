@@ -75,6 +75,7 @@
 - [x] v0.6.10：`/api/status` 暴露 contracts/jury；status-check 纳入 smoke。
 - [x] v0.6.11：missing×boolean RNG 顺序独立期望值 + METHODS 说明。
 - [x] v0.6.12：工作区包 `evidence[]`；导入后 UI 展示声称 planCanonical。
+- [x] v0.6.13：`number` lerp + decimals 独立期望值（METHODS 闭合式）。
 
 ## 下一版本候选（不作为已完成能力）
 

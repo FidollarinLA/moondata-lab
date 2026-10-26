@@ -185,6 +185,48 @@ fn bool_missing(
 }
 
 ///|
+fn number_column(
+  min : Double,
+  max : Double,
+  decimals : Int32,
+) -> @generator.ColumnSpec {
+  {
+    name: "x",
+    kind: "number",
+    source: "",
+    min,
+    max,
+    start: 0.0,
+    step: 1.0,
+    decimals,
+    prefix: "",
+    choices: ([] : Array[String]),
+    probability: 0.5,
+    missing: 0.0,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// number = round(min*(1-u)+max*u, decimals) then clamp to [min,max].
+/// seed=1 → u-seq as above; [0,10]@2 → 0, 1.32, 7.56; [1,2]@3 → 1, 1.132, 1.756.
+test "number lerp matches independent Park Miller closed form" {
+  assert_eq(@generator.generate([number_column(0.0, 10.0, 2)], 3, 1), [
+    [Json(0.0), Json(true)],
+    [Json(1.32), Json(true)],
+    [Json(7.56), Json(true)],
+  ])
+  assert_eq(@generator.generate([number_column(1.0, 2.0, 3)], 3, 1), [
+    [Json(1.0), Json(true)],
+    [Json(1.132), Json(true)],
+    [Json(1.756), Json(true)],
+  ])
+}
+
+///|
 /// missing draw first: if u < missing → null and skip boolean draw; else boolean uses the next u.
 /// seed=1, missing=0.3, p=0.5 → null,null,true,true,null
 test "missing then boolean consumes RNG in documented order" {
