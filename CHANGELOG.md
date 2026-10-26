@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.11
+
+- Independent expected values for missing×boolean RNG order (null skips the boolean draw).
+- METHODS.md documents the seed=1 five-row example `null,null,true,true,null`.
+
 ## 0.6.10
 
 - `/api/status` exposes `positioning`, `contracts` (generate/explore/tool allowlist), and `jury` command pointers for reviewer smoke.

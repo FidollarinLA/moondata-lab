@@ -73,6 +73,7 @@
 - [x] v0.6.8：工作台指纹行展示 planCanonical 摘要（title 全文）。
 - [x] v0.6.9：category `floor(u*|choices|)` 独立期望值 + METHODS 说明。
 - [x] v0.6.10：`/api/status` 暴露 contracts/jury；status-check 纳入 smoke。
+- [x] v0.6.11：missing×boolean RNG 顺序独立期望值 + METHODS 说明。
 
 ## 下一版本候选（不作为已完成能力）
 

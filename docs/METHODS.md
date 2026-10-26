@@ -17,7 +17,7 @@
 | date | UTC 起始日期加整数天步长，输出 YYYY-MM-DD |
 | linear | `slope*source + intercept + noise*(2u-1)`，四舍五入 |
 
-**独立期望值（非实现快照）：** seed=`1` 时前三个 `u` 为 `16807/M`、`282475249/M`、`1622650073/M`（`M=2147483647`）。因此 `probability=0.5` 的 boolean 三行为 `true,true,false`。`missing=0` 的 date 不消耗 RNG，第 `i` 行日序为 `start_day + i*step`（例如 `startDate=2026-01-01`、`step=1` → `2026-01-01..03`）。category 下标为 `floor(u * |choices|)`：`[A,B]` → `A,A,B`；`[X,Y,Z]` → `X,X,Z`；重复选项等价加权。覆盖测试：`generator/generator_test.mbt`、`test/generate-contract.test.mjs`。
+**独立期望值（非实现快照）：** seed=`1` 时前三个 `u` 为 `16807/M`、`282475249/M`、`1622650073/M`（`M=2147483647`）。因此 `probability=0.5` 的 boolean 三行为 `true,true,false`。`missing=0` 的 date 不消耗 RNG，第 `i` 行日序为 `start_day + i*step`（例如 `startDate=2026-01-01`、`step=1` → `2026-01-01..03`）。category 下标为 `floor(u * |choices|)`：`[A,B]` → `A,A,B`；`[X,Y,Z]` → `X,X,Z`；重复选项等价加权。`missing>0` 时先抽一次：`u < missing` 则该格为 null 且**不再**抽该格其它随机数；例如 boolean `missing=0.3`、`probability=0.5`、五行 → `null,null,true,true,null`。覆盖测试：`generator/generator_test.mbt`、`test/generate-contract.test.mjs`。
 
 linear 只引用同一行中位于前面的数值字段，来源缺失时输出 null。额外设置的 missing 与来源缺失会叠加，最终缺失率不保证等于设置值。noise 是均匀噪声半宽，不是正态标准差。类别选项均匀、独立，不隐含业务相关性。日期允许负步长或零步长；范围 1900-01-01 至 2199-12-31。其他序列步长非零。
 

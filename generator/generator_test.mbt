@@ -158,3 +158,48 @@ test "category equal probability matches Park Miller index closed form" {
     [Json("B"), Json(true)],
   ])
 }
+
+///|
+fn bool_missing(
+  probability : Double,
+  missing : Double,
+) -> @generator.ColumnSpec {
+  {
+    name: "ok",
+    kind: "boolean",
+    source: "",
+    min: 0.0,
+    max: 1.0,
+    start: 0.0,
+    step: 1.0,
+    decimals: 0,
+    prefix: "",
+    choices: ([] : Array[String]),
+    probability,
+    missing,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// missing draw first: if u < missing → null and skip boolean draw; else boolean uses the next u.
+/// seed=1, missing=0.3, p=0.5 → null,null,true,true,null
+test "missing then boolean consumes RNG in documented order" {
+  assert_eq(@generator.generate([bool_missing(0.5, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json(true), Json(true)],
+    [Json(true), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+  assert_eq(@generator.generate([bool_missing(0.5, 0.8)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+}

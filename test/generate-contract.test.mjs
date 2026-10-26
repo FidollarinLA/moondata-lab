@@ -93,6 +93,20 @@ test('planForFingerprint matches MoonBit canonical surface used in provenance', 
 const EXPECTED_DATE_BOOL_MISS =
   'moondata.generate/1|rows=4|seed=11|columns=[{name=day,kind=date,step=1,start_day=20454},{name=ok,kind=boolean,probability=0.25},{name=n,kind=integer,min=1,max=5,missing=0.1}]';
 
+test('missing then boolean consumes RNG in documented order', () => {
+  // missing draw first; null skips boolean draw. seed=1, missing=0.3, p=0.5 → null,null,true,true,null
+  const plan = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'ok', kind: 'boolean', probability: 0.5, missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(plan).rows.map(r => r[0]), [null, null, true, true, null]);
+  const heavy = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'ok', kind: 'boolean', probability: 0.5, missing: 0.8 }],
+  });
+  assert.deepEqual(generateRows(heavy).rows.map(r => r[0]), [null, null, null, null, null]);
+});
+
 test('category equal-probability rows match Park–Miller index closed form', () => {
   // index = floor(u * n); seed=1 → u-seq as in METHODS; [A,B] → A,A,B; [X,Y,Z] → X,X,Z.
   const two = normalizePlan({

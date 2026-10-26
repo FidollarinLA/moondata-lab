@@ -71,7 +71,7 @@ test('status advertises preview edition and workspace HTTP round-trips', async t
     return r;
   }
   const status = await (await call('/api/status')).json();
-  assert.equal(status.version, '0.6.10');
+  assert.equal(status.version, '0.6.11');
   assert.equal(status.edition, 'synthetic-contract-workbench');
   assert.equal(status.positioning, 'not-a-dataframe-library');
   assert.equal(status.contracts.generate, 'moondata.generate/1');
