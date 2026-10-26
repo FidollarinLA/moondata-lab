@@ -65,6 +65,7 @@
 - [x] v0.6.0：正视 MoonFrame 驳回意见；`contract` 包 + demo-jury + 申报/README 口径转向合成契约与证据工作台。
 - [x] v0.6.1：生成 provenance 写入 `planCanonical`；拒答评测集；demo-jury 校验白名单拒 `run_shell`。
 - [x] v0.6.2：多 kind 指纹键序稳定 + 种子分歧属性测试（独立期望线形式）。
+- [x] v0.6.3：date/boolean/missing 指纹面；Markdown 报告写入 planCanonical。
 
 ## 下一版本候选（不作为已完成能力）
 

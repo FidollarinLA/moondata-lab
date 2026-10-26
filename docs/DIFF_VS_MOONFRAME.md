@@ -25,7 +25,7 @@
 1. **生成契约（MoonBit `generator` + `contract`）**  
    规范化方案 JSON、工具调用白名单校验、独立期望值测试；同方案同种子承诺可复现指纹。
 2. **证据链工作台**  
-   报告重算、参数变更作废旧导出、合成标识、`planCanonical` 指纹进 provenance、方法局限写进 Markdown。
+   报告重算、参数变更作废旧导出、合成标识、`planCanonical` 进 provenance **与** Markdown 报告、方法局限写进 Markdown。
 3. **Agent 边界**  
    只允许显式分析/生成工具；无 shell、无任意代码、无任意网络文件系统工具；拒答评测覆盖 allowlist 面。
 

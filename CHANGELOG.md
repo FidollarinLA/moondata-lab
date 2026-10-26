@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.3
+
+- date / boolean / missing fingerprint surface covered with independent expected wire forms.
+- Markdown reports cite `planCanonical` for synthetic datasets; `demo-jury` asserts the evidence line.
+
 ## 0.6.2
 
 - Property tests: multi-kind `planCanonical` is key-order stable with an independent expected wire form.

@@ -208,7 +208,12 @@ export function explore(store, input) {
   if (!input || typeof input !== 'object') throw new AppError('无效分析请求');
   const d = store.get(input.datasetId), mode = input.mode ?? 'overview';
   const p = profile(store, d.id), warnings = ['描述统计与相关关系不证明因果。空白视为缺失；数值分析排除非数值单元格。'];
-  const result = { contract: 'moondata.explore/1', engine: 'MoonBit', dataset: { id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic, rowCount: d.rows.length }, query: { datasetId: d.id, mode }, profile: p, excludedRows: 0, warnings, chart: null, table: [] };
+  const planCanonical = d.provenance?.planCanonical || null;
+  const result = {
+    contract: 'moondata.explore/1', engine: 'MoonBit',
+    dataset: { id: d.id, name: d.name, sha256: d.sha256, synthetic: d.synthetic, rowCount: d.rows.length, ...(planCanonical ? { planCanonical } : {}) },
+    query: { datasetId: d.id, mode }, profile: p, excludedRows: 0, warnings, chart: null, table: [],
+  };
   if (d.synthetic) warnings.push('此数据集为合成数据，不代表真实业务或测量结果。');
   for (const note of p.qualityNotes ?? []) warnings.push(note);
   if (mode === 'plot') { const plot = makePlot(d, p, input); return { ...result, ...plot, warnings: [...warnings, ...plot.warnings] }; }
@@ -263,7 +268,25 @@ export function dataReport(store, query) {
   const result = explore(store, query);
   const clean = v => fmt(v).replace(/[\\`*_[\]{}()!#]/g, '\\$&').replaceAll('|', '\\|').replace(/[\r\n]/g, ' ').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
   const headers = Object.keys(result.table[0] ?? {});
-  const md = [`# MoonData Lab 数据报告`, '', `来源：${clean(result.dataset.name)}`, ``, `SHA-256：${result.dataset.sha256}`, '', `数据性质：${result.dataset.synthetic ? '合成数据，不代表实测' : '用户导入；真实性未验证'}`, '', `计算核心：MoonBit；契约：${result.contract}`, '', `查询：${clean(JSON.stringify(result.query))}`, '', `总行数：${result.dataset.rowCount}；排除行数：${result.excludedRows}`, '', ...(result.statistics ? [`统计结果：${clean(JSON.stringify(result.statistics))}`, ''] : []), ...result.warnings.map(w => `- ${w}`), '', `| ${headers.join(' | ')} |`, `| ${headers.map(() => '---').join(' | ')} |`, ...result.table.map(r => `| ${headers.map(h => clean(r[h])).join(' | ')} |`)].join('\n');
+  // Fingerprint is contract-validated wire text; keep literal in a fence so SHA/jury checks can match provenance.
+  const canonLine = result.dataset.planCanonical
+    ? ['生成指纹 planCanonical：', '```', String(result.dataset.planCanonical).replace(/```/g, "'''"), '```', '']
+    : [];
+  const md = [
+    `# MoonData Lab 数据报告`, '',
+    `来源：${clean(result.dataset.name)}`, '',
+    `SHA-256：${result.dataset.sha256}`, '',
+    ...canonLine,
+    `数据性质：${result.dataset.synthetic ? '合成数据，不代表实测' : '用户导入；真实性未验证'}`, '',
+    `计算核心：MoonBit；契约：${result.contract}`, '',
+    `查询：${clean(JSON.stringify(result.query))}`, '',
+    `总行数：${result.dataset.rowCount}；排除行数：${result.excludedRows}`, '',
+    ...(result.statistics ? [`统计结果：${clean(JSON.stringify(result.statistics))}`, ''] : []),
+    ...result.warnings.map(w => `- ${w}`), '',
+    `| ${headers.join(' | ')} |`,
+    `| ${headers.map(() => '---').join(' | ')} |`,
+    ...result.table.map(r => `| ${headers.map(h => clean(r[h])).join(' | ')} |`),
+  ].join('\n');
   return { result, markdown: md, json: JSON.stringify(result, null, 2) };
 }
 export function downloadDataset(store, id, format) {

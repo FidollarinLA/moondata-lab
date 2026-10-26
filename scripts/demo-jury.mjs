@@ -42,6 +42,10 @@ console.log(JSON.stringify({
   overviewFields: overview.table.length,
   groupSumEast: east?.value ?? null,
   reportSha256InMarkdown: report.markdown.includes(dataset.sha256),
+  reportPlanCanonicalOk: report.markdown.includes(canon) && report.result.dataset.planCanonical === canon,
   reportBytes: Buffer.byteLength(report.markdown),
   selfCheck: createHash('sha256').update(canon).digest('hex').slice(0, 12),
 }, null, 2));
+if (!report.markdown.includes(canon) || report.result.dataset.planCanonical !== canon) {
+  throw new Error('report must cite provenance.planCanonical');
+}

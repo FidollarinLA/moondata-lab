@@ -99,6 +99,34 @@ test "fingerprint rejects reserved characters in names" {
 }
 
 ///|
+/// date / boolean / missing appear in the fixed key order of canonical_column.
+test "date boolean missing fingerprint surface" {
+  let plan : Json = {
+    "rows": 4,
+    "seed": 11,
+    "columns": [
+      { "step": 1, "start_day": 20454, "kind": "date", "name": "day" },
+      { "probability": 0.25, "name": "ok", "kind": "boolean" },
+      { "missing": 0.1, "max": 5, "min": 1, "name": "n", "kind": "integer" },
+    ],
+  }
+  let expected = "moondata.generate/1|rows=4|seed=11|columns=[{name=day,kind=date,step=1,start_day=20454},{name=ok,kind=boolean,probability=0.25},{name=n,kind=integer,min=1,max=5,missing=0.1}]"
+  assert_eq(@contract.canonical_plan(plan), expected)
+  let no_missing : Json = {
+    "rows": 4,
+    "seed": 11,
+    "columns": [
+      { "name": "day", "kind": "date", "start_day": 20454, "step": 1 },
+      { "name": "ok", "kind": "boolean", "probability": 0.25 },
+      { "name": "n", "kind": "integer", "min": 1, "max": 5 },
+    ],
+  }
+  let other = @contract.canonical_plan(no_missing)
+  assert_true(other != expected)
+  assert_true(!other.contains("missing="))
+}
+
+///|
 test "tool allowlist rejects shell and accepts propose_generation" {
   assert_true(@contract.is_allowed_tool("propose_generation"))
   assert_true(!@contract.is_allowed_tool("run_shell"))

@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
 import { canonicalPlan } from '../server/core.mjs';
 import {
-  normalizePlan, planForFingerprint, generateDataset, downloadDataset, templates,
+  normalizePlan, planForFingerprint, generateDataset, downloadDataset, templates, dataReport,
 } from '../server/data.mjs';
 
 /** Independent expected fingerprint (includes decimals on linear — matches normalizePlan defaults). */
@@ -88,4 +88,39 @@ test('planForFingerprint matches MoonBit canonical surface used in provenance', 
   const expected = canonicalPlan(planForFingerprint(normalizePlan(templates[0])));
   assert.equal(json.provenance.planCanonical, expected);
   assert.match(expected, /^moondata\.generate\/1\|rows=300\|seed=42\|/);
+});
+
+const EXPECTED_DATE_BOOL_MISS =
+  'moondata.generate/1|rows=4|seed=11|columns=[{name=day,kind=date,step=1,start_day=20454},{name=ok,kind=boolean,probability=0.25},{name=n,kind=integer,min=1,max=5,missing=0.1}]';
+
+test('date/boolean/missing fingerprint surface and report cites planCanonical', () => {
+  const raw = {
+    rows: 4,
+    seed: 11,
+    columns: [
+      { step: 1, start_day: 20454, kind: 'date', name: 'day' },
+      { probability: 0.25, name: 'ok', kind: 'boolean' },
+      { missing: 0.1, max: 5, min: 1, name: 'n', kind: 'integer' },
+    ],
+  };
+  assert.equal(canonicalPlan(raw), EXPECTED_DATE_BOOL_MISS);
+
+  const store = new DatasetStore();
+  const d = generateDataset(store, {
+    rows: 4,
+    seed: 11,
+    name: 'dbm',
+    columns: [
+      { name: 'day', kind: 'date', startDate: '2026-01-01', step: 1 },
+      { name: 'ok', kind: 'boolean', probability: 0.25 },
+      { name: 'n', kind: 'integer', min: 1, max: 5, missing: 0.1 },
+    ],
+  });
+  const json = JSON.parse(downloadDataset(store, d.id, 'json').content);
+  assert.equal(json.provenance.planCanonical, EXPECTED_DATE_BOOL_MISS);
+
+  const report = dataReport(store, { datasetId: d.id, mode: 'overview' });
+  assert.equal(report.result.dataset.planCanonical, EXPECTED_DATE_BOOL_MISS);
+  assert.match(report.markdown, /planCanonical：/);
+  assert.ok(report.markdown.includes(EXPECTED_DATE_BOOL_MISS));
 });
