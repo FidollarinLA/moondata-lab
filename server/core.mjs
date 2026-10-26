@@ -18,6 +18,17 @@ export const correlation = (x, y) => decode(correlation_json(JSON.stringify({ x,
 export const canonicalPlan = plan => decode(canonical_plan_json(JSON.stringify(plan))).canonical;
 export const validateToolCall = (name, args) => decode(validate_tool_json(JSON.stringify({ name, args })));
 
+/** Stable id for jury/evidence: MoonBit allowlist gate, not a model claim. */
+export const TOOL_ALLOWLIST_VALIDATOR = 'moondata.contract/validate_tool_call';
+
+export function toolContractEvidence(name, { allowed = true } = {}) {
+  return {
+    allowlisted: allowed === true,
+    validator: TOOL_ALLOWLIST_VALIDATOR,
+    tool: name,
+  };
+}
+
 export function finite(value, name, fallback) {
   const result = value === undefined ? fallback : value;
   if (typeof result !== 'number' || !Number.isFinite(result)) throw new AppError(`${name} 必须是有限数值`);

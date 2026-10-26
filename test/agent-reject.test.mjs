@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatasetStore } from '../server/datasets.mjs';
-import { workbenchTools } from '../server/workbench-agent.mjs';
-import { validateToolCall, AppError } from '../server/core.mjs';
+import { workbenchTools, workbenchAgent } from '../server/workbench-agent.mjs';
+import { validateToolCall, AppError, TOOL_ALLOWLIST_VALIDATOR, toolContractEvidence } from '../server/core.mjs';
 import { templates, generateDataset, downloadDataset, importDataset } from '../server/data.mjs';
 import { localPlanner } from '../server/local-planner.mjs';
 
@@ -76,6 +76,10 @@ test('local planner validates plan_chart and plot_dataset before explore', async
   assert.equal(r.mode, 'local-model');
   assert.equal(r.trace[0].tool, 'plan_chart');
   assert.equal(r.trace[1].tool, 'plot_dataset');
+  assert.deepEqual(r.trace[0].contract, toolContractEvidence('plan_chart'));
+  assert.deepEqual(r.trace[1].contract, toolContractEvidence('plot_dataset'));
+  assert.equal(r.evidence?.toolAllowlistValidator, TOOL_ALLOWLIST_VALIDATOR);
+  assert.deepEqual(r.evidence?.toolsValidated, ['plan_chart', 'plot_dataset']);
   assert.ok(r.artifacts[0].chart);
 
   // Empty datasetId must be rejected by the same MoonBit surface the planner uses.
@@ -87,4 +91,21 @@ test('local planner validates plan_chart and plot_dataset before explore', async
     () => validateToolCall('plan_chart', { datasetId: '', action: 'plot' }),
     AppError,
   );
+});
+
+test('builtin workbench traces expose MoonBit allowlist evidence', async () => {
+  const store = new DatasetStore();
+  const d = generateDataset(store, { ...templates[0], rows: 5 });
+  const r = await workbenchAgent({
+    store,
+    datasetId: d.id,
+    message: '概览当前数据',
+    config: null,
+  });
+  assert.equal(r.mode, 'builtin');
+  assert.equal(r.trace[0].tool, 'profile_dataset');
+  assert.equal(r.trace[0].contract.allowlisted, true);
+  assert.equal(r.trace[0].contract.validator, TOOL_ALLOWLIST_VALIDATOR);
+  assert.equal(r.evidence.toolAllowlistValidator, TOOL_ALLOWLIST_VALIDATOR);
+  assert.deepEqual(r.evidence.toolsValidated, ['profile_dataset']);
 });

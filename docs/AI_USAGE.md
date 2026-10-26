@@ -19,7 +19,7 @@
 | 红线 | 原因 |
 | --- | --- |
 | 数值核心在 MoonBit，JS 不静默改算 | 验收「MoonBit 为主」与结果可复核 |
-| Agent 无 shell / 任意代码 / 任意网络工具 | 安全与可解释边界 |
+| Agent 无 shell / 任意代码 / 任意网络工具；成功调用在 `trace[].contract` / `evidence.toolAllowlistValidator` 留下 MoonBit 白名单证据（非模型自述） | 安全与可解释边界 |
 | 报告忽略客户端伪造的 statistics | 防模型或前端编造数值 |
 | 合成数据带 `_synthetic`；导入真实性不背书 | 诚实产品定位 |
 | 总体标准差 vs 样本标准差分开暴露 | 统计语义不被 UI 糊弄 |

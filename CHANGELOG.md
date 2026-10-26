@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.15
+
+- Successful tool traces carry `contract` evidence (`moondata.contract/validate_tool_call`); responses expose `evidence.toolsValidated`.
+- Builtin / local-planner / model paths + UI show allowlist verification (not a model claim).
+
 ## 0.6.14
 
 - Independent expected values for `linear` with uniform noise half-width (`noise*(2u-1)`).

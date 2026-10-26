@@ -1,4 +1,4 @@
-import { AppError, text, validateToolCall } from './core.mjs';
+import { AppError, text, validateToolCall, toolContractEvidence } from './core.mjs';
 import { normalizePlan, templates, explore, profile } from './data.mjs';
 import { runAgent } from './agent.mjs';
 import { localPlanner } from './local-planner.mjs';
@@ -61,7 +61,24 @@ export async function workbenchAgent({ store, datasetId, message, query, config,
     else if (message === '按当前选择画图') { tool = 'plot_dataset'; args = query?.mode === 'plot' ? query : profile(store, datasetId).recommendation; result = toolkit.execute(tool, args); }
     else return { mode: 'builtin', answer: '当前未连接模型。可使用字段方案和图表表单完成全部确定性功能；内置命令支持“概览当前数据”“分析当前图表”和“生成销售台账示例”等模板命令。自由自然语言需要配置模型服务。', trace: [], artifacts: [] };
     const answer = result.kind === 'generation-plan' ? `已提供“${result.plan.name}”模板合成方案，请检查字段、行数和种子后点击生成。尚未创建数据。` : `已由 MoonBit 工具完成当前操作。来源：${result.dataset?.name ?? result.profile.name}。详细数值见结果区与工具记录；${config ? '本次为明确的内置操作，无需模型规划' : '当前未连接模型'}，未执行预测或训练。`;
-    return { mode: 'builtin', answer, trace: [{ tool, args, ok: true, result: compact(result) }], artifacts: [result] };
+    const entry = {
+      tool,
+      args,
+      ok: true,
+      contract: toolContractEvidence(tool),
+      result: compact(result),
+    };
+    return {
+      mode: 'builtin',
+      answer,
+      trace: [entry],
+      artifacts: [result],
+      evidence: {
+        toolAllowlistValidator: entry.contract.validator,
+        toolsValidated: [tool],
+        note: '工具已由 MoonBit 白名单校验；非模型自述。',
+      },
+    };
   }
   const p = datasetId ? profile(store, datasetId) : null;
   const context = { dataset: p ? { id: p.id, name: p.name, rowCount: p.rowCount, columns: p.columns.map(c => ({ name: c.name, type: c.type })) } : null, query };

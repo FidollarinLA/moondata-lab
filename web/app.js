@@ -162,7 +162,15 @@ async function chat(message) {
   $('send-button').disabled = true; $('stop-button').hidden = false; $('chat-status').textContent = '助手正在处理…'; chatMessage(message, 'user');
   try {
     const response = await json('workbench-chat', { datasetId: state.id || undefined, query: currentQuery(), message, history: state.history.slice(-10) }, controller.signal);
-    for (const trace of response.trace) { const d = el('details', undefined, 'trace'); d.append(el('summary', `${trace.ok ? '✓' : '×'} ${trace.tool}`), el('pre', JSON.stringify(trace.result, null, 2))); $('messages').append(d); }
+    for (const trace of response.trace) {
+      const gate = trace.contract?.allowlisted ? ' · 白名单已校验' : '';
+      const d = el('details', undefined, 'trace');
+      d.append(el('summary', `${trace.ok ? '✓' : '×'} ${trace.tool}${gate}`), el('pre', JSON.stringify({ contract: trace.contract, result: trace.result }, null, 2)));
+      $('messages').append(d);
+    }
+    if (response.evidence?.toolAllowlistValidator) {
+      chatMessage(`证据：工具白名单校验器 ${response.evidence.toolAllowlistValidator}；已校验 ${ (response.evidence.toolsValidated || []).join('、') || '（无）' }。`, 'assistant-message');
+    }
     chatMessage(response.answer + (response.caveat ? `\n${response.caveat}` : ''), 'assistant-message');
     if (revision === state.revision && planRevision === state.planRevision && activeId === state.id) {
       for (const artifact of response.artifacts) {
