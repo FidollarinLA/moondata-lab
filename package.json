@@ -1,6 +1,6 @@
 {
   "name": "moondata-lab",
-  "version": "0.5.2",
+  "version": "0.6.10",
   "private": true,
   "type": "module",
   "engines": { "node": ">=22" },
@@ -10,6 +10,7 @@
     "start": "node server/index.mjs",
     "smoke": "node scripts/smoke.mjs",
     "fingerprint": "node scripts/fingerprint-check.mjs",
+    "status-check": "node scripts/status-check.mjs",
     "test": "node --test test/*.test.mjs",
     "check": "node scripts/check.mjs",
     "test:browser": "node scripts/browser-test.mjs",

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.10
+
+- `/api/status` exposes `positioning`, `contracts` (generate/explore/tool allowlist), and `jury` command pointers for reviewer smoke.
+- Add `scripts/status-check.mjs` (wired into smoke); bump advertised version to 0.6.10.
+
 ## 0.6.9
 
 - Category equal-probability (and weighted-repeat) independent expected values via Park–Miller index closed form.

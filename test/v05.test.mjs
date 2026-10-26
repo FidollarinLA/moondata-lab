@@ -71,8 +71,18 @@ test('status advertises preview edition and workspace HTTP round-trips', async t
     return r;
   }
   const status = await (await call('/api/status')).json();
-  assert.equal(status.version, '0.6.0');
+  assert.equal(status.version, '0.6.10');
   assert.equal(status.edition, 'synthetic-contract-workbench');
+  assert.equal(status.positioning, 'not-a-dataframe-library');
+  assert.equal(status.contracts.generate, 'moondata.generate/1');
+  assert.equal(status.contracts.explore, 'moondata.explore/1');
+  assert.deepEqual(status.contracts.tools, [
+    'profile_dataset', 'explore_dataset', 'plot_dataset', 'propose_generation', 'plan_chart',
+  ]);
+  assert.equal(status.jury.demo, 'node scripts/demo-jury.mjs');
+  assert.equal(status.jury.fingerprint, 'node scripts/fingerprint-check.mjs');
+  assert.match(status.jury.diff, /DIFF_VS_MOONFRAME/);
+  assert.match(status.dataPolicy, /MoonFrame/);
   const buffer = buildXlsx(['组', '值'], [['A', 1], ['B', 2], ['A', 3]]);
   const imported = await (await call('/api/import', { name: 'demo.xlsx', format: 'xlsx', contentBase64: buffer.toString('base64') })).json();
   assert.equal(imported.dataset.rowCount, 3);
