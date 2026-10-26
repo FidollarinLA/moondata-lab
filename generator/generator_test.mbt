@@ -50,6 +50,82 @@ test "sequence linear relation and marker independent expected rows" {
 }
 
 ///|
+fn seq_column(
+  start : Double,
+  step : Double,
+) -> @generator.ColumnSpec {
+  {
+    name: "id",
+    kind: "sequence",
+    source: "",
+    min: 0.0,
+    max: 1.0,
+    start,
+    step,
+    decimals: 0,
+    prefix: "",
+    choices: ([] : Array[String]),
+    probability: 0.5,
+    missing: 0.0,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+fn text_column(
+  prefix : String,
+  start : Double,
+  step : Double,
+) -> @generator.ColumnSpec {
+  {
+    name: "t",
+    kind: "text",
+    source: "",
+    min: 0.0,
+    max: 1.0,
+    start,
+    step,
+    decimals: 0,
+    prefix,
+    choices: ([] : Array[String]),
+    probability: 0.5,
+    missing: 0.0,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// sequence/text = start + i*step (prefix for text); no RNG — seed must not change rows.
+test "sequence and text are seed-independent closed forms" {
+  assert_eq(@generator.generate([seq_column(10.0, 5.0)], 3, 99), [
+    [Json(10.0), Json(true)],
+    [Json(15.0), Json(true)],
+    [Json(20.0), Json(true)],
+  ])
+  assert_eq(@generator.generate([seq_column(10.0, 5.0)], 3, 1), [
+    [Json(10.0), Json(true)],
+    [Json(15.0), Json(true)],
+    [Json(20.0), Json(true)],
+  ])
+  assert_eq(@generator.generate([text_column("R-", 1.0, 1.0)], 3, 1), [
+    [Json("R-1"), Json(true)],
+    [Json("R-2"), Json(true)],
+    [Json("R-3"), Json(true)],
+  ])
+  assert_eq(@generator.generate([text_column("R-", 1.0, 1.0)], 3, 42), [
+    [Json("R-1"), Json(true)],
+    [Json("R-2"), Json(true)],
+    [Json("R-3"), Json(true)],
+  ])
+}
+
+///|
 fn linear_noise_pair(noise : Double) -> Array[@generator.ColumnSpec] {
   [
     {

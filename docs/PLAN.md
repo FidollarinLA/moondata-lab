@@ -83,6 +83,7 @@
 - [x] v0.6.18：explore 附带 queryCanonical；UI + fingerprint-check 验收。
 - [x] v0.6.19：missing×integer RNG 次序独立期望值。
 - [x] v0.6.20：linear 源缺失 / noise=0 仍耗 RNG；RESUBMIT 评委路径含 queryCanonical。
+- [x] v0.6.21：sequence/text 种子无关独立期望值。
 
 ## 下一版本候选（不作为已完成能力）
 

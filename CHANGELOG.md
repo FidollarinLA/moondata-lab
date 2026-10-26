@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.21
+
+- Independent expected values for `sequence` / `text` (seed-independent closed forms).
+- METHODS.md documents `10,15,20` and `R-1,R-2,R-3` examples.
+
 ## 0.6.20
 
 - Independent expected values: linear null-source → null (no noise draw); `noise=0` still consumes RNG when source is present.

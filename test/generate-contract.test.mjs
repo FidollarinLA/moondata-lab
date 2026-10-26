@@ -123,6 +123,27 @@ test('category equal-probability rows match Park–Miller index closed form', ()
   assert.deepEqual(generateRows(weighted).rows.map(r => r[0]), ['A', 'A', 'B']);
 });
 
+test('sequence and text are seed-independent closed forms', () => {
+  // start + i*step; text prefixes the value. No RNG — seed must not change rows.
+  const seqA = normalizePlan({
+    rows: 3, seed: 99, columns: [{ name: 'id', kind: 'sequence', start: 10, step: 5 }],
+  });
+  const seqB = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'id', kind: 'sequence', start: 10, step: 5 }],
+  });
+  assert.deepEqual(generateRows(seqA).rows.map((r) => r[0]), [10, 15, 20]);
+  assert.deepEqual(generateRows(seqB).rows.map((r) => r[0]), [10, 15, 20]);
+
+  const textA = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 't', kind: 'text', prefix: 'R-', start: 1, step: 1 }],
+  });
+  const textB = normalizePlan({
+    rows: 3, seed: 42, columns: [{ name: 't', kind: 'text', prefix: 'R-', start: 1, step: 1 }],
+  });
+  assert.deepEqual(generateRows(textA).rows.map((r) => r[0]), ['R-1', 'R-2', 'R-3']);
+  assert.deepEqual(generateRows(textB).rows.map((r) => r[0]), ['R-1', 'R-2', 'R-3']);
+});
+
 test('linear null source skips noise draw; noise zero still consumes RNG', () => {
   // Independent: miss then maybe int; on present source linear always draws noise u even if noise=0.
   // seed=1 → (null,null),(null,null),(5,11),(null,null),(null,null)
