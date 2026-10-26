@@ -17,7 +17,8 @@
 | MoonBit `contract`：方案规范化指纹、工具白名单 | `contract/` |
 | 工具调用在执行前经 MoonBit 校验 | `server/workbench-agent.mjs` + `validate_tool_json` |
 | 生成结果携带 `planCanonical` 指纹 | `provenance.planCanonical`（JSON 导出） |
-| 拒答评测（shell / 缺参工具） | `test/agent-reject.test.mjs` |
+| 拒答评测（shell / 缺参工具 / 空 datasetId） | `test/agent-reject.test.mjs` |
+| Local planner 不绕过白名单 | `server/local-planner.mjs` 在 explore 前 `validateToolCall` |
 | 指纹属性测试（键序 / 种子） | `contract/contract_test.mbt` + `test/generate-contract.test.mjs` |
 | date/boolean/missing 指纹面 | 同上；独立期望线形式 |
 | 报告引用生成指纹 | Markdown 代码块 + JSON `evidence.planCanonical` |

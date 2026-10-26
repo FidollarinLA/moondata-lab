@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.5
+
+- `plan_chart` / `plot_dataset` / `explore_dataset` require non-empty `datasetId` in MoonBit allowlist.
+- Local planner validates `plan_chart` + `plot_dataset` before `explore` (no allowlist bypass).
+- Expanded reject eval set (shell variants, empty datasetId, plan_chart without id).
+
 ## 0.6.4
 
 - JSON data reports expose top-level `evidence.planCanonical` / `sourceSha256` beside existing analysis fields (markdown still cites the fingerprint).

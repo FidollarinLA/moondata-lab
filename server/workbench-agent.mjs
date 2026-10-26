@@ -26,9 +26,10 @@ export function workbenchTools(store, datasetId) {
     execute(name, args) {
       if (!args || typeof args !== 'object' || Array.isArray(args)) throw new AppError('工具参数必须是对象');
       // MoonBit contract allowlist — rejects shell / arbitrary tools before Node runs them.
-      const toolArgs = name === 'propose_generation' || name === 'profile_dataset' || name === 'plan_chart'
-        ? args
-        : { ...args, datasetId: datasetId || args.datasetId };
+      const needsDataset = name === 'plot_dataset' || name === 'explore_dataset' || name === 'plan_chart';
+      const toolArgs = needsDataset
+        ? { ...args, datasetId: datasetId || args.datasetId }
+        : args;
       validateToolCall(name, toolArgs);
       if (name === 'propose_generation') return { kind: 'generation-plan', plan: normalizePlan(args), notice: '待检查后执行，尚未生成任何数据。' };
       if (name === 'profile_dataset') return { kind: 'profile', profile: profile(store, requireData()) };

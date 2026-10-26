@@ -28,7 +28,8 @@
 | P1 | ~~属性测试：同方案不同键序 → 同指纹；改种子 → 不同行哈希~~（v0.6.2） | 1、4 |
 | P1 | ~~生成契约再加深：date/boolean/missing 指纹面 + 报告引用 planCanonical~~（v0.6.3） | 1、4 |
 | P1 | ~~报告/导出证据再加厚：JSON evidence + fingerprint-check CLI~~（v0.6.4） | 4、6 |
-| P1 | Agent 边界：`plan_chart` / 缺 datasetId 拒测扩面；本地 planner 不得绕过 allowlist | 6 |
+| P1 | ~~Agent 边界：plan_chart datasetId + local planner 不绕过 allowlist~~（v0.6.5） | 6 |
+| P1 | 申报辅助：README/RESUBMIT 首屏三步评委路径再压缩；不改代码口径 | 2、3、4 |
 | P2 | 可选：对 MoonFrame 的互操作示例（依赖生态包） | 1 |
 | P2 | ~~工具拒答评测集（allowlist 面）~~（v0.6.1）；模型语义拒答另开 | 6 |
 | — | 列类型覆盖等表格 UX：仅当不强化「我们是 DF 库」叙事时再做 | — |

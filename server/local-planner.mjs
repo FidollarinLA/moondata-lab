@@ -1,4 +1,4 @@
-import { AppError, text } from './core.mjs';
+import { AppError, text, validateToolCall } from './core.mjs';
 import { profile, explore } from './data.mjs';
 
 export async function localPlanner({ store, datasetId, message, query, config, signal, fetchImpl = fetch }) {
@@ -46,11 +46,17 @@ x is one existing field. yColumns contains numeric fields only. User-specified a
   let plan;
   try { plan = JSON.parse(payload.choices?.[0]?.message?.content); } catch { throw new AppError('小模型未给出有效绘图方案，请明确横纵轴或使用下拉选择', 422); }
   if (!plan || !['plot', 'clarify'].includes(plan.action) || typeof plan.reason !== 'string' || plan.reason.length > 500 || !Array.isArray(plan.yColumns) || plan.yColumns.length > 8 || !['auto', 'line', 'scatter', 'bar'].includes(plan.kind) || !['mean', 'sum', 'min', 'max'].includes(plan.reducer)) throw new AppError('小模型方案格式无效，请改用坐标选择', 422);
-  if (plan.action === 'clarify') return { mode: 'local-model', answer: `本地小模型需要确认：${plan.reason}`, trace: [{ tool: 'plan_chart', ok: true, result: plan }], artifacts: [] };
+  if (plan.action === 'clarify') {
+    validateToolCall('plan_chart', { datasetId, action: plan.action, reason: plan.reason });
+    return { mode: 'local-model', answer: `本地小模型需要确认：${plan.reason}`, trace: [{ tool: 'plan_chart', ok: true, result: plan }], artifacts: [] };
+  }
   // A style-only edit is a patch: unspecified axes and reducers remain user-owned.
   const styleOnly = /(?:换成|改成|改为|切换为|变成)/.test(message) && !referenced.length && query?.mode === 'plot';
   if (styleOnly) { plan.x = query.x; plan.yColumns = query.yColumns; plan.reducer = query.reducer === 'count' ? 'mean' : query.reducer ?? 'mean'; }
   if (explicitX && plan.x !== explicitX) return validationReply(`模型没有正确使用你指定的横轴“${explicitX}”，尚未绘图。请在界面选择该字段，或重新描述。`);
+  // Local planner must not bypass the MoonBit allowlist: validate before Node explore.
+  validateToolCall('plan_chart', { datasetId, action: plan.action, x: plan.x, yColumns: plan.yColumns, kind: plan.kind, reducer: plan.reducer });
+  validateToolCall('plot_dataset', { datasetId, x: plan.x, yColumns: plan.yColumns, kind: plan.kind, reducer: plan.reducer });
   const result = explore(store, { datasetId, mode: 'plot', x: plan.x, yColumns: plan.yColumns, kind: plan.kind, reducer: plan.reducer });
   return { mode: 'local-model', model: config.model, answer: `本地小模型已规划并绘图。横轴：${result.query.x}；纵轴：${result.query.yColumns.join('、') || '行数'}。\n方案说明（模型生成）：${plan.reason}\n计算结果见图表与报告；可继续说“换成折线”或修改字段。${fields.length < p.columns.length ? `\n字段较多，本次考察${fields.length}列；其他字段可先在界面选中。` : ''}`, trace: [{ tool: 'plan_chart', ok: true, result: plan }, { tool: 'plot_dataset', ok: true, result: { query: result.query, statistics: result.statistics } }], artifacts: [result] };
 }

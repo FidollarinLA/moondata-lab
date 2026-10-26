@@ -122,12 +122,12 @@ pub fn validate_tool_call(
     "propose_generation" => {
       let _ = canonical_plan(args)
     }
-    "plot_dataset" | "explore_dataset" => {
+    "plot_dataset" | "explore_dataset" | "plan_chart" => {
       guard map.get("datasetId") is Some(String(id)) && !id.is_empty() else {
         raise ContractError("\{name} requires non-empty datasetId")
       }
     }
-    "profile_dataset" | "plan_chart" => ()
+    "profile_dataset" => ()
     _ => raise ContractError("Tool not allowlisted: \{name}")
   }
 }

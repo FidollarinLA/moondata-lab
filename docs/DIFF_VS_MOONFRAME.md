@@ -27,7 +27,7 @@
 2. **证据链工作台**  
    报告重算、参数变更作废旧导出、合成标识、`planCanonical` 进 provenance **与** Markdown 报告、方法局限写进 Markdown。
 3. **Agent 边界**  
-   只允许显式分析/生成工具；无 shell、无任意代码、无任意网络文件系统工具；拒答评测覆盖 allowlist 面。
+   只允许显式分析/生成工具；无 shell、无任意代码、无任意网络文件系统工具；`plan_chart`/`plot`/`explore` 强制 datasetId；本地小模型规划也经 MoonBit 白名单后才计算。
 
 ## 明确不再宣传为原创亮点
 

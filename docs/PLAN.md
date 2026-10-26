@@ -67,6 +67,7 @@
 - [x] v0.6.2：多 kind 指纹键序稳定 + 种子分歧属性测试（独立期望线形式）。
 - [x] v0.6.3：date/boolean/missing 指纹面；Markdown 报告写入 planCanonical。
 - [x] v0.6.4：JSON 报告顶层 `evidence`；`scripts/fingerprint-check.mjs` 纳入 smoke。
+- [x] v0.6.5：plan_chart 强制 datasetId；local planner 校验后才 explore；拒测扩面。
 
 ## 下一版本候选（不作为已完成能力）
 

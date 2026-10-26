@@ -149,3 +149,31 @@ test "tool allowlist rejects shell and accepts propose_generation" {
   }
   assert_true(blocked)
 }
+
+///|
+test "plan_chart and plot_dataset require datasetId" {
+  let missing = try {
+    @contract.validate_tool_call("plan_chart", { "action": "plot" })
+    false
+  } catch {
+    _ => true
+  }
+  assert_true(missing)
+  let ok = try {
+    @contract.validate_tool_call("plan_chart", {
+      "datasetId": "d1",
+      "action": "plot",
+    })
+    true
+  } catch {
+    _ => false
+  }
+  assert_true(ok)
+  let plot_missing = try {
+    @contract.validate_tool_call("plot_dataset", { "x": "a", "yColumns": [] })
+    false
+  } catch {
+    _ => true
+  }
+  assert_true(plot_missing)
+}
