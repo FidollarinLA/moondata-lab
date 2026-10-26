@@ -1,34 +1,37 @@
 # 复审改动说明（针对组委驳回）
 
 **驳回要点：** 自研解析/聚合/绘图与 [MoonFrame](https://mooncakes.io/docs/ihb2032/MoonFrame) 重叠；扣掉后「字段生成 + 交互编排」深度不足。  
-**截止：** 2026-10-31 前可改报名表复审（≤3 次）。本文件不代替你本人改写的申报书。
+**截止：** 2026-10-31 前可改报名表复审（≤3 次）。**本文件不代替你本人改写的申报书。**
 
 ## 产品经理结论
 
-把项目从「又一个 MoonBit 表格分析库」改成：
+> **可复现合成数据契约 + 证据链报告 + 受限 Agent 工具运行时**；通用 DataFrame 让位给 MoonFrame。
 
-> **可复现合成数据契约 + 证据链报告 + 受限 Agent 工具运行时**；通用 DataFrame 能力让位给 MoonFrame。
+## 评委三步（与 README 一致）
+
+1. `node scripts/demo-jury.mjs` → 生成 / 分组 / 报告含 `planCanonical`；拒 shell  
+2. `node scripts/fingerprint-check.mjs` → 指纹与 CSV SHA-256 自洽  
+3. [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) → 定位一句话
+
+也可一条龙：`node scripts/smoke.mjs`（含上两项）。
 
 ## 工程增量（请评委看这些）
 
 | 增量 | 位置 |
 | --- | --- |
-| 与 MoonFrame 差异对照 | [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) |
-| MoonBit `contract`：方案规范化指纹、工具白名单 | `contract/` |
-| 工具调用在执行前经 MoonBit 校验 | `server/workbench-agent.mjs` + `validate_tool_json` |
-| 生成结果携带 `planCanonical` 指纹 | `provenance.planCanonical`（JSON 导出） |
-| 拒答评测（shell / 缺参工具 / 空 datasetId） | `test/agent-reject.test.mjs` |
-| Local planner 不绕过白名单 | `server/local-planner.mjs` 在 explore 前 `validateToolCall` |
-| 指纹属性测试（键序 / 种子） | `contract/contract_test.mbt` + `test/generate-contract.test.mjs` |
-| date/boolean/missing 指纹面 | 同上；独立期望线形式 |
-| 报告引用生成指纹 | Markdown 代码块 + JSON `evidence.planCanonical` |
-| 指纹离线自检 | `node scripts/fingerprint-check.mjs`（smoke 已挂） |
-| 5 分钟无 UI 演示 | `node scripts/demo-jury.mjs`（含拒答与报告指纹断言） |
+| 与 MoonFrame 差异 | [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) |
+| MoonBit `contract` 指纹 + 白名单 | `contract/` |
+| 工具执行前 MoonBit 校验 | `workbench-agent` / `local-planner` + `validate_tool_json` |
+| `planCanonical` 进 provenance / Markdown / JSON `evidence` | 生成与报告 |
+| 拒答评测（shell / 空 datasetId / plan_chart） | `test/agent-reject.test.mjs` |
+| 指纹属性与 date/boolean/missing 面 | `contract_test` + `generate-contract` 测试 |
+| 离线自检 | `scripts/fingerprint-check.mjs` |
+| 5 分钟演示 | `scripts/demo-jury.mjs` |
 
 ## 申报书应怎么改（你自己写）
 
-1. **不要**再写「我们独立实现了完整 CSV/聚合/绘图库」。  
-2. **要写**：相对 MoonFrame，本项目贡献是生成契约、指纹证据、Agent 边界；工作台可调用分析，但 DataFrame 主业不在此。  
-3. 三个场景改为：同种子复现 → 报告含 SHA-256 → 非法工具被白名单拒绝（可用 `demo-jury.mjs` 证据）。
+1. **不要**写「我们独立实现了完整 CSV/聚合/绘图库」。  
+2. **要写**：相对 MoonFrame，贡献是生成契约、指纹证据、Agent 边界。  
+3. 三个场景对齐评委三步：同种子复现 → 报告含 SHA-256/`planCanonical` → 非法工具被拒（贴 `demo-jury` / `fingerprint-check` 输出即可）。
 
-提纲仍见 [SUBMISSION_TEMPLATE](SUBMISSION_TEMPLATE.md)（必须人工改写后粘贴）。
+提纲：[SUBMISSION_TEMPLATE](SUBMISSION_TEMPLATE.md)（必须人工改写后粘贴）。

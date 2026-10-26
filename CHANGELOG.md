@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.6
+
+- Compress README / RESUBMIT / submission template into a shared 3-step jury path (demo-jury → fingerprint-check → DIFF).
+- Docs-only; numerical and contract behavior unchanged from v0.6.5.
+
 ## 0.6.5
 
 - `plan_chart` / `plot_dataset` / `explore_dataset` require non-empty `datasetId` in MoonBit allowlist.

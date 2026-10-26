@@ -22,10 +22,10 @@ MoonData Lab
 承认 MoonFrame 覆盖通用 CSV/聚合/Vega-Lite。本项目不做「又一个 DataFrame」。
 MoonBit 贡献在：确定性字段生成契约、方案规范化指纹、受限工具白名单、报告证据链。
 
-## 至少三个完整场景
-1. 固定方案+种子生成销售台账 → 两次 SHA-256 一致 → 报告含指纹  
-2. `node scripts/demo-jury.mjs`：无 UI 走通生成/分组/报告  
-3. 助手路径：非法工具名被 MoonBit contract 拒绝；合法 propose_generation 只出方案不落库  
+## 至少三个完整场景（对齐 README「评委三步」）
+1. `node scripts/demo-jury.mjs`：生成 → 分组 → 报告含 `planCanonical`；拒 `run_shell`  
+2. `node scripts/fingerprint-check.mjs`：独立重算指纹与 CSV SHA-256 一致  
+3. 助手/contract：非法工具或空 `datasetId` 被拒；`propose_generation` 只出方案不落库  
 
 ## 核心功能
 - MoonBit `generator` + `contract`：合成方案、规范化指纹、工具允许列表  
