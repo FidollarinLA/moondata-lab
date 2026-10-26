@@ -9,6 +9,7 @@
     "dev": "node server/index.mjs",
     "start": "node server/index.mjs",
     "smoke": "node scripts/smoke.mjs",
+    "fingerprint": "node scripts/fingerprint-check.mjs",
     "test": "node --test test/*.test.mjs",
     "check": "node scripts/check.mjs",
     "test:browser": "node scripts/browser-test.mjs",

@@ -20,7 +20,8 @@
 | 拒答评测（shell / 缺参工具） | `test/agent-reject.test.mjs` |
 | 指纹属性测试（键序 / 种子） | `contract/contract_test.mbt` + `test/generate-contract.test.mjs` |
 | date/boolean/missing 指纹面 | 同上；独立期望线形式 |
-| 报告引用生成指纹 | Markdown `planCanonical` 行（合成数据） |
+| 报告引用生成指纹 | Markdown 代码块 + JSON `evidence.planCanonical` |
+| 指纹离线自检 | `node scripts/fingerprint-check.mjs`（smoke 已挂） |
 | 5 分钟无 UI 演示 | `node scripts/demo-jury.mjs`（含拒答与报告指纹断言） |
 
 ## 申报书应怎么改（你自己写）

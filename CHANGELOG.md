@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.4
+
+- JSON data reports expose top-level `evidence.planCanonical` / `sourceSha256` (markdown still cites the fingerprint).
+- Add `scripts/fingerprint-check.mjs` (+ `npm run fingerprint`); smoke runs it after demo-jury.
+
 ## 0.6.3
 
 - date / boolean / missing fingerprint surface covered with independent expected wire forms.

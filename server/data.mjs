@@ -287,7 +287,20 @@ export function dataReport(store, query) {
     `| ${headers.map(() => '---').join(' | ')} |`,
     ...result.table.map(r => `| ${headers.map(h => clean(r[h])).join(' | ')} |`),
   ].join('\n');
-  return { result, markdown: md, json: JSON.stringify(result, null, 2) };
+  const evidence = {
+    contract: result.contract,
+    engine: result.engine,
+    sourceSha256: result.dataset.sha256,
+    planCanonical: result.dataset.planCanonical ?? null,
+    synthetic: !!result.dataset.synthetic,
+  };
+  // JSON report carries evidence at top level so reviewers need not dig through result.dataset.
+  return {
+    result,
+    markdown: md,
+    evidence,
+    json: JSON.stringify({ evidence, result }, null, 2),
+  };
 }
 export function downloadDataset(store, id, format) {
   const d = store.get(id);

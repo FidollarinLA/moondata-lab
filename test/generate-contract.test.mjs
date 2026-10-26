@@ -123,4 +123,7 @@ test('date/boolean/missing fingerprint surface and report cites planCanonical', 
   assert.equal(report.result.dataset.planCanonical, EXPECTED_DATE_BOOL_MISS);
   assert.match(report.markdown, /planCanonical：/);
   assert.ok(report.markdown.includes(EXPECTED_DATE_BOOL_MISS));
+  assert.equal(report.evidence.planCanonical, EXPECTED_DATE_BOOL_MISS);
+  assert.equal(report.evidence.sourceSha256, d.sha256);
+  assert.equal(JSON.parse(report.json).evidence.planCanonical, EXPECTED_DATE_BOOL_MISS);
 });
