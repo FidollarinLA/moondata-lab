@@ -124,7 +124,17 @@ async function selectDataset(id) {
   $('plot-ys').replaceChildren(...numeric.map(name => { const label = el('label', undefined, 'y-choice'), checkbox = el('input'); checkbox.type = 'checkbox'; checkbox.value = name; label.append(checkbox, document.createTextNode(name)); return label; }));
   $('plot-y-hint').textContent = numeric.length ? '选择多个数值字段可叠加比较；留空时画横轴类别行数。' : '未发现数值列：可按横轴类别画行数柱状图。';
   applyPlotQuery(p.recommendation);
-  $('fingerprint').textContent = `来源：${p.name} · ${p.sourceFormat} · SHA-256 ${p.sha256}`;
+  const fp = $('fingerprint');
+  const canon = p.provenance?.planCanonical;
+  const base = `来源：${p.name} · ${p.sourceFormat} · SHA-256 ${p.sha256}`;
+  if (canon) {
+    const short = canon.length > 80 ? `${canon.slice(0, 80)}…` : canon;
+    fp.textContent = `${base} · planCanonical ${short}`;
+    fp.title = canon;
+  } else {
+    fp.textContent = `${base} · ${p.synthetic ? '合成声明未经验证指纹' : '导入数据（无 planCanonical）'}`;
+    fp.title = '';
+  }
   table($('preview'), all, p.preview); $('mode').value = 'overview'; queryFields(); await analyze();
 }
 function renderDatasets() {

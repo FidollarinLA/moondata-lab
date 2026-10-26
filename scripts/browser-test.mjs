@@ -29,6 +29,9 @@ try {
   await page.locator('#rows').fill('40'); await page.locator('#generate-button').click(); await ready();
   assert.match(await page.locator('#source-label').innerText(), /合成/); assert.match(await page.locator('#metrics').innerText(), /40/);
   const a = JSON.parse(await download('[data-download="json"]')); assert.equal(a.records.length, 40); assert.ok(a.records.every(r => r._synthetic === true)); assert.equal(a.provenance.plan.seed, 42);
+  assert.match(a.provenance.planCanonical, /^moondata\.generate\/1\|/);
+  assert.match(await page.locator('#fingerprint').innerText(), /planCanonical/);
+  assert.match(await page.locator('#fingerprint').getAttribute('title'), /^moondata\.generate\/1\|/);
   const csv = await download('[data-download="csv"]'); assert.ok(csv.includes('"_synthetic"')); assert.equal(csv.trim().split('\n').length, 41);
   const jsonl = await download('[data-download="jsonl"]'); assert.equal(jsonl.trim().split('\n').length, 40);
   record('schema generation and three full dataset downloads preserve types and synthetic marks');
@@ -41,6 +44,7 @@ try {
   record('generated sales ledger groups and renders an exportable bar chart');
   const source = '地区,金额,x,y,日期\n东,10,1,3,2026-01-03\n西,20,2,5,2026-01-01\n东,30,3,7,2026-01-02\n西,,4,9,2026-01-04\n,40,,11,2026-01-05';
   await upload('ledger.csv', source); assert.match(await page.locator('#source-label').innerText(), /用户导入/);
+  assert.match(await page.locator('#fingerprint').innerText(), /导入数据（无 planCanonical）/);
   await page.locator('#mode').selectOption('group'); await page.locator('#group').selectOption('地区'); await page.locator('#reducer').selectOption('sum'); await page.locator('#value').selectOption('金额'); await update();
   const report = JSON.parse(await download('#json-report-button')); assert.deepEqual(report.table.map(r => r.value), [40, 20, 40]); assert.equal(report.excludedRows, 1); assert.match(await download('#report-button'), /SHA-256/);
   record('non-time ledger imports and group sums agree with independent expected values');

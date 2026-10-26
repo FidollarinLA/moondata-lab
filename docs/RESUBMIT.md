@@ -22,7 +22,7 @@
 | 与 MoonFrame 差异 | [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) |
 | MoonBit `contract` 指纹 + 白名单 | `contract/` |
 | 工具执行前 MoonBit 校验 | `workbench-agent` / `local-planner` + `validate_tool_json` |
-| `planCanonical` 进 provenance / Markdown / JSON `evidence` | 生成与报告 |
+| `planCanonical` 进 provenance / Markdown / JSON `evidence` / UI 指纹行 | 生成、报告、工作台 |
 | 拒答评测（shell / 空 datasetId / plan_chart） | `test/agent-reject.test.mjs` |
 | 指纹属性与 date/boolean/missing 面 | `contract_test` + `generate-contract` 测试 |
 | 离线自检 | `scripts/fingerprint-check.mjs` |

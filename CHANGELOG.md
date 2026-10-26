@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.8
+
+- UI fingerprint row shows truncated `planCanonical` (full string in `title`) for synthetic datasets; imports state they have none.
+- Browser acceptance asserts the evidence line; download hint mentions planCanonical.
+
 ## 0.6.7
 
 - Independent expected-value tests for boolean (Park–Miller `u < p`) and date day arithmetic (incl. negative step).
