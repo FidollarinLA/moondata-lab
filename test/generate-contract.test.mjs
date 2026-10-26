@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
-import { canonicalPlan } from '../server/core.mjs';
+import { canonicalPlan, generateRows } from '../server/core.mjs';
 import {
   normalizePlan, planForFingerprint, generateDataset, downloadDataset, templates, dataReport,
 } from '../server/data.mjs';
@@ -92,6 +92,32 @@ test('planForFingerprint matches MoonBit canonical surface used in provenance', 
 
 const EXPECTED_DATE_BOOL_MISS =
   'moondata.generate/1|rows=4|seed=11|columns=[{name=day,kind=date,step=1,start_day=20454},{name=ok,kind=boolean,probability=0.25},{name=n,kind=integer,min=1,max=5,missing=0.1}]';
+
+test('boolean and date rows match independent Park–Miller / day arithmetic', () => {
+  // seed=1 → u = [16807, 282475249, 1622650073] / 2147483647
+  // boolean true iff u < probability; date = start_day + i*step (no RNG when missing=0).
+  const M = 2147483647;
+  const u = [16807 / M, 282475249 / M, 1622650073 / M];
+  assert.ok(u[0] < 0.5 && u[1] < 0.5 && u[2] > 0.5);
+
+  const boolPlan = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'ok', kind: 'boolean', probability: 0.5 }],
+  });
+  assert.deepEqual(generateRows(boolPlan).rows.map(r => r[0]), [true, true, false]);
+
+  const store = new DatasetStore();
+  const dates = generateDataset(store, {
+    rows: 3, seed: 1, name: 'days',
+    columns: [{ name: 'day', kind: 'date', startDate: '2026-01-01', step: 1 }],
+  });
+  assert.deepEqual(store.get(dates.id).records.map(r => r.day), ['2026-01-01', '2026-01-02', '2026-01-03']);
+
+  const back = generateDataset(store, {
+    rows: 3, seed: 99, name: 'back',
+    columns: [{ name: 'day', kind: 'date', startDate: '2026-01-03', step: -1 }],
+  });
+  assert.deepEqual(store.get(back.id).records.map(r => r.day), ['2026-01-03', '2026-01-02', '2026-01-01']);
+});
 
 test('date/boolean/missing fingerprint surface and report cites planCanonical', () => {
   const raw = {

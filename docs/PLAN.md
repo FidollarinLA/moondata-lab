@@ -69,6 +69,7 @@
 - [x] v0.6.4：JSON 报告顶层 `evidence`；`scripts/fingerprint-check.mjs` 纳入 smoke。
 - [x] v0.6.5：plan_chart 强制 datasetId；local planner 校验后才 explore；拒测扩面。
 - [x] v0.6.6：README/RESUBMIT/申报提纲统一「评委三步」路径（文档压缩）。
+- [x] v0.6.7：boolean/date 独立期望值测试 + METHODS 交叉引用。
 
 ## 下一版本候选（不作为已完成能力）
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.7
+
+- Independent expected-value tests for boolean (Park–Miller `u < p`) and date day arithmetic (incl. negative step).
+- METHODS.md cross-links the closed-form references to MoonBit + Node tests.
+
 ## 0.6.6
 
 - Compress README / RESUBMIT / submission template into a shared 3-step jury path (demo-jury → fingerprint-check → DIFF).

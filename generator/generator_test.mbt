@@ -57,3 +57,61 @@ test "uniform integer reference uses one RNG draw per cell" {
     [Json(8.0), Json(true)],
   ])
 }
+
+///|
+fn typed_column(
+  name : String,
+  kind : String,
+  probability : Double,
+  start_day : Int32,
+  step : Double,
+) -> @generator.ColumnSpec {
+  {
+    name,
+    kind,
+    source: "",
+    min: 0.0,
+    max: 1.0,
+    start: 0.0,
+    step,
+    decimals: 0,
+    prefix: "",
+    choices: ([] : Array[String]),
+    probability,
+    missing: 0.0,
+    start_day,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// seed=1 Park–Miller u-sequence: 16807/M, 282475249/M, 1622650073/M (M=2147483647).
+/// boolean = u < probability; date ignores RNG when missing=0.
+test "boolean and date match independent Park Miller and day arithmetic" {
+  assert_eq(
+    @generator.generate([typed_column("ok", "boolean", 0.5, 0, 1.0)], 3, 1),
+    [
+      [Json(true), Json(true)],
+      [Json(true), Json(true)],
+      [Json(false), Json(true)],
+    ],
+  )
+  assert_eq(
+    @generator.generate([typed_column("day", "date", 0.5, 20454, 1.0)], 3, 1),
+    [
+      [Json(20454.0), Json(true)],
+      [Json(20455.0), Json(true)],
+      [Json(20456.0), Json(true)],
+    ],
+  )
+  assert_eq(
+    @generator.generate([typed_column("day", "date", 0.5, 20456, -1.0)], 3, 42),
+    [
+      [Json(20456.0), Json(true)],
+      [Json(20455.0), Json(true)],
+      [Json(20454.0), Json(true)],
+    ],
+  )
+}
