@@ -123,6 +123,28 @@ test('category equal-probability rows match Park–Miller index closed form', ()
   assert.deepEqual(generateRows(weighted).rows.map(r => r[0]), ['A', 'A', 'B']);
 });
 
+test('integer closed interval matches independent Park–Miller floor form', () => {
+  // value = min + floor(u * (max-min+1)); seed=1 → u as in METHODS.
+  const M = 2147483647;
+  const u = [16807 / M, 282475249 / M, 1622650073 / M];
+  const iv = (min, max) => u.map((ui) => min + Math.floor(ui * (max - min + 1)));
+  assert.deepEqual(iv(0, 10), [0, 1, 8]);
+  assert.deepEqual(iv(3, 5), [3, 3, 5]);
+  assert.deepEqual(iv(7, 7), [7, 7, 7]);
+
+  for (const [min, max, expected] of [
+    [0, 10, [0, 1, 8]],
+    [3, 5, [3, 3, 5]],
+    [7, 7, [7, 7, 7]],
+  ]) {
+    const plan = normalizePlan({
+      rows: 3, seed: 1,
+      columns: [{ name: 'n', kind: 'integer', min, max }],
+    });
+    assert.deepEqual(generateRows(plan).rows.map((r) => r[0]), expected);
+  }
+});
+
 test('linear with noise matches independent Park–Miller closed form', () => {
   // y = round(slope*src + intercept + noise*(2u-1), decimals); sequence uses no RNG.
   const M = 2147483647;

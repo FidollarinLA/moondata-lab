@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.17
+
+- Independent expected values for `integer` closed intervals via `min + floor(u*(max-min+1))`.
+- METHODS.md documents seed=1 examples `[0,10]→0,1,8`, `[3,5]→3,3,5`, `[7,7]→7,7,7`.
+
 ## 0.6.16
 
 - MoonBit `canonical_explore_query`: stable `queryCanonical` wire form (no session `datasetId`).

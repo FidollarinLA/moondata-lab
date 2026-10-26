@@ -108,11 +108,45 @@ test "linear with noise matches independent Park Miller closed form" {
 }
 
 ///|
-test "uniform integer reference uses one RNG draw per cell" {
-  assert_eq(@generator.generate([column("n", "integer", "")], 3, 1), [
+fn integer_column(min : Double, max : Double) -> @generator.ColumnSpec {
+  {
+    name: "n",
+    kind: "integer",
+    source: "",
+    min,
+    max,
+    start: 0.0,
+    step: 1.0,
+    decimals: 0,
+    prefix: "",
+    choices: ([] : Array[String]),
+    probability: 0.5,
+    missing: 0.0,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// integer = min + floor(u * (max-min+1)) on the closed interval.
+/// seed=1 → [0,10] = 0,1,8; [3,5] = 3,3,5; [7,7] = 7,7,7.
+test "integer closed interval matches independent Park Miller floor form" {
+  assert_eq(@generator.generate([integer_column(0.0, 10.0)], 3, 1), [
     [Json(0.0), Json(true)],
     [Json(1.0), Json(true)],
     [Json(8.0), Json(true)],
+  ])
+  assert_eq(@generator.generate([integer_column(3.0, 5.0)], 3, 1), [
+    [Json(3.0), Json(true)],
+    [Json(3.0), Json(true)],
+    [Json(5.0), Json(true)],
+  ])
+  assert_eq(@generator.generate([integer_column(7.0, 7.0)], 3, 1), [
+    [Json(7.0), Json(true)],
+    [Json(7.0), Json(true)],
+    [Json(7.0), Json(true)],
   ])
 }
 
