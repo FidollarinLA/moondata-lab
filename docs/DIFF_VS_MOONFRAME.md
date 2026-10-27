@@ -23,11 +23,13 @@
 ## 本期加厚的「独立工程深度」
 
 1. **生成契约（MoonBit `generator` + `contract`）**  
-   规范化方案 JSON、工具调用白名单校验、独立期望值测试；同方案同种子承诺可复现指纹。
+   规范化方案 JSON、工具调用白名单校验、独立期望值测试（number/linear/integer/sequence/text/missing 次序等）；同方案同种子承诺可复现指纹。
 2. **证据链工作台**  
-   报告重算、参数变更作废旧导出、合成标识、`planCanonical` 进 provenance **与** Markdown 报告、方法局限写进 Markdown。
+   报告重算、参数变更作废旧导出、合成标识；`planCanonical`（生成）与 `queryCanonical`（分析）进 provenance / 报告 `evidence` / UI 指纹行；工作区包顶层 `evidence[]`。
 3. **Agent 边界**  
-   只允许显式分析/生成工具；无 shell、无任意代码、无任意网络文件系统工具；`plan_chart`/`plot`/`explore` 强制 datasetId；本地小模型规划也经 MoonBit 白名单后才计算。
+   只允许显式分析/生成工具；无 shell、无任意代码、无任意网络文件系统工具；`plan_chart`/`plot`/`explore` 强制 datasetId；成功调用写入 `trace.contract` / `evidence.toolsValidated`（MoonBit 校验，非模型自述）；本地小模型规划也经白名单后才计算。
+
+评委冒烟：`GET /api/status` 的 `contracts` / `jury`，或 `node scripts/status-check.mjs` / `demo-jury` / `fingerprint-check`。
 
 ## 明确不再宣传为原创亮点
 

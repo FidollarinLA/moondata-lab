@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.22
+
+- `/api/status` exposes `planCanonical` / `queryCanonical` / `toolAllowlistValidator` contract pointers and `jury.resubmit`.
+- DIFF_VS_MOONFRAME evidence section updated for queryCanonical + allowlist trace evidence.
+
 ## 0.6.21
 
 - Independent expected values for `sequence` / `text` (seed-independent closed forms).

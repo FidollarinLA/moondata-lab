@@ -66,7 +66,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       if (url.pathname === '/api/status' && req.method === 'GET') {
         send(res, 200, {
           name: 'MoonData Lab',
-          version: '0.6.21',
+          version: '0.6.22',
           engine: 'MoonBit',
           model: modelStatus(env),
           persistence: 'memory+workspace-pack',
@@ -75,14 +75,18 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
           contracts: {
             generate: 'moondata.generate/1',
             explore: 'moondata.explore/1',
+            planCanonical: 'moondata.generate/1|rows=…|seed=…|columns=[…]',
+            queryCanonical: 'moondata.explore/1|mode=…|…',
+            toolAllowlistValidator: 'moondata.contract/validate_tool_call',
             tools: ['profile_dataset', 'explore_dataset', 'plot_dataset', 'propose_generation', 'plan_chart'],
           },
           jury: {
             demo: 'node scripts/demo-jury.mjs',
             fingerprint: 'node scripts/fingerprint-check.mjs',
             diff: 'docs/DIFF_VS_MOONFRAME.md',
+            resubmit: 'docs/RESUBMIT.md',
           },
-          dataPolicy: '可复现合成数据 + 证据链工作台。通用 DataFrame 请用 MoonFrame。本地小模型仅接收问题、字段与当前选择，不发送原始数据行；工具经 MoonBit 白名单校验。不承诺任意格式或自然语言一次做对。',
+          dataPolicy: '可复现合成数据 + 证据链工作台。通用 DataFrame 请用 MoonFrame。本地小模型仅接收问题、字段与当前选择，不发送原始数据行；工具经 MoonBit 白名单校验并写入 trace.contract。不承诺任意格式或自然语言一次做对。',
         }); return;
       }
       const now = Date.now();

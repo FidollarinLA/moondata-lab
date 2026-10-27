@@ -46,6 +46,7 @@
 | P1 | ~~missing×integer 组合期望值~~（v0.6.19） | 1 |
 | P1 | ~~linear 源缺失 / noise=0 仍耗 RNG~~（v0.6.20） | 1、4 |
 | P1 | ~~sequence/text 种子无关闭合式~~（v0.6.21） | 1 |
+| P1 | ~~status/DIFF 暴露 planCanonical·queryCanonical·白名单指针~~（v0.6.22） | 2、4、6 |
 | P2 | 可选：对 MoonFrame 的互操作示例（依赖生态包） | 1 |
 | P2 | ~~工具拒答评测集（allowlist 面）~~（v0.6.1）；模型语义拒答另开 | 6 |
 | — | 列类型覆盖等表格 UX：仅当不强化「我们是 DF 库」叙事时再做 | — |
