@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.36
+
+- `fingerprint-check` asserts propose≡generate `planCanonical` with empty propose store.
+- `/api/status` exposes `contracts.proposeGeneration: planCanonical-only; storeMutated=false`.
+
 ## 0.6.35
 
 - Assert `propose_generation.planCanonical` equals later `generateDataset` provenance for the same plan.

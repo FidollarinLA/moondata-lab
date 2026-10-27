@@ -66,7 +66,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       if (url.pathname === '/api/status' && req.method === 'GET') {
         send(res, 200, {
           name: 'MoonData Lab',
-          version: '0.6.35',
+          version: '0.6.36',
           engine: 'MoonBit',
           model: modelStatus(env),
           persistence: 'memory+workspace-pack',
@@ -77,6 +77,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
             explore: 'moondata.explore/1',
             planCanonical: 'moondata.generate/1|rows=…|seed=…|columns=[…]',
             queryCanonical: 'moondata.explore/1|mode=…|…',
+            proposeGeneration: 'planCanonical-only; storeMutated=false',
             toolAllowlistValidator: 'moondata.contract/validate_tool_call',
             tools: ['profile_dataset', 'explore_dataset', 'plot_dataset', 'propose_generation', 'plan_chart'],
           },

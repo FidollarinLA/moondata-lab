@@ -18,8 +18,10 @@ try {
   assert.match(String(status.contracts?.planCanonical || ''), /^moondata\.generate\/1\|/);
   assert.match(String(status.contracts?.queryCanonical || ''), /^moondata\.explore\/1\|/);
   assert.equal(status.contracts?.toolAllowlistValidator, 'moondata.contract/validate_tool_call');
+  assert.equal(status.contracts?.proposeGeneration, 'planCanonical-only; storeMutated=false');
   assert.ok(Array.isArray(status.contracts?.tools) && status.contracts.tools.includes('plan_chart'));
   assert.ok(status.contracts.tools.includes('profile_dataset'));
+  assert.ok(status.contracts.tools.includes('propose_generation'));
   assert.ok(status.jury?.demo && status.jury?.fingerprint && status.jury?.resubmit);
   assert.match(String(status.jury?.diff || ''), /DIFF_VS_MOONFRAME/);
   console.log(JSON.stringify({

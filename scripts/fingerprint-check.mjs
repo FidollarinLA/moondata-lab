@@ -10,13 +10,15 @@ import { canonicalPlan, canonicalExploreQuery, TOOL_ALLOWLIST_VALIDATOR, AppErro
 import {
   templates, normalizePlan, planForFingerprint, generateDataset, downloadDataset, dataReport, explore,
 } from '../server/data.mjs';
-import { workbenchAgent } from '../server/workbench-agent.mjs';
+import { workbenchAgent, workbenchTools } from '../server/workbench-agent.mjs';
 
 const store = new DatasetStore();
 const plan = templates.find(t => t.id === 'sales');
 if (!plan) throw new Error('sales template missing');
 
 const expectedCanon = canonicalPlan(planForFingerprint(normalizePlan(plan)));
+const proposeOnly = new DatasetStore();
+const proposed = workbenchTools(proposeOnly, null).execute('propose_generation', plan);
 const a = generateDataset(store, plan);
 const b = generateDataset(store, plan);
 const jsonA = JSON.parse(downloadDataset(store, a.id, 'json').content);
@@ -47,6 +49,11 @@ try {
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
   provenanceEqualsExpected: jsonA.provenance.planCanonical === expectedCanon,
+  proposePlanCanonicalMatchesGenerate: proposed.kind === 'generation-plan'
+    && proposed.storeMutated === false
+    && proposed.planCanonical === expectedCanon
+    && proposed.planCanonical === jsonA.provenance.planCanonical
+    && proposeOnly.list().length === 0,
   repeatGenerateSameSha: a.sha256 === b.sha256,
   csvShaMatchesDataset: a.sha256 === csvHash,
   reportEvidencePlanCanonical: report.evidence?.planCanonical === expectedCanon,

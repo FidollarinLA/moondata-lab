@@ -98,6 +98,7 @@
 - [x] v0.6.33：fingerprint-check 精确拒答对齐；DIFF 评委证据面刷新。
 - [x] v0.6.34：propose_generation 返回 planCanonical 且不写入 DatasetStore。
 - [x] v0.6.35：propose 指纹与 generate provenance 一致性契约。
+- [x] v0.6.36：fingerprint-check / status 暴露 propose 不落库指针。
 
 ## 下一版本候选（不作为已完成能力）
 
