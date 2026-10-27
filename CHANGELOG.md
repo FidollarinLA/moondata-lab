@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.44
+
+- Date `step=0` closed-form expected values: repeat `start_day`, seed-independent, fingerprint cites `step=0`.
+
 ## 0.6.43
 
 - Group `count` without `value` has closed-form `queryCanonical` cited in explore/report/jury scripts.

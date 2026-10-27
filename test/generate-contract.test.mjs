@@ -360,6 +360,22 @@ test('boolean and date rows match independent Park–Miller / day arithmetic', (
     columns: [{ name: 'day', kind: 'date', startDate: '2026-01-03', step: -1 }],
   });
   assert.deepEqual(store.get(back.id).records.map(r => r.day), ['2026-01-03', '2026-01-02', '2026-01-01']);
+
+  // step=0 repeats start day; seed change does not alter rows (no RNG).
+  const zeroA = generateDataset(store, {
+    rows: 3, seed: 1, name: 'zero-a',
+    columns: [{ name: 'day', kind: 'date', startDate: '2026-01-01', step: 0 }],
+  });
+  const zeroB = generateDataset(store, {
+    rows: 3, seed: 99, name: 'zero-b',
+    columns: [{ name: 'day', kind: 'date', startDate: '2026-01-01', step: 0 }],
+  });
+  assert.deepEqual(store.get(zeroA.id).records.map(r => r.day), ['2026-01-01', '2026-01-01', '2026-01-01']);
+  assert.deepEqual(store.get(zeroB.id).records.map(r => r.day), ['2026-01-01', '2026-01-01', '2026-01-01']);
+  assert.match(
+    store.get(zeroA.id).provenance.planCanonical,
+    /kind=date,step=0,start_day=20454/,
+  );
 });
 
 test('missing then date consumes RNG in documented order', () => {

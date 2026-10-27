@@ -541,6 +541,27 @@ test "boolean probability edges match independent closed form" {
 }
 
 ///|
+/// date step=0 repeats start_day; still no RNG when missing=0 (seed-independent).
+test "date zero step repeats start day closed form" {
+  assert_eq(
+    @generator.generate([typed_column("day", "date", 0.5, 20454, 0.0)], 3, 1),
+    [
+      [Json(20454.0), Json(true)],
+      [Json(20454.0), Json(true)],
+      [Json(20454.0), Json(true)],
+    ],
+  )
+  assert_eq(
+    @generator.generate([typed_column("day", "date", 0.5, 20454, 0.0)], 3, 99),
+    [
+      [Json(20454.0), Json(true)],
+      [Json(20454.0), Json(true)],
+      [Json(20454.0), Json(true)],
+    ],
+  )
+}
+
+///|
 fn date_missing(
   start_day : Int32,
   step : Double,
