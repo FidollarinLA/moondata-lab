@@ -463,13 +463,16 @@ test "missing then category consumes RNG in documented order" {
     [Json("A"), Json(true)],
     [Json::null(), Json(true)],
   ])
-  assert_eq(@generator.generate([category_missing(["X", "Y", "Z"], 0.3)], 5, 1), [
-    [Json::null(), Json(true)],
-    [Json::null(), Json(true)],
-    [Json("Y"), Json(true)],
-    [Json("X"), Json(true)],
-    [Json::null(), Json(true)],
-  ])
+  assert_eq(
+    @generator.generate([category_missing(["X", "Y", "Z"], 0.3)], 5, 1),
+    [
+      [Json::null(), Json(true)],
+      [Json::null(), Json(true)],
+      [Json("Y"), Json(true)],
+      [Json("X"), Json(true)],
+      [Json::null(), Json(true)],
+    ],
+  )
   assert_eq(@generator.generate([category_missing(["A", "B"], 0.8)], 5, 1), [
     [Json::null(), Json(true)],
     [Json::null(), Json(true)],
