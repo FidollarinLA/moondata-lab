@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.51
+
+- Sequence/text negative-step closed forms (seed-independent); fingerprints cite `step=-N`.
+
 ## 0.6.50
 
 - Number `decimals=0` closed-form expected values (`[0,10]@0` → `0,1,8`) and fingerprint cites `decimals=0`.

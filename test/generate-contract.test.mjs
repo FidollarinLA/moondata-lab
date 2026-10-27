@@ -142,6 +142,24 @@ test('sequence and text are seed-independent closed forms', () => {
   });
   assert.deepEqual(generateRows(textA).rows.map((r) => r[0]), ['R-1', 'R-2', 'R-3']);
   assert.deepEqual(generateRows(textB).rows.map((r) => r[0]), ['R-1', 'R-2', 'R-3']);
+
+  // Negative step is allowed (unlike step=0); still seed-independent.
+  const seqNegA = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'id', kind: 'sequence', start: 10, step: -3 }],
+  });
+  const seqNegB = normalizePlan({
+    rows: 3, seed: 99, columns: [{ name: 'id', kind: 'sequence', start: 10, step: -3 }],
+  });
+  assert.deepEqual(generateRows(seqNegA).rows.map((r) => r[0]), [10, 7, 4]);
+  assert.deepEqual(generateRows(seqNegB).rows.map((r) => r[0]), [10, 7, 4]);
+  assert.match(
+    canonicalPlan(planForFingerprint(seqNegA)),
+    /kind=sequence,start=10,step=-3/,
+  );
+  const textNeg = normalizePlan({
+    rows: 3, seed: 7, columns: [{ name: 't', kind: 'text', prefix: 'N', start: 5, step: -1 }],
+  });
+  assert.deepEqual(generateRows(textNeg).rows.map((r) => r[0]), ['N5', 'N4', 'N3']);
 });
 
 test('missing then sequence or text consumes RNG in documented order', () => {

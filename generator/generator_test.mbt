@@ -99,6 +99,7 @@ fn text_column(
 
 ///|
 /// sequence/text = start + i*step (prefix for text); no RNG — seed must not change rows.
+/// Negative step is allowed (unlike step=0): start=10,step=-3 → 10,7,4; text N+5,-1 → N5,N4,N3.
 test "sequence and text are seed-independent closed forms" {
   assert_eq(@generator.generate([seq_column(10.0, 5.0)], 3, 99), [
     [Json(10.0), Json(true)],
@@ -119,6 +120,21 @@ test "sequence and text are seed-independent closed forms" {
     [Json("R-1"), Json(true)],
     [Json("R-2"), Json(true)],
     [Json("R-3"), Json(true)],
+  ])
+  assert_eq(@generator.generate([seq_column(10.0, -3.0)], 3, 1), [
+    [Json(10.0), Json(true)],
+    [Json(7.0), Json(true)],
+    [Json(4.0), Json(true)],
+  ])
+  assert_eq(@generator.generate([seq_column(10.0, -3.0)], 3, 99), [
+    [Json(10.0), Json(true)],
+    [Json(7.0), Json(true)],
+    [Json(4.0), Json(true)],
+  ])
+  assert_eq(@generator.generate([text_column("N", 5.0, -1.0)], 3, 1), [
+    [Json("N5"), Json(true)],
+    [Json("N4"), Json(true)],
+    [Json("N3"), Json(true)],
   ])
 }
 
