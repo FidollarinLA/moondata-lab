@@ -92,6 +92,7 @@
 - [x] v0.6.27：linear 列 missing 次序独立期望值 + METHODS。
 - [x] v0.6.28：missing×sequence/text 行下标期望值 + METHODS。
 - [x] v0.6.29：fingerprint-check / status-check 白名单 evidence 断言。
+- [x] v0.6.30：distribution/scatter/line queryCanonical 独立期望值。
 
 ## 下一版本候选（不作为已完成能力）
 

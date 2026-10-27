@@ -369,6 +369,27 @@ test('missing then date consumes RNG in documented order', () => {
   assert.deepEqual(store.get(heavy.id).records.map((r) => r.day), [null, null, null, null, null]);
 });
 
+test('explore distribution/scatter/line queryCanonical closed forms', () => {
+  const dist =
+    'moondata.explore/1|mode=distribution|value=金额|bins=10';
+  assert.equal(
+    canonicalExploreQuery({ bins: 10, value: '金额', mode: 'distribution', datasetId: 'sess' }),
+    dist,
+  );
+  assert.equal(
+    canonicalExploreQuery({ mode: 'distribution', value: '金额', bins: 10 }),
+    dist,
+  );
+  assert.equal(
+    canonicalExploreQuery({ y: '金额', x: '数量', mode: 'scatter' }),
+    'moondata.explore/1|mode=scatter|x=数量|y=金额',
+  );
+  assert.equal(
+    canonicalExploreQuery({ mode: 'line', x: '日期', y: '金额' }),
+    'moondata.explore/1|mode=line|x=日期|y=金额',
+  );
+});
+
 test('explore queryCanonical is order-stable and cited in report evidence', () => {
   const expected =
     'moondata.explore/1|mode=group|group=地区|reducer=sum|value=金额';

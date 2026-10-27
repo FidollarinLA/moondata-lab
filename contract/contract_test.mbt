@@ -162,6 +162,46 @@ test "explore queryCanonical is order-stable with independent expected wire form
 }
 
 ///|
+/// distribution / scatter / line have independent expected wire forms; key order ignored.
+test "explore distribution scatter line queryCanonical closed forms" {
+  let expected_dist = "moondata.explore/1|mode=distribution|value=金额|bins=10"
+  assert_eq(
+    @contract.canonical_explore_query({
+      "bins": 10.0,
+      "value": "金额",
+      "mode": "distribution",
+      "datasetId": "sess",
+    }),
+    expected_dist,
+  )
+  assert_eq(
+    @contract.canonical_explore_query({
+      "mode": "distribution",
+      "value": "金额",
+      "bins": 10.0,
+    }),
+    expected_dist,
+  )
+  let expected_scatter = "moondata.explore/1|mode=scatter|x=数量|y=金额"
+  assert_eq(
+    @contract.canonical_explore_query({
+      "y": "金额",
+      "x": "数量",
+      "mode": "scatter",
+    }),
+    expected_scatter,
+  )
+  assert_eq(
+    @contract.canonical_explore_query({
+      "mode": "line",
+      "x": "日期",
+      "y": "金额",
+    }),
+    "moondata.explore/1|mode=line|x=日期|y=金额",
+  )
+}
+
+///|
 test "tool allowlist rejects shell and accepts propose_generation" {
   assert_true(@contract.is_allowed_tool("propose_generation"))
   assert_true(!@contract.is_allowed_tool("run_shell"))

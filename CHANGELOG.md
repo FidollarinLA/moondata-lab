@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.30
+
+- Independent `queryCanonical` wire forms for distribution / scatter / line (key-order stable).
+- METHODS.md documents the explore mode fingerprint surface beyond group/overview/plot.
+
 ## 0.6.29
 
 - `fingerprint-check` asserts allowlist reject + builtin `trace.contract` / `toolsValidated`.

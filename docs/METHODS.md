@@ -39,7 +39,7 @@ JSON / JSONL 为扁平对象，按第一次出现的字段顺序合并表头；�
 
 ## 统计 moondata.explore/1
 
-分析参数指纹 `queryCanonical` 由 MoonBit `@contract.canonical_explore_query` 生成（不含会话 `datasetId`），与 `planCanonical` 并列写入报告 `evidence`；键序无关。示例：`moondata.explore/1|mode=group|group=地区|reducer=sum|value=金额`。
+分析参数指纹 `queryCanonical` 由 MoonBit `@contract.canonical_explore_query` 生成（不含会话 `datasetId`），与 `planCanonical` 并列写入报告 `evidence`；键序无关。示例：`moondata.explore/1|mode=group|group=地区|reducer=sum|value=金额`；`mode=overview` → `moondata.explore/1|mode=overview`；`distribution` → `…|mode=distribution|value=金额|bins=10`；`scatter`/`line` → `…|mode=scatter|x=数量|y=金额`；`plot` → `…|mode=plot|x=地区|yColumns=[金额]|kind=bar|reducer=sum`。
 
 MoonBit 计算均值、总体标准差 `stddev`（分母 N）、样本标准差 `sample_stddev`（分母 N−1；少于两点时为 null）和缩放 RMS。均值/方差采用 Welford 算法。若运算溢出，返回不可用提示或错误，不制造零或输出 NaN。采用浮点运算，金额不保证十进制定点精度。界面与报告须区分两种标准差，不得把总体标准差说成样本标准差。
 
