@@ -215,6 +215,34 @@ test('invalid propose_generation rejects with stable messages and never mutates 
   });
   assert.equal(maxCols.storeMutated, false);
   assert.match(maxCols.planCanonical, /kind=sequence/);
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: 'id', kind: 'sequence', start: 1, step: 0 }],
+    }),
+    (e) => e instanceof AppError && e.message === '序列步长不能为零或导致结果超界',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: 'id', kind: 'text', prefix: 'T-', start: 1, step: 0 }],
+    }),
+    (e) => e instanceof AppError && e.message === '序列步长不能为零或导致结果超界',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: '_synthetic', kind: 'sequence', start: 1, step: 1 }],
+    }),
+    (e) => e instanceof AppError && e.message === '字段类型无效、重名或使用了保留字段 _synthetic',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1,
+      columns: [
+        { name: 'a', kind: 'sequence', start: 1, step: 1 },
+        { name: 'a', kind: 'integer', min: 1, max: 2 },
+      ],
+    }),
+    (e) => e instanceof AppError && e.message === '字段类型无效、重名或使用了保留字段 _synthetic',
+  );
   assert.equal(store.list().length, 0);
 });
 

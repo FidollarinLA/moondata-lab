@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.47
+
+- Propose rejects sequence/text `step=0` and reserved/duplicate column names with exact Chinese messages; store stays empty.
+- METHODS clarifies date may use `step=0` while sequence/text may not.
+
 ## 0.6.46
 
 - Propose columns bounds: 33 columns reject with `Plan requires 1..32 columns`; 32 accepted without store write.

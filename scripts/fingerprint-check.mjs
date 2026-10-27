@@ -107,6 +107,22 @@ try {
 const maxColsPropose = rejectTools.execute('propose_generation', {
   rows: 1, seed: 1, columns: cols33.slice(0, 32),
 });
+let invalidProposeSeqStepZero = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 2, seed: 1, columns: [{ name: 'id', kind: 'sequence', start: 1, step: 0 }],
+  });
+} catch (e) {
+  invalidProposeSeqStepZero = e instanceof AppError ? e.message : null;
+}
+let invalidProposeReserved = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 2, seed: 1, columns: [{ name: '_synthetic', kind: 'sequence', start: 1, step: 1 }],
+  });
+} catch (e) {
+  invalidProposeReserved = e instanceof AppError ? e.message : null;
+}
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -145,6 +161,10 @@ const checks = {
     && rejectStore.list().length === 0,
   invalidProposeColumnsBoundsExact: invalidProposeTooManyCols === 'Plan requires 1..32 columns'
     && maxColsPropose.storeMutated === false
+    && rejectStore.list().length === 0,
+  invalidProposeSequenceStepZeroExact: invalidProposeSeqStepZero === '序列步长不能为零或导致结果超界'
+    && rejectStore.list().length === 0,
+  invalidProposeReservedFieldExact: invalidProposeReserved === '字段类型无效、重名或使用了保留字段 _synthetic'
     && rejectStore.list().length === 0,
   agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
     && agent.trace[0].contract.allowlisted === true,
