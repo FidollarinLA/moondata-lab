@@ -57,6 +57,7 @@
 | P1 | ~~distribution/scatter/line queryCanonical 闭式~~（v0.6.30） | 1、4 |
 | P1 | ~~空 datasetId / shell 拒答文案契约~~（v0.6.31） | 4、6 |
 | P1 | ~~demo-jury 精确拒答 + 多 yColumns 指纹~~（v0.6.32） | 1、3、6 |
+| P1 | ~~fingerprint 拒答对齐 + DIFF 证据面~~（v0.6.33） | 2、3、6 |
 | P2 | 可选：对 MoonFrame 的互操作示例（依赖生态包） | 1 |
 | P2 | ~~工具拒答评测集（allowlist 面）~~（v0.6.1）；模型语义拒答另开 | 6 |
 | — | 列类型覆盖等表格 UX：仅当不强化「我们是 DF 库」叙事时再做 | — |

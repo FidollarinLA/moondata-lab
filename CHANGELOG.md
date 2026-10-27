@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.33
+
+- `fingerprint-check` matches `demo-jury` on exact allowlist reject messages.
+- DIFF_VS_MOONFRAME jury evidence surface updated for missing×kinds / multi-mode queryCanonical / stable rejects.
+
 ## 0.6.32
 
 - `demo-jury` asserts exact `run_shell` / empty-`datasetId` ContractError messages.

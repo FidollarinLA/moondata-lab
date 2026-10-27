@@ -31,11 +31,17 @@ const report = dataReport(store, groupQuery);
 const agent = await workbenchAgent({
   store, datasetId: a.id, message: '概览当前数据', config: null,
 });
-let rejectShell = false;
+let rejectShellMessage = null;
 try {
   validateToolCall('run_shell', { cmd: 'ls' });
 } catch (e) {
-  rejectShell = e instanceof AppError || /ContractError|allowlist|允许/i.test(String(e?.message || e));
+  rejectShellMessage = e instanceof AppError ? e.message : null;
+}
+let emptyDatasetIdMessage = null;
+try {
+  validateToolCall('plan_chart', { datasetId: '', action: 'plot' });
+} catch (e) {
+  emptyDatasetIdMessage = e instanceof AppError ? e.message : null;
 }
 
 const checks = {
@@ -49,7 +55,8 @@ const checks = {
   exploreAttachesQueryCanonical: explored.queryCanonical === expectedQuery,
   reportEvidenceQueryCanonical: report.evidence?.queryCanonical === expectedQuery,
   reportMarkdownCitesQueryCanonical: report.markdown.includes(expectedQuery),
-  allowlistRejectsShell: rejectShell,
+  allowlistRejectsShellExact: rejectShellMessage === 'Tool not allowlisted: run_shell',
+  emptyDatasetIdRejectExact: emptyDatasetIdMessage === 'plan_chart requires non-empty datasetId',
   agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
     && agent.trace[0].contract.allowlisted === true,
   agentEvidenceToolsValidated: agent.evidence?.toolAllowlistValidator === TOOL_ALLOWLIST_VALIDATOR
