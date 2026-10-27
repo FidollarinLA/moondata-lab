@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.50
+
+- Number `decimals=0` closed-form expected values (`[0,10]@0` → `0,1,8`) and fingerprint cites `decimals=0`.
+
 ## 0.6.49
 
 - Propose param-range rejects: missing/probability/noise shared message; decimals outside 0..8 exact message; no store write.

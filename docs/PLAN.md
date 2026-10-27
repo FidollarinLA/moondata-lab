@@ -112,6 +112,7 @@
 - [x] v0.6.47：sequence/text step=0 与保留/重名字段精确拒答。
 - [x] v0.6.48：propose 字段形状精确拒答（类别/上下界/linear/日期）。
 - [x] v0.6.49：propose 参数范围精确拒答（missing/probability/noise/decimals）。
+- [x] v0.6.50：number decimals=0 独立闭式期望值与指纹。
 
 ## 下一版本候选（不作为已完成能力）
 

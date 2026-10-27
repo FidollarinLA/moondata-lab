@@ -323,6 +323,17 @@ test('number lerp rows match independent Park–Miller closed form', () => {
     generateRows(narrow).rows.map((r) => r[0]),
     u.map((ui) => round(1 * (1 - ui) + 2 * ui, 3)),
   );
+
+  // decimals=0 rounds to integers; fingerprint cites decimals=0 (not omitted).
+  const zeroDec = normalizePlan({
+    rows: 3, seed: 1,
+    columns: [{ name: 'x', kind: 'number', min: 0, max: 10, decimals: 0 }],
+  });
+  assert.deepEqual(generateRows(zeroDec).rows.map((r) => r[0]), [0, 1, 8]);
+  assert.equal(
+    canonicalPlan(planForFingerprint(zeroDec)),
+    'moondata.generate/1|rows=3|seed=1|columns=[{name=x,kind=number,min=0,max=10,decimals=0}]',
+  );
 });
 
 test('boolean and date rows match independent Park–Miller / day arithmetic', () => {

@@ -758,7 +758,7 @@ fn number_column(
 
 ///|
 /// number = round(min*(1-u)+max*u, decimals) then clamp to [min,max].
-/// seed=1 → u-seq as above; [0,10]@2 → 0, 1.32, 7.56; [1,2]@3 → 1, 1.132, 1.756.
+/// seed=1 → u-seq as above; [0,10]@2 → 0, 1.32, 7.56; [1,2]@3 → 1, 1.132, 1.756; [0,10]@0 → 0, 1, 8.
 test "number lerp matches independent Park Miller closed form" {
   assert_eq(@generator.generate([number_column(0.0, 10.0, 2)], 3, 1), [
     [Json(0.0), Json(true)],
@@ -769,6 +769,11 @@ test "number lerp matches independent Park Miller closed form" {
     [Json(1.0), Json(true)],
     [Json(1.132), Json(true)],
     [Json(1.756), Json(true)],
+  ])
+  assert_eq(@generator.generate([number_column(0.0, 10.0, 0)], 3, 1), [
+    [Json(0.0), Json(true)],
+    [Json(1.0), Json(true)],
+    [Json(8.0), Json(true)],
   ])
 }
 
