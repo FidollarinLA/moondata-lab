@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.37
+
+- Jury materials (SUBMISSION / RESUBMIT / HACKATHON_REVIEW / README) synced to propose no-store + exact rejects.
+- `v05` status test asserts `contracts.proposeGeneration` and allowlist validator pointers.
+
 ## 0.6.36
 
 - `fingerprint-check` asserts propose≡generate `planCanonical` with empty propose store.

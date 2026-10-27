@@ -9,9 +9,9 @@
 
 ## 评委三步（与 README 一致）
 
-1. `node scripts/demo-jury.mjs` → 生成 / 分组 / 报告含 `planCanonical` + `queryCanonical`；拒 shell；builtin `trace.contract` 白名单证据  
-2. `node scripts/fingerprint-check.mjs` → 指纹与 CSV SHA 自洽；拒 shell + builtin `toolsValidated`  
-3. [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) → 定位一句话
+1. `node scripts/demo-jury.mjs` → 生成 / 分组 / 报告指纹；精确拒 shell；propose 不落库且指纹≡生成  
+2. `node scripts/fingerprint-check.mjs` → 指纹与 CSV SHA 自洽；精确拒答 + propose≡generate + `toolsValidated`  
+3. [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) → 定位一句话；`/api/status` 含 `proposeGeneration`
 
 也可一条龙：`node scripts/smoke.mjs`（含上两项）。
 
@@ -24,11 +24,12 @@
 | 工具执行前 MoonBit 校验 | `workbench-agent` / `local-planner` + `validate_tool_json` |
 | `planCanonical` / `queryCanonical` 进 provenance、报告 `evidence`、UI 指纹行 | 生成、explore、报告、工作台 |
 | 工具轨迹 `trace.contract` / `evidence.toolsValidated`（MoonBit 白名单，非模型自述） | Agent / builtin / local-planner |
-| 拒答评测（shell / 空 datasetId / plan_chart） | `test/agent-reject.test.mjs` |
-| 独立期望值（number/linear/integer/category/missing 次序等） | `generator_test` + `generate-contract` |
+| 拒答评测（精确文案：shell / 空 datasetId） | `test/agent-reject.test.mjs` |
+| `propose_generation` 不落库 + 指纹≡generate | workbench-agent + demo-jury / fingerprint-check |
+| 独立期望值（number/linear/integer/category/date/missing 次序等） | `generator_test` + `generate-contract` |
 | 离线自检 | `scripts/fingerprint-check.mjs` |
 | 5 分钟演示 | `scripts/demo-jury.mjs` |
-| status 冒烟（edition/contracts/jury） | `GET /api/status` 或 `node scripts/status-check.mjs` |
+| status 冒烟（含 `proposeGeneration`） | `GET /api/status` 或 `node scripts/status-check.mjs` |
 | 工作区证据摘要 | 导出包顶层 `evidence[]`（含 planCanonical / verified） |
 
 ## 申报书应怎么改（你自己写）

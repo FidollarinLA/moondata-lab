@@ -17,13 +17,12 @@
 
 ## 建议评审路径（约 10 分钟）
 
-1. 克隆并打开 README，确认定位为「本地表格探索预览版」（v0.5）。
-2. Windows 若本机无 MoonBit：先按 [WINDOWS_BUILD](WINDOWS_BUILD.md) 执行一次 `node scripts/setup-windows-toolchain.mjs`（固定哈希，写入项目 `.local`，不改系统安装）。
-3. `node scripts/build.mjs` → `node server/index.mjs` → 浏览器打开 `http://127.0.0.1:4321`。
-4. 点「我想生成数据」→ 用默认销售台账生成 → 自由画图或分组求和 → 下载 Markdown 报告，核对 SHA-256 与方法局限。
-5. 或点「我已有数据」上传 `examples/sales-synthetic.csv`，在自由画图选坐标。
-6. 可选：另开终端 `node examples/core-only.mjs`，确认不启网页也能跑 MoonBit 解析与计算。
-7. 证据索引：[ACCEPTANCE](ACCEPTANCE.md)、[HUMAN_REVIEW](HUMAN_REVIEW.md)、`artifacts/`；迭代节奏见 [ITERATION](ITERATION.md)。
+1. 克隆并打开 README「评委三步」：定位为**合成契约 + 证据工作台**（当前口径见 README / CHANGELOG），不是 DataFrame 库 → [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md)。
+2. Windows 若本机无 MoonBit：先按 [WINDOWS_BUILD](WINDOWS_BUILD.md) 执行一次 `node scripts/setup-windows-toolchain.mjs`。
+3. 无浏览器：`node scripts/demo-jury.mjs` 与 `node scripts/fingerprint-check.mjs`（精确拒 shell、propose 不落库、指纹≡生成）。
+4. 可选 UI：`node scripts/build.mjs` → `node server/index.mjs` → `http://127.0.0.1:4321`；生成销售台账 → 报告含 `planCanonical` / `queryCanonical`。
+5. `node scripts/status-check.mjs`：确认 `contracts.proposeGeneration=planCanonical-only; storeMutated=false`。
+6. 可选：`node examples/core-only.mjs`；证据索引 [ACCEPTANCE](ACCEPTANCE.md)、[RESUBMIT](RESUBMIT.md)、[ITERATION](ITERATION.md)。
 
 ## 明确不宣称
 
