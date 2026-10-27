@@ -82,15 +82,34 @@ test('local planner validates plan_chart and plot_dataset before explore', async
   assert.deepEqual(r.evidence?.toolsValidated, ['plan_chart', 'plot_dataset']);
   assert.ok(r.artifacts[0].chart);
 
-  // Empty datasetId must be rejected by the same MoonBit surface the planner uses.
+  // Empty datasetId / shell: independent expected MoonBit ContractError messages.
   assert.throws(
     () => validateToolCall('plot_dataset', { datasetId: '', x: '地区', yColumns: ['金额'] }),
-    AppError,
+    (e) => e instanceof AppError && e.message === 'plot_dataset requires non-empty datasetId',
   );
   assert.throws(
     () => validateToolCall('plan_chart', { datasetId: '', action: 'plot' }),
-    AppError,
+    (e) => e instanceof AppError && e.message === 'plan_chart requires non-empty datasetId',
   );
+  assert.throws(
+    () => validateToolCall('explore_dataset', { datasetId: '', mode: 'overview' }),
+    (e) => e instanceof AppError && e.message === 'explore_dataset requires non-empty datasetId',
+  );
+  assert.throws(
+    () => validateToolCall('run_shell', { cmd: 'ls' }),
+    (e) => e instanceof AppError && e.message === 'Tool not allowlisted: run_shell',
+  );
+});
+
+test('empty datasetId reject messages are contract-stable across tools', () => {
+  const cases = [
+    ['plan_chart', { datasetId: '', action: 'plot' }, 'plan_chart requires non-empty datasetId'],
+    ['plot_dataset', { datasetId: '', x: 'a', yColumns: [] }, 'plot_dataset requires non-empty datasetId'],
+    ['explore_dataset', { datasetId: '', mode: 'overview' }, 'explore_dataset requires non-empty datasetId'],
+  ];
+  for (const [name, args, expected] of cases) {
+    assert.throws(() => validateToolCall(name, args), (e) => e instanceof AppError && e.message === expected, name);
+  }
 });
 
 test('builtin workbench traces expose MoonBit allowlist evidence', async () => {

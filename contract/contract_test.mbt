@@ -252,3 +252,46 @@ test "plan_chart and plot_dataset require datasetId" {
   }
   assert_true(plot_missing)
 }
+
+///|
+/// Independent expected reject messages (not implementation snapshots of boolean flags).
+test "empty datasetId reject messages are contract-stable" {
+  let empty_plan = try {
+    @contract.validate_tool_call("plan_chart", {
+      "datasetId": "",
+      "action": "plot",
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(empty_plan, "plan_chart requires non-empty datasetId")
+  let empty_plot = try {
+    @contract.validate_tool_call("plot_dataset", {
+      "datasetId": "",
+      "x": "a",
+      "yColumns": [],
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(empty_plot, "plot_dataset requires non-empty datasetId")
+  let empty_explore = try {
+    @contract.validate_tool_call("explore_dataset", {
+      "datasetId": "",
+      "mode": "overview",
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(empty_explore, "explore_dataset requires non-empty datasetId")
+  let shell = try {
+    @contract.validate_tool_call("run_shell", { "cmd": "ls" })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(shell, "Tool not allowlisted: run_shell")
+}

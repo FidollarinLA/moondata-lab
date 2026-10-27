@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.31
+
+- Independent expected reject messages for empty `datasetId` and `run_shell` allowlist denial.
+- METHODS.md documents stable ContractError text; agent-reject asserts exact message strings.
+
 ## 0.6.30
 
 - Independent `queryCanonical` wire forms for distribution / scatter / line (key-order stable).
