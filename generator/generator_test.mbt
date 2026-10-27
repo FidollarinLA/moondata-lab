@@ -212,7 +212,10 @@ test "missing then sequence or text consumes RNG in documented order" {
 }
 
 ///|
-fn linear_noise_pair(noise : Double) -> Array[@generator.ColumnSpec] {
+fn linear_noise_pair(
+  noise : Double,
+  decimals : Int32,
+) -> Array[@generator.ColumnSpec] {
   [
     {
       name: "x",
@@ -240,7 +243,7 @@ fn linear_noise_pair(noise : Double) -> Array[@generator.ColumnSpec] {
       max: 10.0,
       start: 1.0,
       step: 1.0,
-      decimals: 2,
+      decimals,
       prefix: "",
       choices: ["A", "B"],
       probability: 0.5,
@@ -256,13 +259,24 @@ fn linear_noise_pair(noise : Double) -> Array[@generator.ColumnSpec] {
 ///|
 /// linear = round(slope*src + intercept + noise*(2u-1), decimals).
 /// sequence x=1..3 uses no RNG; seed=1 noise=0.5 → y = 2.5, 4.63, 7.26.
+/// decimals=0: noise=0 → 3,5,7; noise=0.5 rounds 2.5/4.63/7.26 → 3,5,7.
 test "linear with noise matches independent Park Miller closed form" {
-  assert_eq(@generator.generate(linear_noise_pair(0.5), 3, 1), [
+  assert_eq(@generator.generate(linear_noise_pair(0.5, 2), 3, 1), [
     [Json(1.0), Json(2.5), Json(true)],
     [Json(2.0), Json(4.63), Json(true)],
     [Json(3.0), Json(7.26), Json(true)],
   ])
-  assert_eq(@generator.generate(linear_noise_pair(0.0), 3, 1), [
+  assert_eq(@generator.generate(linear_noise_pair(0.0, 2), 3, 1), [
+    [Json(1.0), Json(3.0), Json(true)],
+    [Json(2.0), Json(5.0), Json(true)],
+    [Json(3.0), Json(7.0), Json(true)],
+  ])
+  assert_eq(@generator.generate(linear_noise_pair(0.0, 0), 3, 1), [
+    [Json(1.0), Json(3.0), Json(true)],
+    [Json(2.0), Json(5.0), Json(true)],
+    [Json(3.0), Json(7.0), Json(true)],
+  ])
+  assert_eq(@generator.generate(linear_noise_pair(0.5, 0), 3, 1), [
     [Json(1.0), Json(3.0), Json(true)],
     [Json(2.0), Json(5.0), Json(true)],
     [Json(3.0), Json(7.0), Json(true)],

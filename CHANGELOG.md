@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.54
+
+- Linear `decimals=0` closed-form expected values (`noise=0` / `0.5` → `3,5,7`; fingerprint cites `decimals=0`).
+
 ## 0.6.53
 
 - Category singleton closed-form expected values (`[Only]` → constant; fingerprint cites `choices=[Only]`).

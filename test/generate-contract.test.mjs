@@ -271,6 +271,32 @@ test('linear with noise matches independent Park–Miller closed form', () => {
     ],
   });
   assert.deepEqual(generateRows(quiet).rows.map((r) => r[1]), [3, 5, 7]);
+
+  // decimals=0: noise=0 → 3,5,7; noise=0.5 rounds 2.5/4.63/7.26 → 3,5,7; fingerprint cites decimals=0.
+  const zeroDecQuiet = normalizePlan({
+    rows: 3, seed: 1,
+    columns: [
+      { name: 'x', kind: 'sequence', start: 1, step: 1 },
+      { name: 'y', kind: 'linear', source: 'x', slope: 2, intercept: 1, noise: 0, decimals: 0 },
+    ],
+  });
+  assert.deepEqual(generateRows(zeroDecQuiet).rows.map((r) => r[1]), [3, 5, 7]);
+  assert.match(
+    canonicalPlan(planForFingerprint(zeroDecQuiet)),
+    /kind=linear,decimals=0,source=x,slope=2,intercept=1,noise=0/,
+  );
+  const zeroDecNoisy = normalizePlan({
+    rows: 3, seed: 1,
+    columns: [
+      { name: 'x', kind: 'sequence', start: 1, step: 1 },
+      { name: 'y', kind: 'linear', source: 'x', slope: 2, intercept: 1, noise: 0.5, decimals: 0 },
+    ],
+  });
+  assert.deepEqual(
+    generateRows(zeroDecNoisy).rows.map((r) => r[1]),
+    u.map((ui, i) => round(2 * (i + 1) + 1 + 0.5 * (2 * ui - 1), 0)),
+  );
+  assert.deepEqual(generateRows(zeroDecNoisy).rows.map((r) => r[1]), [3, 5, 7]);
 });
 
 test('missing then linear consumes RNG in documented order', () => {
