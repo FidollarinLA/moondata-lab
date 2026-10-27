@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.45
+
+- Propose rows bounds: `10001` rejects with stable range message; `10000` accepted without store write.
+
 ## 0.6.44
 
 - Date `step=0` closed-form expected values: repeat `start_day`, seed-independent, fingerprint cites `step=0`.

@@ -193,6 +193,15 @@ test('invalid propose_generation rejects with stable messages and never mutates 
   });
   assert.equal(maxOk.storeMutated, false);
   assert.match(maxOk.planCanonical, /\|seed=2147483646\|/);
+  assert.throws(
+    () => toolkit.execute('propose_generation', { rows: 10001, seed: 1, columns: [col] }),
+    (e) => e instanceof AppError && e.message === 'Plan rows/seed out of generation contract range',
+  );
+  const maxRows = toolkit.execute('propose_generation', {
+    rows: 10000, seed: 1, columns: [col],
+  });
+  assert.equal(maxRows.storeMutated, false);
+  assert.match(maxRows.planCanonical, /\|rows=10000\|/);
   assert.equal(store.list().length, 0);
 });
 

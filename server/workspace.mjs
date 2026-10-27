@@ -38,7 +38,7 @@ export function exportWorkspace(store, { datasetId = null, query = null } = {}) 
     : null;
   return {
     contract: CONTRACT,
-    version: '0.6.44',
+    version: '0.6.45',
     exportedAt: new Date().toISOString(),
     persistence: 'file-pack',
     note: '工作区包可在本机重新导入以恢复数据与可选视图；evidence.planCanonical 仅在本会话生成时为已验证，导入后降为声称。不证明数据真实性。',

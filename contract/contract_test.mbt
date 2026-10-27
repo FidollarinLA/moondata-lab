@@ -430,3 +430,34 @@ test "propose_generation rejects seed outside 1..2147483646 with stable message"
   }
   assert_eq(max_ok, "ok")
 }
+
+///|
+/// Rows must be in 1..10000; 10001 rejects with the same range message; 10000 validates.
+test "propose_generation rejects rows above 10000 with stable message" {
+  let over = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 10001.0,
+      "seed": 1.0,
+      "columns": [
+        { "name": "id", "kind": "sequence", "start": 1.0, "step": 1.0 },
+      ],
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(over, "Plan rows/seed out of generation contract range")
+  let max_rows = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 10000.0,
+      "seed": 1.0,
+      "columns": [
+        { "name": "id", "kind": "sequence", "start": 1.0, "step": 1.0 },
+      ],
+    })
+    "ok"
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(max_rows, "ok")
+}
