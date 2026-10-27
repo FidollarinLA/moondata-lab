@@ -334,6 +334,31 @@ test "empty datasetId reject messages are contract-stable" {
 }
 
 ///|
+/// explore_dataset with a mode runs canonical_explore_query at validate time.
+test "explore_dataset rejects unsupported mode with stable message" {
+  let bad = try {
+    @contract.validate_tool_call("explore_dataset", {
+      "datasetId": "ds1",
+      "mode": "pivot",
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(bad, "Unsupported explore mode")
+  let ok = try {
+    @contract.validate_tool_call("explore_dataset", {
+      "datasetId": "ds1",
+      "mode": "overview",
+    })
+    "ok"
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(ok, "ok")
+}
+
+///|
 /// Invalid propose_generation plans fail at MoonBit validate with stable messages (before any store write).
 test "propose_generation rejects empty columns and out-of-range rows with stable messages" {
   let empty_cols = try {

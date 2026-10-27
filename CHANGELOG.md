@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.40
+
+- `explore_dataset` validate runs `canonical_explore_query` when `mode` is set; unsupported mode → `Unsupported explore mode`.
+- agent-reject + fingerprint-check cover the new explore-shape reject surface.
+
 ## 0.6.39
 
 - Jury path (`demo-jury` / `fingerprint-check`) asserts invalid propose rejects with exact messages and empty store.

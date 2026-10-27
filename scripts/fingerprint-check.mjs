@@ -61,6 +61,12 @@ try {
 } catch (e) {
   invalidProposeBadRows = e instanceof AppError ? e.message : null;
 }
+let unsupportedExploreMode = null;
+try {
+  validateToolCall('explore_dataset', { datasetId: 'ds', mode: 'pivot' });
+} catch (e) {
+  unsupportedExploreMode = e instanceof AppError ? e.message : null;
+}
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -84,6 +90,7 @@ const checks = {
     && rejectStore.list().length === 0,
   invalidProposeOutOfRangeRowsExact: invalidProposeBadRows === 'Plan rows/seed out of generation contract range'
     && rejectStore.list().length === 0,
+  unsupportedExploreModeExact: unsupportedExploreMode === 'Unsupported explore mode',
   agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
     && agent.trace[0].contract.allowlisted === true,
   agentEvidenceToolsValidated: agent.evidence?.toolAllowlistValidator === TOOL_ALLOWLIST_VALIDATOR

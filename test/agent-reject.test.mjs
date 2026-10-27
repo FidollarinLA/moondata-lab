@@ -43,6 +43,26 @@ test('allowlisted plot/explore/plan_chart accept only with non-empty datasetId',
   assert.equal(validateToolCall('plan_chart', { datasetId: 'd1', action: 'plot' }).allowed, true);
 });
 
+test('explore_dataset rejects unsupported mode at MoonBit validate with stable message', () => {
+  assert.throws(
+    () => validateToolCall('explore_dataset', { datasetId: 'd1', mode: 'pivot' }),
+    (e) => e instanceof AppError && e.message === 'Unsupported explore mode',
+  );
+  assert.throws(
+    () => validateToolCall('explore_dataset', {
+      datasetId: 'd1', mode: 'distribution', value: '金额',
+    }),
+    (e) => e instanceof AppError && e.message === 'Missing integer field bins',
+  );
+  const store = new DatasetStore();
+  const d = generateDataset(store, { ...templates[0], rows: 5 });
+  const toolkit = workbenchTools(store, d.id);
+  assert.throws(
+    () => toolkit.execute('explore_dataset', { mode: 'pivot' }),
+    (e) => e instanceof AppError && e.message === 'Unsupported explore mode',
+  );
+});
+
 test('generated provenance carries MoonBit planCanonical fingerprint', () => {
   const store = new DatasetStore();
   const d = generateDataset(store, { ...templates[0], rows: 5 });

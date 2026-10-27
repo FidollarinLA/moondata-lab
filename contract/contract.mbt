@@ -182,9 +182,22 @@ pub fn validate_tool_call(
     "propose_generation" => {
       let _ = canonical_plan(args)
     }
-    "plot_dataset" | "explore_dataset" | "plan_chart" => {
+    "plot_dataset" | "plan_chart" => {
       guard map.get("datasetId") is Some(String(id)) && !id.is_empty() else {
         raise ContractError("\{name} requires non-empty datasetId")
+      }
+    }
+    "explore_dataset" => {
+      guard map.get("datasetId") is Some(String(id)) && !id.is_empty() else {
+        raise ContractError("\{name} requires non-empty datasetId")
+      }
+      // When mode is present, fingerprint-validate the explore shape before Node runs.
+      match map.get("mode") {
+        Some(String(_)) => {
+          let _ = canonical_explore_query(args)
+        }
+        Some(_) => raise ContractError("mode must be a string")
+        None => ()
       }
     }
     "profile_dataset" => ()
