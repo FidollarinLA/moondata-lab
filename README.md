@@ -7,15 +7,15 @@
 通用 DataFrame / 聚合 / Vega-Lite → 请用 [MoonFrame](https://mooncakes.io/docs/ihb2032/MoonFrame)。本仓库**不是**又一个表格库。  
 对照：[与 MoonFrame 的差异](docs/DIFF_VS_MOONFRAME.md) · 复审要点：[RESUBMIT](docs/RESUBMIT.md)
 
-仓库 **Public**，默认分支 **`main`**。当前工程口径 v0.6.23。
+仓库 **Public**，默认分支 **`main`**。当前工程口径 v0.6.24。
 
 ## 评委三步（约 5 分钟，无浏览器也可）
 
 | 步 | 做什么 | 期望证据 |
 | --- | --- | --- |
-| 1 | `node scripts/demo-jury.mjs` | 同方案生成 → 分组 → Markdown/JSON 含 `planCanonical`；拒 `run_shell` |
-| 2 | `node scripts/fingerprint-check.mjs` | 独立重算指纹与 CSV SHA-256 一致 |
-| 3 | 打开 [DIFF_VS_MOONFRAME](docs/DIFF_VS_MOONFRAME.md)；可选 `node scripts/status-check.mjs` | 定位一句话；`/api/status` 含 `contracts` / `jury` |
+| 1 | `node scripts/demo-jury.mjs` | 生成 → 分组 → 报告含 `planCanonical` + `queryCanonical`；拒 `run_shell`；builtin 轨迹含白名单 `trace.contract` |
+| 2 | `node scripts/fingerprint-check.mjs` | 独立重算生成/分析指纹与 CSV SHA-256 一致 |
+| 3 | 打开 [DIFF_VS_MOONFRAME](docs/DIFF_VS_MOONFRAME.md)；可选 `node scripts/status-check.mjs` | 定位一句话；`/api/status` 含 `contracts`（含指纹/白名单指针）/ `jury` |
 
 ```sh
 git clone https://github.com/FidollarinLA/moondata-lab.git

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.24
+
+- `demo-jury` asserts builtin allowlist `trace.contract` / `evidence.toolsValidated`.
+- README jury three-step updated for queryCanonical + allowlist evidence.
+
 ## 0.6.23
 
 - Independent expected values for missing×number RNG order (`null,null,4.59,2.19,null`).

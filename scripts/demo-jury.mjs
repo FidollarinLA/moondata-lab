@@ -6,7 +6,8 @@
 import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
 import { templates, generateDataset, explore, dataReport, downloadDataset } from '../server/data.mjs';
-import { validateToolCall, AppError, canonicalExploreQuery } from '../server/core.mjs';
+import { validateToolCall, AppError, canonicalExploreQuery, TOOL_ALLOWLIST_VALIDATOR } from '../server/core.mjs';
+import { workbenchAgent } from '../server/workbench-agent.mjs';
 
 const store = new DatasetStore();
 const plan = templates.find(t => t.id === 'sales');
@@ -31,6 +32,20 @@ try {
 }
 if (!rejectShell) throw new Error('allowlist failed to reject run_shell');
 
+const agent = await workbenchAgent({
+  store,
+  datasetId: dataset.id,
+  message: '概览当前数据',
+  config: null,
+});
+if (agent.trace?.[0]?.contract?.validator !== TOOL_ALLOWLIST_VALIDATOR || !agent.trace[0].contract.allowlisted) {
+  throw new Error('builtin agent trace missing MoonBit allowlist contract evidence');
+}
+if (agent.evidence?.toolAllowlistValidator !== TOOL_ALLOWLIST_VALIDATOR
+  || !agent.evidence?.toolsValidated?.includes('profile_dataset')) {
+  throw new Error('builtin agent evidence.toolsValidated missing profile_dataset');
+}
+
 const east = group.table.find(r => r.group === '华东');
 console.log(JSON.stringify({
   ok: true,
@@ -39,6 +54,8 @@ console.log(JSON.stringify({
   dataset: { name: dataset.name, rows: dataset.rowCount, sha256: dataset.sha256, synthetic: dataset.synthetic },
   planCanonical: canon,
   rejectShellOk: rejectShell,
+  allowlistEvidenceOk: true,
+  toolsValidated: agent.evidence.toolsValidated,
   overviewFields: overview.table.length,
   groupSumEast: east?.value ?? null,
   reportSha256InMarkdown: report.markdown.includes(dataset.sha256),
