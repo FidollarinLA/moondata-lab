@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.58
+
+- Missing×integer `min=max` closed forms (`[7,7]@missing=0.3` → `null,null,7,7,null`; fingerprint cites both bounds).
+
 ## 0.6.57
 
 - Text empty-prefix closed forms (`1,2,3`; fingerprint omits empty `prefix`).

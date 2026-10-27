@@ -120,6 +120,7 @@
 - [x] v0.6.55：date 负步长独立闭式期望值与指纹。
 - [x] v0.6.56：missing×boolean p=0/1 独立闭式期望值。
 - [x] v0.6.57：text 空 prefix 独立闭式期望值与指纹省略约定。
+- [x] v0.6.58：missing×integer min=max 独立闭式期望值与指纹。
 
 ## 下一版本候选（不作为已完成能力）
 

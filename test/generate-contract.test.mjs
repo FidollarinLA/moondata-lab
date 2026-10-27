@@ -245,6 +245,16 @@ test('missing then integer consumes RNG in documented order', () => {
     columns: [{ name: 'n', kind: 'integer', min: 0, max: 10, missing: 0.8 }],
   });
   assert.deepEqual(generateRows(heavy).rows.map((r) => r[0]), [null, null, null, null, null]);
+  // min=max collapses kept cells to that constant; fingerprint cites both bounds + missing.
+  const flat = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'n', kind: 'integer', min: 7, max: 7, missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(flat).rows.map((r) => r[0]), [null, null, 7, 7, null]);
+  assert.equal(
+    canonicalPlan(planForFingerprint(flat)),
+    'moondata.generate/1|rows=5|seed=1|columns=[{name=n,kind=integer,min=7,max=7,missing=0.3}]',
+  );
 });
 
 test('integer closed interval matches independent Park–Miller floor form', () => {

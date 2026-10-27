@@ -485,6 +485,7 @@ test "linear null source skips noise draw; noise zero still consumes RNG" {
 ///|
 /// missing draw first: null skips the integer floor draw.
 /// seed=1, missing=0.3, [0,10], five rows → null,null,5,2,null.
+/// min=max=7 kept cells → 7,7 (floor still drawn when kept).
 test "missing then integer consumes RNG in documented order" {
   assert_eq(@generator.generate([integer_missing(0.0, 10.0, 0.3)], 5, 1), [
     [Json::null(), Json(true)],
@@ -498,6 +499,13 @@ test "missing then integer consumes RNG in documented order" {
     [Json::null(), Json(true)],
     [Json::null(), Json(true)],
     [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+  assert_eq(@generator.generate([integer_missing(7.0, 7.0, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json(7.0), Json(true)],
+    [Json(7.0), Json(true)],
     [Json::null(), Json(true)],
   ])
 }
