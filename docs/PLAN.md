@@ -105,6 +105,7 @@
 - [x] v0.6.40：explore_dataset 带 mode 时校验期跑 canonical_explore_query。
 - [x] v0.6.41：boolean probability=0/1 独立闭式期望值。
 - [x] v0.6.42：propose seed 边界（0 / 2147483647 拒；2147483646 可）。
+- [x] v0.6.43：group count 无 value 的 queryCanonical 闭式与评委断言。
 
 ## 下一版本候选（不作为已完成能力）
 

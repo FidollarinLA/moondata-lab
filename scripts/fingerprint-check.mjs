@@ -28,7 +28,13 @@ const groupQuery = { datasetId: a.id, mode: 'group', group: '地区', value: '�
 const expectedQuery = canonicalExploreQuery({
   mode: 'group', group: '地区', value: '销售金额', reducer: 'sum',
 });
+const countQuery = { datasetId: a.id, mode: 'group', group: '地区', reducer: 'count' };
+const expectedCountQuery = canonicalExploreQuery({
+  mode: 'group', group: '地区', reducer: 'count',
+});
 const explored = explore(store, groupQuery);
+const counted = explore(store, countQuery);
+const countReport = dataReport(store, countQuery);
 const report = dataReport(store, groupQuery);
 const agent = await workbenchAgent({
   store, datasetId: a.id, message: '概览当前数据', config: null,
@@ -95,6 +101,10 @@ const checks = {
   exploreAttachesQueryCanonical: explored.queryCanonical === expectedQuery,
   reportEvidenceQueryCanonical: report.evidence?.queryCanonical === expectedQuery,
   reportMarkdownCitesQueryCanonical: report.markdown.includes(expectedQuery),
+  groupCountQueryCanonicalExact: counted.queryCanonical === expectedCountQuery
+    && expectedCountQuery === 'moondata.explore/1|mode=group|group=地区|reducer=count'
+    && countReport.evidence?.queryCanonical === expectedCountQuery
+    && countReport.markdown.includes(expectedCountQuery),
   allowlistRejectsShellExact: rejectShellMessage === 'Tool not allowlisted: run_shell',
   emptyDatasetIdRejectExact: emptyDatasetIdMessage === 'plan_chart requires non-empty datasetId',
   invalidProposeEmptyColumnsExact: invalidProposeEmptyCols === 'Plan requires 1..32 columns'

@@ -67,6 +67,7 @@
 | P1 | ~~explore 非法 mode 校验期拒答~~（v0.6.40） | 4、6 |
 | P1 | ~~boolean probability 0/1 闭式期望值~~（v0.6.41） | 1 |
 | P1 | ~~propose seed 边界精确拒答~~（v0.6.42） | 1、6 |
+| P1 | ~~group count 无 value 的 queryCanonical~~（v0.6.43） | 1、4 |
 | P2 | 可选：对 MoonFrame 的互操作示例（依赖生态包） | 1 |
 | P2 | ~~工具拒答评测集（allowlist 面）~~（v0.6.1）；模型语义拒答另开 | 6 |
 | — | 列类型覆盖等表格 UX：仅当不强化「我们是 DF 库」叙事时再做 | — |

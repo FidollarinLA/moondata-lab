@@ -440,6 +440,17 @@ test('explore queryCanonical is order-stable and cited in report evidence', () =
   );
   assert.equal(canonicalExploreQuery({ mode: 'overview' }), 'moondata.explore/1|mode=overview');
 
+  // group without value omits value= from the fingerprint (count / optional push_str).
+  const countCanon = 'moondata.explore/1|mode=group|group=地区|reducer=count';
+  assert.equal(
+    canonicalExploreQuery({ mode: 'group', group: '地区', reducer: 'count' }),
+    countCanon,
+  );
+  assert.equal(
+    canonicalExploreQuery({ reducer: 'count', group: '地区', mode: 'group', datasetId: 'x' }),
+    countCanon,
+  );
+
   const store = new DatasetStore();
   const d = generateDataset(store, { ...templates[0], rows: 20 });
   const qCanon = 'moondata.explore/1|mode=group|group=地区|reducer=sum|value=销售金额';
@@ -452,6 +463,16 @@ test('explore queryCanonical is order-stable and cited in report evidence', () =
   });
   assert.equal(report.evidence.queryCanonical, qCanon);
   assert.ok(report.markdown.includes(qCanon));
+
+  const counted = explore(store, {
+    datasetId: d.id, mode: 'group', group: '地区', reducer: 'count',
+  });
+  assert.equal(counted.queryCanonical, countCanon);
+  const countReport = dataReport(store, {
+    datasetId: d.id, mode: 'group', group: '地区', reducer: 'count',
+  });
+  assert.equal(countReport.evidence.queryCanonical, countCanon);
+  assert.ok(countReport.markdown.includes(countCanon));
   assert.equal(JSON.parse(report.json).evidence.queryCanonical, qCanon);
 });
 

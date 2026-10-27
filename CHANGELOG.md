@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.43
+
+- Group `count` without `value` has closed-form `queryCanonical` cited in explore/report/jury scripts.
+- demo-jury also asserts `Unsupported explore mode`.
+
 ## 0.6.42
 
 - Propose seed bounds: `0` / `2147483647` reject with stable range message; `2147483646` accepted without store write.

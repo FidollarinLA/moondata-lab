@@ -85,6 +85,27 @@ try {
 if (!invalidProposeOk) {
   throw new Error('invalid propose_generation must reject with Plan requires 1..32 columns and leave store unchanged');
 }
+let unsupportedModeOk = false;
+try {
+  validateToolCall('explore_dataset', { datasetId: dataset.id, mode: 'pivot' });
+} catch (e) {
+  unsupportedModeOk = e instanceof AppError && e.message === 'Unsupported explore mode';
+}
+if (!unsupportedModeOk) {
+  throw new Error('explore_dataset must reject unsupported mode with Unsupported explore mode');
+}
+const countCanon = 'moondata.explore/1|mode=group|group=地区|reducer=count';
+const counted = explore(store, {
+  datasetId: dataset.id, mode: 'group', group: '地区', reducer: 'count',
+});
+const countReport = dataReport(store, {
+  datasetId: dataset.id, mode: 'group', group: '地区', reducer: 'count',
+});
+if (counted.queryCanonical !== countCanon
+  || countReport.evidence?.queryCanonical !== countCanon
+  || !countReport.markdown.includes(countCanon)) {
+  throw new Error('group count without value must cite exact queryCanonical in explore/report');
+}
 
 const east = group.table.find(r => r.group === '华东');
 console.log(JSON.stringify({
@@ -99,6 +120,8 @@ console.log(JSON.stringify({
   allowlistEvidenceOk: true,
   proposeGenerationNoStoreOk: true,
   invalidProposeNoStoreOk: true,
+  unsupportedExploreModeOk: true,
+  groupCountQueryCanonicalOk: counted.queryCanonical === countCanon,
   proposeMatchesGenerateCanon: proposed.artifacts[0].planCanonical === canon,
   proposePlanCanonical: proposed.artifacts[0].planCanonical,
   toolsValidated: agent.evidence.toolsValidated,
