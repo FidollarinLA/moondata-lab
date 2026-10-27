@@ -525,16 +525,13 @@ fn number_missing(
 /// missing draw first: null skips the number lerp draw.
 /// seed=1, missing=0.3, [0,10]@2, five rows → null,null,4.59,2.19,null.
 test "missing then number consumes RNG in documented order" {
-  assert_eq(
-    @generator.generate([number_missing(0.0, 10.0, 2, 0.3)], 5, 1),
-    [
-      [Json::null(), Json(true)],
-      [Json::null(), Json(true)],
-      [Json(4.59), Json(true)],
-      [Json(2.19), Json(true)],
-      [Json::null(), Json(true)],
-    ],
-  )
+  assert_eq(@generator.generate([number_missing(0.0, 10.0, 2, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json(4.59), Json(true)],
+    [Json(2.19), Json(true)],
+    [Json::null(), Json(true)],
+  ])
 }
 
 ///|
