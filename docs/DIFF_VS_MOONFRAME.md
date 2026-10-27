@@ -23,7 +23,7 @@
 ## 本期加厚的「独立工程深度」
 
 1. **生成契约（MoonBit `generator` + `contract`）**  
-   规范化方案 JSON、工具调用白名单校验、独立期望值测试（number/linear/integer/sequence/text/missing 次序等）；同方案同种子承诺可复现指纹。
+   规范化方案 JSON、工具调用白名单校验、独立期望值测试（number/linear/integer/category/sequence/text/missing 次序等）；同方案同种子承诺可复现指纹。
 2. **证据链工作台**  
    报告重算、参数变更作废旧导出、合成标识；`planCanonical`（生成）与 `queryCanonical`（分析）进 provenance / 报告 `evidence` / UI 指纹行；工作区包顶层 `evidence[]`。
 3. **Agent 边界**  

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.25
+
+- Independent expected values for missing×category RNG order (`null,null,A,A,null` / `null,null,Y,X,null`).
+- METHODS.md documents the category missing-then-index closed form.
+
 ## 0.6.24
 
 - `demo-jury` asserts builtin allowlist `trace.contract` / `evidence.toolsValidated`.

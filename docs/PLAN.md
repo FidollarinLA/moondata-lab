@@ -87,6 +87,7 @@
 - [x] v0.6.22：status/DIFF 暴露 planCanonical·queryCanonical·白名单评委指针。
 - [x] v0.6.23：missing×number 期望值；SUBMISSION_TEMPLATE 证据要点同步。
 - [x] v0.6.24：demo-jury 断言白名单 evidence；README 评委三步更新。
+- [x] v0.6.25：missing×category RNG 次序独立期望值 + METHODS。
 
 ## 下一版本候选（不作为已完成能力）
 

@@ -239,6 +239,25 @@ test('missing then number consumes RNG in documented order', () => {
   );
 });
 
+test('missing then category consumes RNG in documented order', () => {
+  // missing draw first; null skips category index. seed=1, missing=0.3 → null,null,A,A,null / null,null,Y,X,null
+  const ab = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'g', kind: 'category', choices: ['A', 'B'], missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(ab).rows.map((r) => r[0]), [null, null, 'A', 'A', null]);
+  const xyz = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'g', kind: 'category', choices: ['X', 'Y', 'Z'], missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(xyz).rows.map((r) => r[0]), [null, null, 'Y', 'X', null]);
+  const heavy = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'g', kind: 'category', choices: ['A', 'B'], missing: 0.8 }],
+  });
+  assert.deepEqual(generateRows(heavy).rows.map((r) => r[0]), [null, null, null, null, null]);
+});
+
 test('number lerp rows match independent Park–Miller closed form', () => {
   // raw = min*(1-u)+max*u; round to decimals then clamp. seed=1 → u as in METHODS.
   const M = 2147483647;

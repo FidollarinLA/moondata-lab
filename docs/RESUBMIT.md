@@ -25,7 +25,7 @@
 | `planCanonical` / `queryCanonical` 进 provenance、报告 `evidence`、UI 指纹行 | 生成、explore、报告、工作台 |
 | 工具轨迹 `trace.contract` / `evidence.toolsValidated`（MoonBit 白名单，非模型自述） | Agent / builtin / local-planner |
 | 拒答评测（shell / 空 datasetId / plan_chart） | `test/agent-reject.test.mjs` |
-| 独立期望值（number/linear/integer/missing 次序等） | `generator_test` + `generate-contract` |
+| 独立期望值（number/linear/integer/category/missing 次序等） | `generator_test` + `generate-contract` |
 | 离线自检 | `scripts/fingerprint-check.mjs` |
 | 5 分钟演示 | `scripts/demo-jury.mjs` |
 | status 冒烟（edition/contracts/jury） | `GET /api/status` 或 `node scripts/status-check.mjs` |

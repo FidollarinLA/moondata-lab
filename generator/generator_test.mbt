@@ -428,6 +428,58 @@ test "category equal probability matches Park Miller index closed form" {
 }
 
 ///|
+fn category_missing(
+  choices : Array[String],
+  missing : Double,
+) -> @generator.ColumnSpec {
+  {
+    name: "g",
+    kind: "category",
+    source: "",
+    min: 0.0,
+    max: 1.0,
+    start: 0.0,
+    step: 1.0,
+    decimals: 0,
+    prefix: "",
+    choices,
+    probability: 0.5,
+    missing,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// missing draw first: null skips the category index draw.
+/// seed=1, missing=0.3, [A,B] → null,null,A,A,null; [X,Y,Z] → null,null,Y,X,null.
+test "missing then category consumes RNG in documented order" {
+  assert_eq(@generator.generate([category_missing(["A", "B"], 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json("A"), Json(true)],
+    [Json("A"), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+  assert_eq(@generator.generate([category_missing(["X", "Y", "Z"], 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json("Y"), Json(true)],
+    [Json("X"), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+  assert_eq(@generator.generate([category_missing(["A", "B"], 0.8)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+}
+
+///|
 fn bool_missing(
   probability : Double,
   missing : Double,
