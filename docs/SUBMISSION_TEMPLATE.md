@@ -23,14 +23,15 @@ MoonData Lab
 MoonBit 贡献在：确定性字段生成契约、方案规范化指纹、受限工具白名单、报告证据链。
 
 ## 至少三个完整场景（对齐 README「评委三步」）
-1. `node scripts/demo-jury.mjs`：生成 → 分组 → 报告含 `planCanonical`；拒 `run_shell`  
-2. `node scripts/fingerprint-check.mjs`：独立重算指纹与 CSV SHA-256 一致  
-3. 助手/contract：非法工具或空 `datasetId` 被拒；`propose_generation` 只出方案不落库  
+1. `node scripts/demo-jury.mjs`：生成 → 分组 → 报告含 `planCanonical` **与** `queryCanonical`；拒 `run_shell`  
+2. `node scripts/fingerprint-check.mjs`：独立重算生成/分析指纹与 CSV SHA-256 一致  
+3. 助手/contract：非法工具或空 `datasetId` 被拒；成功工具带 `trace.contract` / `evidence.toolsValidated`；`propose_generation` 只出方案不落库  
 
 ## 核心功能
-- MoonBit `generator` + `contract`：合成方案、规范化指纹、工具允许列表  
-- 工作台：证据型报告、可选本地模型只规划坐标  
+- MoonBit `generator` + `contract`：合成方案、`planCanonical` / `queryCanonical`、工具允许列表  
+- 工作台：证据型报告、UI 指纹行、可选本地模型只规划坐标  
 - 表格分析为工作台能力，不宣称替代 MoonFrame  
+- 冒烟：`GET /api/status` 或 `node scripts/status-check.mjs` 可见 contracts/jury 指针  
 
 ## 原创或参考
 生成契约与 Agent 边界为原创实现。交互参考过通用探索工具；MoonFrame / MoonCharts 为生态参考，未移植其源码。见 THIRD_PARTY.md。Apache-2.0。

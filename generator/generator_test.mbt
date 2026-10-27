@@ -495,6 +495,49 @@ test "number lerp matches independent Park Miller closed form" {
 }
 
 ///|
+fn number_missing(
+  min : Double,
+  max : Double,
+  decimals : Int32,
+  missing : Double,
+) -> @generator.ColumnSpec {
+  {
+    name: "x",
+    kind: "number",
+    source: "",
+    min,
+    max,
+    start: 0.0,
+    step: 1.0,
+    decimals,
+    prefix: "",
+    choices: ([] : Array[String]),
+    probability: 0.5,
+    missing,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// missing draw first: null skips the number lerp draw.
+/// seed=1, missing=0.3, [0,10]@2, five rows → null,null,4.59,2.19,null.
+test "missing then number consumes RNG in documented order" {
+  assert_eq(
+    @generator.generate([number_missing(0.0, 10.0, 2, 0.3)], 5, 1),
+    [
+      [Json::null(), Json(true)],
+      [Json::null(), Json(true)],
+      [Json(4.59), Json(true)],
+      [Json(2.19), Json(true)],
+      [Json::null(), Json(true)],
+    ],
+  )
+}
+
+///|
 /// missing draw first: if u < missing → null and skip boolean draw; else boolean uses the next u.
 /// seed=1, missing=0.3, p=0.5 → null,null,true,true,null
 test "missing then boolean consumes RNG in documented order" {

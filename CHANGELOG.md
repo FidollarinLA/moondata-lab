@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.23
+
+- Independent expected values for missing×number RNG order (`null,null,4.59,2.19,null`).
+- SUBMISSION_TEMPLATE jury scenarios cite `queryCanonical` and allowlist evidence.
+
 ## 0.6.22
 
 - `/api/status` exposes `planCanonical` / `queryCanonical` / `toolAllowlistValidator` contract pointers and `jury.resubmit`.

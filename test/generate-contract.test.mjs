@@ -227,6 +227,18 @@ test('linear with noise matches independent Park–Miller closed form', () => {
   assert.deepEqual(generateRows(quiet).rows.map((r) => r[1]), [3, 5, 7]);
 });
 
+test('missing then number consumes RNG in documented order', () => {
+  // missing draw first; null skips number lerp. seed=1, missing=0.3, [0,10]@2 → null,null,4.59,2.19,null
+  const plan = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'x', kind: 'number', min: 0, max: 10, decimals: 2, missing: 0.3 }],
+  });
+  assert.deepEqual(
+    generateRows(plan).rows.map((r) => r[0]),
+    [null, null, 4.59, 2.19, null],
+  );
+});
+
 test('number lerp rows match independent Park–Miller closed form', () => {
   // raw = min*(1-u)+max*u; round to decimals then clamp. seed=1 → u as in METHODS.
   const M = 2147483647;
