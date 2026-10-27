@@ -144,6 +144,20 @@ test('sequence and text are seed-independent closed forms', () => {
   assert.deepEqual(generateRows(textB).rows.map((r) => r[0]), ['R-1', 'R-2', 'R-3']);
 });
 
+test('missing then sequence or text consumes RNG in documented order', () => {
+  // missing draw only; kept cells use start+i*step (row index). seed=1, missing=0.3
+  const seq = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'id', kind: 'sequence', start: 10, step: 5, missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(seq).rows.map((r) => r[0]), [null, null, 20, 25, 30]);
+  const text = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 't', kind: 'text', prefix: 'R-', start: 1, step: 1, missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(text).rows.map((r) => r[0]), [null, null, 'R-3', 'R-4', 'R-5']);
+});
+
 test('linear null source skips noise draw; noise zero still consumes RNG', () => {
   // Independent: miss then maybe int; on present source linear always draws noise u even if noise=0.
   // seed=1 → (null,null),(null,null),(5,11),(null,null),(null,null)

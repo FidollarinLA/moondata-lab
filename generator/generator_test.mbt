@@ -123,6 +123,79 @@ test "sequence and text are seed-independent closed forms" {
 }
 
 ///|
+fn seq_missing(
+  start : Double,
+  step : Double,
+  missing : Double,
+) -> @generator.ColumnSpec {
+  {
+    name: "id",
+    kind: "sequence",
+    source: "",
+    min: 0.0,
+    max: 1.0,
+    start,
+    step,
+    decimals: 0,
+    prefix: "",
+    choices: ([] : Array[String]),
+    probability: 0.5,
+    missing,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+fn text_missing(
+  prefix : String,
+  start : Double,
+  step : Double,
+  missing : Double,
+) -> @generator.ColumnSpec {
+  {
+    name: "t",
+    kind: "text",
+    source: "",
+    min: 0.0,
+    max: 1.0,
+    start,
+    step,
+    decimals: 0,
+    prefix,
+    choices: ([] : Array[String]),
+    probability: 0.5,
+    missing,
+    start_day: 0,
+    slope: 1.0,
+    intercept: 0.0,
+    noise: 0.0,
+  }
+}
+
+///|
+/// missing draw first; kept cells use start+i*step (row index) with no further RNG.
+/// seed=1, missing=0.3 → sequence 10+5i: null,null,20,25,30; text R-: null,null,R-3,R-4,R-5.
+test "missing then sequence or text consumes RNG in documented order" {
+  assert_eq(@generator.generate([seq_missing(10.0, 5.0, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json(20.0), Json(true)],
+    [Json(25.0), Json(true)],
+    [Json(30.0), Json(true)],
+  ])
+  assert_eq(@generator.generate([text_missing("R-", 1.0, 1.0, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json("R-3"), Json(true)],
+    [Json("R-4"), Json(true)],
+    [Json("R-5"), Json(true)],
+  ])
+}
+
+///|
 fn linear_noise_pair(noise : Double) -> Array[@generator.ColumnSpec] {
   [
     {

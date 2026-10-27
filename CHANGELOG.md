@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.28
+
+- Independent expected values for missing×sequence/text (`null,null,20,25,30` / `null,null,R-3..R-5`).
+- METHODS.md documents row-index arithmetic after the missing draw for sequence/text.
+
 ## 0.6.27
 
 - Independent expected values for linear column `missing` (`(1,null),(2,null),(3,7),(4,9),(5,null)`).

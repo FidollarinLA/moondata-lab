@@ -90,6 +90,7 @@
 - [x] v0.6.25：missing×category RNG 次序独立期望值 + METHODS。
 - [x] v0.6.26：missing×date RNG 次序（保留格用行下标）+ METHODS。
 - [x] v0.6.27：linear 列 missing 次序独立期望值 + METHODS。
+- [x] v0.6.28：missing×sequence/text 行下标期望值 + METHODS。
 
 ## 下一版本候选（不作为已完成能力）
 
