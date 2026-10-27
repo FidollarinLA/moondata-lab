@@ -138,7 +138,19 @@ test('propose_generation returns plan fingerprint and does not mutate the store'
   assert.equal(agent.artifacts[0].storeMutated, false);
   assert.match(agent.artifacts[0].planCanonical, /^moondata\.generate\/1\|/);
   assert.equal(store.list().length, before);
-  assert.match(agent.answer, /尚未创建数据/);
+  assert.match(agent.answer, /尚未写入数据|尚未创建数据/);
+});
+
+test('propose_generation planCanonical matches generateDataset provenance', () => {
+  const store = new DatasetStore();
+  const toolkit = workbenchTools(store, null);
+  const template = templates.find((t) => t.id === 'sales');
+  const proposed = toolkit.execute('propose_generation', template);
+  assert.equal(store.list().length, 0);
+  const generated = generateDataset(store, template);
+  const json = JSON.parse(downloadDataset(store, generated.id, 'json').content);
+  assert.equal(proposed.planCanonical, json.provenance.planCanonical);
+  assert.equal(store.list().length, 1);
 });
 
 test('builtin workbench traces expose MoonBit allowlist evidence', async () => {

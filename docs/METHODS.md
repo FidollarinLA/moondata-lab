@@ -71,7 +71,7 @@ CSV 不为公式文本插入前缀，以保留值；将不可信 CSV 导入电�
 
 报告包含规范化查询、每序列有效数与排除数、统计以及显示点/全部聚合组。页面只预览前200条结果表行，报告仍完整保留该结果表。CSV/JSON/JSONL下载始终提供全部原始记录。
 
-本地模型提出配置后由同一套字段与计算验证执行。仅换图型的请求合并为配置补丁，保留用户X/Y/聚合；不存在的显式X拒绝。模型reason只为方案意见，不是已计算的结论。工具须经 MoonBit `validate_tool_call`：非白名单 → `Tool not allowlisted: <name>`；`plan_chart` / `plot_dataset` / `explore_dataset` 空 `datasetId` → `<tool> requires non-empty datasetId`。成功调用在 `trace.contract` / `evidence.toolsValidated` 留下校验证据（非模型自述）。`propose_generation` 只规范化并返回 `plan` + `planCanonical`，`storeMutated=false`，**不写入** DatasetStore；真正落库仅在用户确认后的生成路径。
+本地模型提出配置后由同一套字段与计算验证执行。仅换图型的请求合并为配置补丁，保留用户X/Y/聚合；不存在的显式X拒绝。模型reason只为方案意见，不是已计算的结论。工具须经 MoonBit `validate_tool_call`：非白名单 → `Tool not allowlisted: <name>`；`plan_chart` / `plot_dataset` / `explore_dataset` 空 `datasetId` → `<tool> requires non-empty datasetId`。成功调用在 `trace.contract` / `evidence.toolsValidated` 留下校验证据（非模型自述）。`propose_generation` 只规范化并返回 `plan` + `planCanonical`，`storeMutated=false`，**不写入** DatasetStore；真正落库仅在用户确认后的生成路径。同一方案随后 `generateDataset` 的 `provenance.planCanonical` 必须与提议指纹一致。
 
 ## v0.5 导入与工作区
 

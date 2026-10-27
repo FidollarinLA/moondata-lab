@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.35
+
+- Assert `propose_generation.planCanonical` equals later `generateDataset` provenance for the same plan.
+- demo-jury checks sales propose fingerprint against the already-generated sales dataset.
+
 ## 0.6.34
 
 - `propose_generation` returns `planCanonical` with `storeMutated=false` (no DatasetStore write).

@@ -69,6 +69,9 @@ if (proposed.artifacts?.[0]?.kind !== 'generation-plan'
 if (!proposed.evidence?.toolsValidated?.includes('propose_generation')) {
   throw new Error('propose_generation path missing toolsValidated evidence');
 }
+if (proposed.artifacts[0].planCanonical !== canon) {
+  throw new Error('propose_generation planCanonical must match sales generate provenance');
+}
 
 const east = group.table.find(r => r.group === '华东');
 console.log(JSON.stringify({
@@ -82,6 +85,7 @@ console.log(JSON.stringify({
   emptyDatasetIdRejectOk: true,
   allowlistEvidenceOk: true,
   proposeGenerationNoStoreOk: true,
+  proposeMatchesGenerateCanon: proposed.artifacts[0].planCanonical === canon,
   proposePlanCanonical: proposed.artifacts[0].planCanonical,
   toolsValidated: agent.evidence.toolsValidated,
   overviewFields: overview.table.length,
