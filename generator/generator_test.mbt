@@ -520,6 +520,27 @@ test "boolean and date match independent Park Miller and day arithmetic" {
 }
 
 ///|
+/// boolean = u < probability; Park–Miller u ∈ (0,1) so p=0 → all false, p=1 → all true.
+test "boolean probability edges match independent closed form" {
+  assert_eq(
+    @generator.generate([typed_column("ok", "boolean", 0.0, 0, 1.0)], 3, 1),
+    [
+      [Json(false), Json(true)],
+      [Json(false), Json(true)],
+      [Json(false), Json(true)],
+    ],
+  )
+  assert_eq(
+    @generator.generate([typed_column("ok", "boolean", 1.0, 0, 1.0)], 3, 1),
+    [
+      [Json(true), Json(true)],
+      [Json(true), Json(true)],
+      [Json(true), Json(true)],
+    ],
+  )
+}
+
+///|
 fn date_missing(
   start_day : Int32,
   step : Double,

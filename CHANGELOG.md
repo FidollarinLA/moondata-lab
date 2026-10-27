@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.41
+
+- Boolean `probability=0` / `probability=1` closed-form expected values (Park–Miller `u∈(0,1)`).
+
 ## 0.6.40
 
 - `explore_dataset` validate runs `canonical_explore_query` when `mode` is set; unsupported mode → `Unsupported explore mode`.

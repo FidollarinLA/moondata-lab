@@ -331,11 +331,22 @@ test('boolean and date rows match independent Park–Miller / day arithmetic', (
   const M = 2147483647;
   const u = [16807 / M, 282475249 / M, 1622650073 / M];
   assert.ok(u[0] < 0.5 && u[1] < 0.5 && u[2] > 0.5);
+  assert.ok(u.every((ui) => ui > 0 && ui < 1));
 
   const boolPlan = normalizePlan({
     rows: 3, seed: 1, columns: [{ name: 'ok', kind: 'boolean', probability: 0.5 }],
   });
   assert.deepEqual(generateRows(boolPlan).rows.map(r => r[0]), [true, true, false]);
+
+  // Park–Miller u ∈ (0,1): probability=0 → never true; probability=1 → always true.
+  const never = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'ok', kind: 'boolean', probability: 0 }],
+  });
+  assert.deepEqual(generateRows(never).rows.map(r => r[0]), [false, false, false]);
+  const always = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'ok', kind: 'boolean', probability: 1 }],
+  });
+  assert.deepEqual(generateRows(always).rows.map(r => r[0]), [true, true, true]);
 
   const store = new DatasetStore();
   const dates = generateDataset(store, {
