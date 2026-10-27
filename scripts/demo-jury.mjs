@@ -25,12 +25,22 @@ if (!canon || !String(canon).startsWith('moondata.generate/1|')) {
   throw new Error('missing planCanonical fingerprint on generated dataset');
 }
 let rejectShell = false;
+let rejectShellMessage = null;
 try {
   validateToolCall('run_shell', { cmd: 'ls' });
 } catch (e) {
-  rejectShell = e instanceof AppError || /ContractError|allowlist|允许/i.test(String(e?.message || e));
+  rejectShellMessage = String(e?.message || e);
+  rejectShell = e instanceof AppError && e.message === 'Tool not allowlisted: run_shell';
 }
-if (!rejectShell) throw new Error('allowlist failed to reject run_shell');
+if (!rejectShell) throw new Error(`allowlist failed to reject run_shell with stable message: ${rejectShellMessage}`);
+try {
+  validateToolCall('plan_chart', { datasetId: '', action: 'plot' });
+  throw new Error('empty datasetId should reject');
+} catch (e) {
+  if (!(e instanceof AppError) || e.message !== 'plan_chart requires non-empty datasetId') {
+    throw new Error(`empty datasetId reject message unstable: ${e?.message}`);
+  }
+}
 
 const agent = await workbenchAgent({
   store,
@@ -54,6 +64,8 @@ console.log(JSON.stringify({
   dataset: { name: dataset.name, rows: dataset.rowCount, sha256: dataset.sha256, synthetic: dataset.synthetic },
   planCanonical: canon,
   rejectShellOk: rejectShell,
+  rejectShellMessage: 'Tool not allowlisted: run_shell',
+  emptyDatasetIdRejectOk: true,
   allowlistEvidenceOk: true,
   toolsValidated: agent.evidence.toolsValidated,
   overviewFields: overview.table.length,

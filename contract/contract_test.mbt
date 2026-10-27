@@ -202,6 +202,41 @@ test "explore distribution scatter line queryCanonical closed forms" {
 }
 
 ///|
+/// plot yColumns order is semantic (preserved); top-level JSON key order is not.
+test "plot multi yColumns queryCanonical preserves series order" {
+  let expected = "moondata.explore/1|mode=plot|x=地区|yColumns=[金额,数量]|kind=bar|reducer=sum"
+  assert_eq(
+    @contract.canonical_explore_query({
+      "reducer": "sum",
+      "kind": "bar",
+      "yColumns": ["金额", "数量"],
+      "x": "地区",
+      "mode": "plot",
+    }),
+    expected,
+  )
+  assert_eq(
+    @contract.canonical_explore_query({
+      "mode": "plot",
+      "x": "地区",
+      "yColumns": ["金额", "数量"],
+      "kind": "bar",
+      "reducer": "sum",
+    }),
+    expected,
+  )
+  let swapped = @contract.canonical_explore_query({
+    "mode": "plot",
+    "x": "地区",
+    "yColumns": ["数量", "金额"],
+    "kind": "bar",
+    "reducer": "sum",
+  })
+  assert_eq(swapped, "moondata.explore/1|mode=plot|x=地区|yColumns=[数量,金额]|kind=bar|reducer=sum")
+  assert_true(swapped != expected)
+}
+
+///|
 test "tool allowlist rejects shell and accepts propose_generation" {
   assert_true(@contract.is_allowed_tool("propose_generation"))
   assert_true(!@contract.is_allowed_tool("run_shell"))

@@ -390,6 +390,28 @@ test('explore distribution/scatter/line queryCanonical closed forms', () => {
   );
 });
 
+test('plot multi yColumns queryCanonical preserves series order', () => {
+  const expected =
+    'moondata.explore/1|mode=plot|x=地区|yColumns=[金额,数量]|kind=bar|reducer=sum';
+  assert.equal(
+    canonicalExploreQuery({
+      reducer: 'sum', kind: 'bar', yColumns: ['金额', '数量'], x: '地区', mode: 'plot',
+    }),
+    expected,
+  );
+  assert.equal(
+    canonicalExploreQuery({
+      mode: 'plot', x: '地区', yColumns: ['金额', '数量'], kind: 'bar', reducer: 'sum',
+    }),
+    expected,
+  );
+  const swapped = canonicalExploreQuery({
+    mode: 'plot', x: '地区', yColumns: ['数量', '金额'], kind: 'bar', reducer: 'sum',
+  });
+  assert.equal(swapped, 'moondata.explore/1|mode=plot|x=地区|yColumns=[数量,金额]|kind=bar|reducer=sum');
+  assert.notEqual(swapped, expected);
+});
+
 test('explore queryCanonical is order-stable and cited in report evidence', () => {
   const expected =
     'moondata.explore/1|mode=group|group=地区|reducer=sum|value=金额';

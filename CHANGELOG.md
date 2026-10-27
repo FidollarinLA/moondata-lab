@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.32
+
+- `demo-jury` asserts exact `run_shell` / empty-`datasetId` ContractError messages.
+- Plot multi-`yColumns` `queryCanonical` preserves series order (key-order still ignored).
+
 ## 0.6.31
 
 - Independent expected reject messages for empty `datasetId` and `run_shell` allowlist denial.

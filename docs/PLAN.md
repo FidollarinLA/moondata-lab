@@ -94,6 +94,7 @@
 - [x] v0.6.29：fingerprint-check / status-check 白名单 evidence 断言。
 - [x] v0.6.30：distribution/scatter/line queryCanonical 独立期望值。
 - [x] v0.6.31：空 datasetId / shell 拒答文案独立期望值。
+- [x] v0.6.32：demo-jury 精确拒答；plot 多 yColumns 次序指纹。
 
 ## 下一版本候选（不作为已完成能力）
 
