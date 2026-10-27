@@ -44,7 +44,7 @@ test('workspace export import restores records query mapping and replaces sessio
   const d = generateDataset(store, { name: '演示', rows: 5, seed: 3, columns: [{ name: 'x', kind: 'sequence' }, { name: 'y', kind: 'linear', source: 'x', slope: 2 }] });
   const pack = exportWorkspace(store, { datasetId: d.id, query: { mode: 'plot', x: 'x', yColumns: ['y'], kind: 'line' } });
   assert.equal(pack.contract, 'moondata.workspace/1');
-  assert.equal(pack.version, '0.6.48');
+  assert.equal(pack.version, '0.6.49');
   assert.equal(pack.datasets.length, 1);
   assert.equal(pack.evidence.length, 1);
   assert.equal(pack.evidence[0].verified, true);
@@ -81,7 +81,7 @@ test('status advertises preview edition and workspace HTTP round-trips', async t
     return r;
   }
   const status = await (await call('/api/status')).json();
-  assert.equal(status.version, '0.6.48');
+  assert.equal(status.version, '0.6.49');
   assert.equal(status.edition, 'synthetic-contract-workbench');
   assert.equal(status.positioning, 'not-a-dataframe-library');
   assert.equal(status.contracts.generate, 'moondata.generate/1');

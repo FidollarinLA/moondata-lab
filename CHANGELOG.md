@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.49
+
+- Propose param-range rejects: missing/probability/noise shared message; decimals outside 0..8 exact message; no store write.
+
 ## 0.6.48
 
 - Propose field-shape rejects: empty category choices, min>max, linear self-ref, invalid startDate — exact Chinese messages, no store write.

@@ -156,6 +156,23 @@ try {
 } catch (e) {
   invalidProposeBadDate = e instanceof AppError ? e.message : null;
 }
+const paramMsg = '缺失概率 0–0.8，布尔概率 0–1，噪声幅度非负';
+let invalidProposeParamRange = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 2, seed: 1, columns: [{ name: 'ok', kind: 'boolean', probability: 1.5 }],
+  });
+} catch (e) {
+  invalidProposeParamRange = e instanceof AppError ? e.message : null;
+}
+let invalidProposeDecimals = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 2, seed: 1, columns: [{ name: 'n', kind: 'number', min: 0, max: 1, decimals: 9 }],
+  });
+} catch (e) {
+  invalidProposeDecimals = e instanceof AppError ? e.message : null;
+}
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -203,6 +220,9 @@ const checks = {
     && invalidProposeBounds === '数值上下界无效'
     && invalidProposeLinearSelf === '线性关联需引用前面的数值字段'
     && invalidProposeBadDate === '起始日期须为有效的 YYYY-MM-DD'
+    && rejectStore.list().length === 0,
+  invalidProposeParamRangeExact: invalidProposeParamRange === paramMsg
+    && invalidProposeDecimals === '小数位数 必须是 0–8 的整数'
     && rejectStore.list().length === 0,
   agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
     && agent.trace[0].contract.allowlisted === true,

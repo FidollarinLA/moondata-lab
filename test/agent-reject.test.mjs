@@ -269,6 +269,31 @@ test('invalid propose_generation rejects with stable messages and never mutates 
     }),
     (e) => e instanceof AppError && e.message === '起始日期须为有效的 YYYY-MM-DD',
   );
+  const paramMsg = '缺失概率 0–0.8，布尔概率 0–1，噪声幅度非负';
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: 'ok', kind: 'boolean', probability: 1.5 }],
+    }),
+    (e) => e instanceof AppError && e.message === paramMsg,
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: 'n', kind: 'integer', min: 1, max: 2, missing: 0.9 }],
+    }),
+    (e) => e instanceof AppError && e.message === paramMsg,
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: 'n', kind: 'number', min: 0, max: 1, noise: -1 }],
+    }),
+    (e) => e instanceof AppError && e.message === paramMsg,
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: 'n', kind: 'number', min: 0, max: 1, decimals: 9 }],
+    }),
+    (e) => e instanceof AppError && e.message === '小数位数 必须是 0–8 的整数',
+  );
   assert.equal(store.list().length, 0);
 });
 
