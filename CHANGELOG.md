@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.56
+
+- Missing×boolean `probability=0/1` closed forms (kept cells all false / all true under same missing mask).
+
 ## 0.6.55
 
 - Date negative-step closed forms (seed-independent ISO days; fingerprint cites `step=-2`).

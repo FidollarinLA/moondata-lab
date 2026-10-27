@@ -105,6 +105,17 @@ test('missing then boolean consumes RNG in documented order', () => {
     columns: [{ name: 'ok', kind: 'boolean', probability: 0.5, missing: 0.8 }],
   });
   assert.deepEqual(generateRows(heavy).rows.map(r => r[0]), [null, null, null, null, null]);
+  // Kept cells: p=0 → false; p=1 → true (u ∈ (0,1)); missing mask unchanged.
+  const never = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'ok', kind: 'boolean', probability: 0, missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(never).rows.map((r) => r[0]), [null, null, false, false, null]);
+  const always = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [{ name: 'ok', kind: 'boolean', probability: 1, missing: 0.3 }],
+  });
+  assert.deepEqual(generateRows(always).rows.map((r) => r[0]), [null, null, true, true, null]);
 });
 
 test('category equal-probability rows match Park–Miller index closed form', () => {

@@ -894,6 +894,7 @@ test "missing then number consumes RNG in documented order" {
 ///|
 /// missing draw first: if u < missing → null and skip boolean draw; else boolean uses the next u.
 /// seed=1, missing=0.3, p=0.5 → null,null,true,true,null
+/// Kept cells with p=0 → false; p=1 → true (Park–Miller u ∈ (0,1)).
 test "missing then boolean consumes RNG in documented order" {
   assert_eq(@generator.generate([bool_missing(0.5, 0.3)], 5, 1), [
     [Json::null(), Json(true)],
@@ -907,6 +908,20 @@ test "missing then boolean consumes RNG in documented order" {
     [Json::null(), Json(true)],
     [Json::null(), Json(true)],
     [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+  assert_eq(@generator.generate([bool_missing(0.0, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json(false), Json(true)],
+    [Json(false), Json(true)],
+    [Json::null(), Json(true)],
+  ])
+  assert_eq(@generator.generate([bool_missing(1.0, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json(true), Json(true)],
+    [Json(true), Json(true)],
     [Json::null(), Json(true)],
   ])
 }
