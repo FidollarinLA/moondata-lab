@@ -112,6 +112,35 @@ test('empty datasetId reject messages are contract-stable across tools', () => {
   }
 });
 
+test('propose_generation returns plan fingerprint and does not mutate the store', async () => {
+  const store = new DatasetStore();
+  const before = store.list().length;
+  const toolkit = workbenchTools(store, null);
+  const planArgs = {
+    name: 'demo', rows: 5, seed: 7,
+    columns: [{ name: 'id', kind: 'sequence', start: 1, step: 1 }],
+  };
+  const result = toolkit.execute('propose_generation', planArgs);
+  assert.equal(result.kind, 'generation-plan');
+  assert.equal(result.storeMutated, false);
+  assert.match(result.notice, /尚未生成/);
+  assert.match(result.planCanonical, /^moondata\.generate\/1\|rows=5\|seed=7\|/);
+  assert.equal(store.list().length, before);
+
+  const agent = await workbenchAgent({
+    store, datasetId: null, message: '生成销售台账示例', config: null,
+  });
+  assert.equal(agent.mode, 'builtin');
+  assert.equal(agent.trace[0].tool, 'propose_generation');
+  assert.equal(agent.trace[0].contract.validator, TOOL_ALLOWLIST_VALIDATOR);
+  assert.deepEqual(agent.evidence.toolsValidated, ['propose_generation']);
+  assert.equal(agent.artifacts[0].kind, 'generation-plan');
+  assert.equal(agent.artifacts[0].storeMutated, false);
+  assert.match(agent.artifacts[0].planCanonical, /^moondata\.generate\/1\|/);
+  assert.equal(store.list().length, before);
+  assert.match(agent.answer, /尚未创建数据/);
+});
+
 test('builtin workbench traces expose MoonBit allowlist evidence', async () => {
   const store = new DatasetStore();
   const d = generateDataset(store, { ...templates[0], rows: 5 });

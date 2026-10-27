@@ -1,5 +1,5 @@
-import { AppError, text, validateToolCall, toolContractEvidence } from './core.mjs';
-import { normalizePlan, templates, explore, profile } from './data.mjs';
+import { AppError, text, validateToolCall, toolContractEvidence, canonicalPlan } from './core.mjs';
+import { normalizePlan, planForFingerprint, templates, explore, profile } from './data.mjs';
 import { runAgent } from './agent.mjs';
 import { localPlanner } from './local-planner.mjs';
 
@@ -31,7 +31,16 @@ export function workbenchTools(store, datasetId) {
         ? { ...args, datasetId: datasetId || args.datasetId }
         : args;
       validateToolCall(name, toolArgs);
-      if (name === 'propose_generation') return { kind: 'generation-plan', plan: normalizePlan(args), notice: '待检查后执行，尚未生成任何数据。' };
+      if (name === 'propose_generation') {
+        const plan = normalizePlan(args);
+        return {
+          kind: 'generation-plan',
+          plan,
+          planCanonical: canonicalPlan(planForFingerprint(plan)),
+          notice: '待检查后执行，尚未生成任何数据。',
+          storeMutated: false,
+        };
+      }
       if (name === 'profile_dataset') return { kind: 'profile', profile: profile(store, requireData()) };
       if (name === 'plot_dataset') return explore(store, { ...args, mode: 'plot', datasetId: requireData() });
       if (name === 'explore_dataset') return explore(store, { ...args, datasetId: requireData() });

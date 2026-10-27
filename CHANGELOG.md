@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.34
+
+- `propose_generation` returns `planCanonical` with `storeMutated=false` (no DatasetStore write).
+- demo-jury + agent-reject assert the no-store generation-plan contract and allowlist evidence.
+
 ## 0.6.33
 
 - `fingerprint-check` matches `demo-jury` on exact allowlist reject messages.

@@ -56,6 +56,20 @@ if (agent.evidence?.toolAllowlistValidator !== TOOL_ALLOWLIST_VALIDATOR
   throw new Error('builtin agent evidence.toolsValidated missing profile_dataset');
 }
 
+const beforePropose = store.list().length;
+const proposed = await workbenchAgent({
+  store, datasetId: null, message: '生成销售台账示例', config: null,
+});
+if (proposed.artifacts?.[0]?.kind !== 'generation-plan'
+  || proposed.artifacts[0].storeMutated !== false
+  || !String(proposed.artifacts[0].planCanonical || '').startsWith('moondata.generate/1|')
+  || store.list().length !== beforePropose) {
+  throw new Error('propose_generation must return planCanonical without mutating the store');
+}
+if (!proposed.evidence?.toolsValidated?.includes('propose_generation')) {
+  throw new Error('propose_generation path missing toolsValidated evidence');
+}
+
 const east = group.table.find(r => r.group === '华东');
 console.log(JSON.stringify({
   ok: true,
@@ -67,6 +81,8 @@ console.log(JSON.stringify({
   rejectShellMessage: 'Tool not allowlisted: run_shell',
   emptyDatasetIdRejectOk: true,
   allowlistEvidenceOk: true,
+  proposeGenerationNoStoreOk: true,
+  proposePlanCanonical: proposed.artifacts[0].planCanonical,
   toolsValidated: agent.evidence.toolsValidated,
   overviewFields: overview.table.length,
   groupSumEast: east?.value ?? null,
