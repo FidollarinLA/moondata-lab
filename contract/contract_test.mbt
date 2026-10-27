@@ -233,8 +233,7 @@ test "plot multi yColumns queryCanonical preserves series order" {
     "reducer": "sum",
   })
   assert_eq(
-    swapped,
-    "moondata.explore/1|mode=plot|x=地区|yColumns=[数量,金额]|kind=bar|reducer=sum",
+    swapped, "moondata.explore/1|mode=plot|x=地区|yColumns=[数量,金额]|kind=bar|reducer=sum",
   )
   assert_true(swapped != expected)
 }
