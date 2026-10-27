@@ -332,3 +332,32 @@ test "empty datasetId reject messages are contract-stable" {
   }
   assert_eq(shell, "Tool not allowlisted: run_shell")
 }
+
+///|
+/// Invalid propose_generation plans fail at MoonBit validate with stable messages (before any store write).
+test "propose_generation rejects empty columns and out-of-range rows with stable messages" {
+  let empty_cols = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 5.0,
+      "seed": 1.0,
+      "columns": [],
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(empty_cols, "Plan requires 1..32 columns")
+  let bad_rows = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 0.0,
+      "seed": 1.0,
+      "columns": [
+        { "name": "id", "kind": "sequence", "start": 1.0, "step": 1.0 },
+      ],
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(bad_rows, "Plan rows/seed out of generation contract range")
+}

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.38
+
+- Stable MoonBit reject messages for invalid `propose_generation` plans; store stays empty.
+- METHODS + agent-reject cover empty columns / out-of-range rows / invalid kind.
+
 ## 0.6.37
 
 - Jury materials (SUBMISSION / RESUBMIT / HACKATHON_REVIEW / README) synced to propose no-store + exact rejects.

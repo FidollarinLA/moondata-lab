@@ -27,7 +27,7 @@
 2. **证据链工作台**  
    报告重算、参数变更作废旧导出、合成标识；`planCanonical`（生成）与 `queryCanonical`（分析）进 provenance / 报告 `evidence` / UI 指纹行；工作区包顶层 `evidence[]`。
 3. **Agent 边界**  
-   只允许显式分析/生成工具；无 shell、无任意代码、无任意网络文件系统工具；`plan_chart`/`plot`/`explore` 强制 datasetId；稳定拒答文案：`Tool not allowlisted: run_shell`、`<tool> requires non-empty datasetId`；`propose_generation` 只出带 `planCanonical` 的方案（`storeMutated=false`），不静默写库；成功调用写入 `trace.contract` / `evidence.toolsValidated`（MoonBit 校验，非模型自述）；本地小模型规划也经白名单后才计算。
+   只允许显式分析/生成工具；无 shell、无任意代码、无任意网络文件系统工具；`plan_chart`/`plot`/`explore` 强制 datasetId；稳定拒答文案：`Tool not allowlisted: run_shell`、`<tool> requires non-empty datasetId`、非法 propose → `Plan requires 1..32 columns` / `Plan rows/seed out of generation contract range`；`propose_generation` 只出带 `planCanonical` 的方案（`storeMutated=false`），不静默写库；成功调用写入 `trace.contract` / `evidence.toolsValidated`（MoonBit 校验，非模型自述）；本地小模型规划也经白名单后才计算。
 
 评委冒烟：`GET /api/status` 的 `contracts` / `jury`，或 `node scripts/status-check.mjs` / `demo-jury` / `fingerprint-check`（后两者均校验精确拒答文案 + 白名单 evidence）。
 

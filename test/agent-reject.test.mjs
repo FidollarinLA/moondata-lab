@@ -141,6 +141,28 @@ test('propose_generation returns plan fingerprint and does not mutate the store'
   assert.match(agent.answer, /尚未写入数据|尚未创建数据/);
 });
 
+test('invalid propose_generation rejects with stable messages and never mutates store', () => {
+  const store = new DatasetStore();
+  const toolkit = workbenchTools(store, null);
+  assert.throws(
+    () => toolkit.execute('propose_generation', { rows: 5, seed: 1, columns: [] }),
+    (e) => e instanceof AppError && e.message === 'Plan requires 1..32 columns',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 0, seed: 1, columns: [{ name: 'id', kind: 'sequence', start: 1, step: 1 }],
+    }),
+    (e) => e instanceof AppError && e.message === 'Plan rows/seed out of generation contract range',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 5, seed: 1, columns: [{ name: 'x', kind: 'eval' }],
+    }),
+    (e) => e instanceof AppError && /字段类型无效|保留字段|_synthetic/.test(e.message),
+  );
+  assert.equal(store.list().length, 0);
+});
+
 test('propose_generation planCanonical matches generateDataset provenance', () => {
   const store = new DatasetStore();
   const toolkit = workbenchTools(store, null);
