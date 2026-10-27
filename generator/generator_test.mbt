@@ -648,6 +648,7 @@ fn category_column(choices : Array[String]) -> @generator.ColumnSpec {
 ///|
 /// category index = floor(u * |choices|); repeated labels act as weight.
 /// seed=1 → A,A,B for [A,B]; X,X,Z for [X,Y,Z]; A,A,B for weighted [A,A,B].
+/// Singleton |choices|=1 → floor(u*1)=0 always → constant label (still consumes RNG).
 test "category equal probability matches Park Miller index closed form" {
   assert_eq(@generator.generate([category_column(["A", "B"])], 3, 1), [
     [Json("A"), Json(true)],
@@ -663,6 +664,16 @@ test "category equal probability matches Park Miller index closed form" {
     [Json("A"), Json(true)],
     [Json("A"), Json(true)],
     [Json("B"), Json(true)],
+  ])
+  assert_eq(@generator.generate([category_column(["Only"])], 3, 1), [
+    [Json("Only"), Json(true)],
+    [Json("Only"), Json(true)],
+    [Json("Only"), Json(true)],
+  ])
+  assert_eq(@generator.generate([category_column(["Only"])], 3, 99), [
+    [Json("Only"), Json(true)],
+    [Json("Only"), Json(true)],
+    [Json("Only"), Json(true)],
   ])
 }
 

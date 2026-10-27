@@ -121,6 +121,20 @@ test('category equal-probability rows match Park–Miller index closed form', ()
     rows: 3, seed: 1, columns: [{ name: 'g', kind: 'category', choices: ['A', 'A', 'B'] }],
   });
   assert.deepEqual(generateRows(weighted).rows.map(r => r[0]), ['A', 'A', 'B']);
+
+  // Singleton: floor(u*1)=0 → constant label; still consumes RNG; fingerprint cites choices=[Only].
+  const oneA = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 'g', kind: 'category', choices: ['Only'] }],
+  });
+  const oneB = normalizePlan({
+    rows: 3, seed: 99, columns: [{ name: 'g', kind: 'category', choices: ['Only'] }],
+  });
+  assert.deepEqual(generateRows(oneA).rows.map((r) => r[0]), ['Only', 'Only', 'Only']);
+  assert.deepEqual(generateRows(oneB).rows.map((r) => r[0]), ['Only', 'Only', 'Only']);
+  assert.equal(
+    canonicalPlan(planForFingerprint(oneA)),
+    'moondata.generate/1|rows=3|seed=1|columns=[{name=g,kind=category,choices=[Only]}]',
+  );
 });
 
 test('sequence and text are seed-independent closed forms', () => {

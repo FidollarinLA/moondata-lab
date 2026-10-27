@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.53
+
+- Category singleton closed-form expected values (`[Only]` → constant; fingerprint cites `choices=[Only]`).
+
 ## 0.6.52
 
 - Number `min=max` closed-form expected values (constant rows; fingerprint cites both bounds).
