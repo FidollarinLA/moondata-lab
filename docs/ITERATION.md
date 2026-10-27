@@ -50,6 +50,7 @@
 | P1 | ~~missing×number + 申报提纲证据要点~~（v0.6.23） | 1、2、3 |
 | P1 | ~~demo-jury 白名单 evidence + README 评委三步~~（v0.6.24） | 3、4、6 |
 | P1 | ~~missing×category RNG 次序独立期望值~~（v0.6.25） | 1 |
+| P1 | ~~missing×date RNG 次序（行下标日序）~~（v0.6.26） | 1 |
 | P2 | 可选：对 MoonFrame 的互操作示例（依赖生态包） | 1 |
 | P2 | ~~工具拒答评测集（allowlist 面）~~（v0.6.1）；模型语义拒答另开 | 6 |
 | — | 列类型覆盖等表格 UX：仅当不强化「我们是 DF 库」叙事时再做 | — |

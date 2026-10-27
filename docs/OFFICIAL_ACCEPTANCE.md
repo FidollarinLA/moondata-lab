@@ -7,7 +7,7 @@
 | 1 | MoonBit 为主 | 主业：`generator/` 合成契约、`contract/` 指纹与工具白名单；工作台计算仍走 MoonBit。**不以**自研 DataFrame 对抗 [MoonFrame](DIFF_VS_MOONFRAME.md) | 复审加厚契约层 |
 | 2 | 仓库公开、提交可追踪 | Public；`main`；Actions；Issues | 已公开可克隆 |
 | 3 | 能运行：README + 示例 + 测试 | README「评委三步」；`smoke` / `demo-jury` / `fingerprint-check`；MoonBit + Node | 已具备 |
-| 4 | 本期工作有效 | v0.6.25：missing×category；见 CHANGELOG / [RESUBMIT](RESUBMIT.md) | 继续至 10/31 |
+| 4 | 本期工作有效 | v0.6.26：missing×date；见 CHANGELOG / [RESUBMIT](RESUBMIT.md) | 继续至 10/31 |
 | 5 | 开源合规 | Apache-2.0；[THIRD_PARTY](../THIRD_PARTY.md) | 已具备 |
 | 6 | AI 可解释 | [AI_USAGE](AI_USAGE.md)；工具白名单由 MoonBit 校验，并写入 `trace.contract` / `evidence` | 已加强 |
 

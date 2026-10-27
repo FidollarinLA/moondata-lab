@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.26
+
+- Independent expected values for missing×date RNG order (`null,null,2026-01-03..05`; kept cells use row index).
+- METHODS.md documents that date with missing still uses `start_day+i*step`.
+
 ## 0.6.25
 
 - Independent expected values for missing×category RNG order (`null,null,A,A,null` / `null,null,Y,X,null`).

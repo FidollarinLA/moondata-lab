@@ -311,6 +311,24 @@ test('boolean and date rows match independent Park–Miller / day arithmetic', (
   assert.deepEqual(store.get(back.id).records.map(r => r.day), ['2026-01-03', '2026-01-02', '2026-01-01']);
 });
 
+test('missing then date consumes RNG in documented order', () => {
+  // missing draw only; kept cells use start_day+i*step (row index). seed=1, missing=0.3 → null,null,Jan3..5
+  const store = new DatasetStore();
+  const kept = generateDataset(store, {
+    rows: 5, seed: 1, name: 'days-m',
+    columns: [{ name: 'day', kind: 'date', startDate: '2026-01-01', step: 1, missing: 0.3 }],
+  });
+  assert.deepEqual(
+    store.get(kept.id).records.map((r) => r.day),
+    [null, null, '2026-01-03', '2026-01-04', '2026-01-05'],
+  );
+  const heavy = generateDataset(store, {
+    rows: 5, seed: 1, name: 'days-h',
+    columns: [{ name: 'day', kind: 'date', startDate: '2026-01-01', step: 1, missing: 0.8 }],
+  });
+  assert.deepEqual(store.get(heavy.id).records.map((r) => r.day), [null, null, null, null, null]);
+});
+
 test('explore queryCanonical is order-stable and cited in report evidence', () => {
   const expected =
     'moondata.explore/1|mode=group|group=地区|reducer=sum|value=金额';
