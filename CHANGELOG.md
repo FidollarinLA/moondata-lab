@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.42
+
+- Propose seed bounds: `0` / `2147483647` reject with stable range message; `2147483646` accepted without store write.
+
 ## 0.6.41
 
 - Boolean `probability=0` / `probability=1` closed-form expected values (Park–Miller `u∈(0,1)`).

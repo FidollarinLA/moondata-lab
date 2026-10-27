@@ -67,6 +67,17 @@ try {
 } catch (e) {
   unsupportedExploreMode = e instanceof AppError ? e.message : null;
 }
+let invalidProposeBadSeed = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 1, seed: 0, columns: [{ name: 'id', kind: 'sequence', start: 1, step: 1 }],
+  });
+} catch (e) {
+  invalidProposeBadSeed = e instanceof AppError ? e.message : null;
+}
+const maxSeedPropose = rejectTools.execute('propose_generation', {
+  rows: 1, seed: 2147483646, columns: [{ name: 'id', kind: 'sequence', start: 1, step: 1 }],
+});
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -91,6 +102,10 @@ const checks = {
   invalidProposeOutOfRangeRowsExact: invalidProposeBadRows === 'Plan rows/seed out of generation contract range'
     && rejectStore.list().length === 0,
   unsupportedExploreModeExact: unsupportedExploreMode === 'Unsupported explore mode',
+  invalidProposeSeedBoundsExact: invalidProposeBadSeed === 'Plan rows/seed out of generation contract range'
+    && maxSeedPropose.storeMutated === false
+    && String(maxSeedPropose.planCanonical || '').includes('|seed=2147483646|')
+    && rejectStore.list().length === 0,
   agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
     && agent.trace[0].contract.allowlisted === true,
   agentEvidenceToolsValidated: agent.evidence?.toolAllowlistValidator === TOOL_ALLOWLIST_VALIDATOR

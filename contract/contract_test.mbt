@@ -386,3 +386,47 @@ test "propose_generation rejects empty columns and out-of-range rows with stable
   }
   assert_eq(bad_rows, "Plan rows/seed out of generation contract range")
 }
+
+///|
+/// Seed must be in 1..2147483646; 0 and 2147483647 reject with the same range message.
+test "propose_generation rejects seed outside 1..2147483646 with stable message" {
+  let low = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 1.0,
+      "seed": 0.0,
+      "columns": [
+        { "name": "id", "kind": "sequence", "start": 1.0, "step": 1.0 },
+      ],
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(low, "Plan rows/seed out of generation contract range")
+  let high = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 1.0,
+      "seed": 2147483647.0,
+      "columns": [
+        { "name": "id", "kind": "sequence", "start": 1.0, "step": 1.0 },
+      ],
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(high, "Plan rows/seed out of generation contract range")
+  let max_ok = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 1.0,
+      "seed": 2147483646.0,
+      "columns": [
+        { "name": "id", "kind": "sequence", "start": 1.0, "step": 1.0 },
+      ],
+    })
+    "ok"
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(max_ok, "ok")
+}

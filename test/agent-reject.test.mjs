@@ -164,14 +164,21 @@ test('propose_generation returns plan fingerprint and does not mutate the store'
 test('invalid propose_generation rejects with stable messages and never mutates store', () => {
   const store = new DatasetStore();
   const toolkit = workbenchTools(store, null);
+  const col = { name: 'id', kind: 'sequence', start: 1, step: 1 };
   assert.throws(
     () => toolkit.execute('propose_generation', { rows: 5, seed: 1, columns: [] }),
     (e) => e instanceof AppError && e.message === 'Plan requires 1..32 columns',
   );
   assert.throws(
-    () => toolkit.execute('propose_generation', {
-      rows: 0, seed: 1, columns: [{ name: 'id', kind: 'sequence', start: 1, step: 1 }],
-    }),
+    () => toolkit.execute('propose_generation', { rows: 0, seed: 1, columns: [col] }),
+    (e) => e instanceof AppError && e.message === 'Plan rows/seed out of generation contract range',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', { rows: 1, seed: 0, columns: [col] }),
+    (e) => e instanceof AppError && e.message === 'Plan rows/seed out of generation contract range',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', { rows: 1, seed: 2147483647, columns: [col] }),
     (e) => e instanceof AppError && e.message === 'Plan rows/seed out of generation contract range',
   );
   assert.throws(
@@ -180,6 +187,12 @@ test('invalid propose_generation rejects with stable messages and never mutates 
     }),
     (e) => e instanceof AppError && /字段类型无效|保留字段|_synthetic/.test(e.message),
   );
+  assert.equal(store.list().length, 0);
+  const maxOk = toolkit.execute('propose_generation', {
+    rows: 1, seed: 2147483646, columns: [col],
+  });
+  assert.equal(maxOk.storeMutated, false);
+  assert.match(maxOk.planCanonical, /\|seed=2147483646\|/);
   assert.equal(store.list().length, 0);
 });
 
