@@ -10,7 +10,7 @@
 ## 评委三步（与 README 一致）
 
 1. `node scripts/demo-jury.mjs` → 生成 / 分组 / 报告含 `planCanonical` + `queryCanonical`；拒 shell；builtin `trace.contract` 白名单证据  
-2. `node scripts/fingerprint-check.mjs` → 生成指纹、分析指纹与 CSV SHA-256 自洽  
+2. `node scripts/fingerprint-check.mjs` → 指纹与 CSV SHA 自洽；拒 shell + builtin `toolsValidated`  
 3. [DIFF_VS_MOONFRAME](DIFF_VS_MOONFRAME.md) → 定位一句话
 
 也可一条龙：`node scripts/smoke.mjs`（含上两项）。

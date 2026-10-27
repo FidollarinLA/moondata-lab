@@ -6,10 +6,11 @@
  */
 import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
-import { canonicalPlan, canonicalExploreQuery } from '../server/core.mjs';
+import { canonicalPlan, canonicalExploreQuery, TOOL_ALLOWLIST_VALIDATOR, AppError, validateToolCall } from '../server/core.mjs';
 import {
   templates, normalizePlan, planForFingerprint, generateDataset, downloadDataset, dataReport, explore,
 } from '../server/data.mjs';
+import { workbenchAgent } from '../server/workbench-agent.mjs';
 
 const store = new DatasetStore();
 const plan = templates.find(t => t.id === 'sales');
@@ -27,6 +28,15 @@ const expectedQuery = canonicalExploreQuery({
 });
 const explored = explore(store, groupQuery);
 const report = dataReport(store, groupQuery);
+const agent = await workbenchAgent({
+  store, datasetId: a.id, message: '概览当前数据', config: null,
+});
+let rejectShell = false;
+try {
+  validateToolCall('run_shell', { cmd: 'ls' });
+} catch (e) {
+  rejectShell = e instanceof AppError || /ContractError|allowlist|允许/i.test(String(e?.message || e));
+}
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -39,6 +49,12 @@ const checks = {
   exploreAttachesQueryCanonical: explored.queryCanonical === expectedQuery,
   reportEvidenceQueryCanonical: report.evidence?.queryCanonical === expectedQuery,
   reportMarkdownCitesQueryCanonical: report.markdown.includes(expectedQuery),
+  allowlistRejectsShell: rejectShell,
+  agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
+    && agent.trace[0].contract.allowlisted === true,
+  agentEvidenceToolsValidated: agent.evidence?.toolAllowlistValidator === TOOL_ALLOWLIST_VALIDATOR
+    && Array.isArray(agent.evidence?.toolsValidated)
+    && agent.evidence.toolsValidated.includes('profile_dataset'),
 };
 
 const ok = Object.values(checks).every(Boolean);

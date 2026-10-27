@@ -23,8 +23,8 @@ MoonData Lab
 MoonBit 贡献在：确定性字段生成契约、方案规范化指纹、受限工具白名单、报告证据链。
 
 ## 至少三个完整场景（对齐 README「评委三步」）
-1. `node scripts/demo-jury.mjs`：生成 → 分组 → 报告含 `planCanonical` **与** `queryCanonical`；拒 `run_shell`  
-2. `node scripts/fingerprint-check.mjs`：独立重算生成/分析指纹与 CSV SHA-256 一致  
+1. `node scripts/demo-jury.mjs`：生成 → 分组 → 报告含 `planCanonical` **与** `queryCanonical`；拒 `run_shell`；builtin `trace.contract`  
+2. `node scripts/fingerprint-check.mjs`：独立重算指纹与 CSV SHA-256；同脚本断言白名单拒 shell + `evidence.toolsValidated`  
 3. 助手/contract：非法工具或空 `datasetId` 被拒；成功工具带 `trace.contract` / `evidence.toolsValidated`；`propose_generation` 只出方案不落库  
 
 ## 核心功能

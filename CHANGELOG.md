@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.29
+
+- `fingerprint-check` asserts allowlist reject + builtin `trace.contract` / `toolsValidated`.
+- `status-check` requires `profile_dataset` and DIFF jury pointer; SUBMISSION/README jury step 2 updated.
+
 ## 0.6.28
 
 - Independent expected values for missing×sequence/text (`null,null,20,25,30` / `null,null,R-3..R-5`).
