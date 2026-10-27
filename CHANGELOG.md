@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.52
+
+- Number `min=max` closed-form expected values (constant rows; fingerprint cites both bounds).
+
 ## 0.6.51
 
 - Sequence/text negative-step closed forms (seed-independent); fingerprints cite `step=-N`.

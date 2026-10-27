@@ -352,6 +352,22 @@ test('number lerp rows match independent Park–Miller closed form', () => {
     canonicalPlan(planForFingerprint(zeroDec)),
     'moondata.generate/1|rows=3|seed=1|columns=[{name=x,kind=number,min=0,max=10,decimals=0}]',
   );
+
+  // min=max collapses lerp to that constant; still consumes RNG; fingerprint cites both bounds.
+  const flatA = normalizePlan({
+    rows: 3, seed: 1,
+    columns: [{ name: 'x', kind: 'number', min: 5, max: 5, decimals: 2 }],
+  });
+  const flatB = normalizePlan({
+    rows: 3, seed: 99,
+    columns: [{ name: 'x', kind: 'number', min: 5, max: 5, decimals: 2 }],
+  });
+  assert.deepEqual(generateRows(flatA).rows.map((r) => r[0]), [5, 5, 5]);
+  assert.deepEqual(generateRows(flatB).rows.map((r) => r[0]), [5, 5, 5]);
+  assert.equal(
+    canonicalPlan(planForFingerprint(flatA)),
+    'moondata.generate/1|rows=3|seed=1|columns=[{name=x,kind=number,min=5,max=5,decimals=2}]',
+  );
 });
 
 test('boolean and date rows match independent Park–Miller / day arithmetic', () => {

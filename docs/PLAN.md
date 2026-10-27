@@ -114,6 +114,7 @@
 - [x] v0.6.49：propose 参数范围精确拒答（missing/probability/noise/decimals）。
 - [x] v0.6.50：number decimals=0 独立闭式期望值与指纹。
 - [x] v0.6.51：sequence/text 负步长独立闭式期望值。
+- [x] v0.6.52：number min=max 独立闭式期望值与指纹。
 
 ## 下一版本候选（不作为已完成能力）
 

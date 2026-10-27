@@ -791,6 +791,17 @@ test "number lerp matches independent Park Miller closed form" {
     [Json(1.0), Json(true)],
     [Json(8.0), Json(true)],
   ])
+  // min=max collapses lerp to that constant (still consumes RNG per row).
+  assert_eq(@generator.generate([number_column(5.0, 5.0, 2)], 3, 1), [
+    [Json(5.0), Json(true)],
+    [Json(5.0), Json(true)],
+    [Json(5.0), Json(true)],
+  ])
+  assert_eq(@generator.generate([number_column(5.0, 5.0, 2)], 3, 99), [
+    [Json(5.0), Json(true)],
+    [Json(5.0), Json(true)],
+    [Json(5.0), Json(true)],
+  ])
 }
 
 ///|
