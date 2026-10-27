@@ -414,16 +414,13 @@ fn date_missing(
 /// missing draw first; kept cells use start_day+i*step (row index, not present-count) and skip further RNG.
 /// seed=1, missing=0.3, start=20454, step=1 → null,null,20456,20457,20458.
 test "missing then date consumes RNG in documented order" {
-  assert_eq(
-    @generator.generate([date_missing(20454, 1.0, 0.3)], 5, 1),
-    [
-      [Json::null(), Json(true)],
-      [Json::null(), Json(true)],
-      [Json(20456.0), Json(true)],
-      [Json(20457.0), Json(true)],
-      [Json(20458.0), Json(true)],
-    ],
-  )
+  assert_eq(@generator.generate([date_missing(20454, 1.0, 0.3)], 5, 1), [
+    [Json::null(), Json(true)],
+    [Json::null(), Json(true)],
+    [Json(20456.0), Json(true)],
+    [Json(20457.0), Json(true)],
+    [Json(20458.0), Json(true)],
+  ])
   assert_eq(@generator.generate([date_missing(20454, 1.0, 0.8)], 5, 1), [
     [Json::null(), Json(true)],
     [Json::null(), Json(true)],
