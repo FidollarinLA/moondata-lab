@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.57
+
+- Text empty-prefix closed forms (`1,2,3`; fingerprint omits empty `prefix`).
+
 ## 0.6.56
 
 - Missing×boolean `probability=0/1` closed forms (kept cells all false / all true under same missing mask).

@@ -185,6 +185,21 @@ test('sequence and text are seed-independent closed forms', () => {
     rows: 3, seed: 7, columns: [{ name: 't', kind: 'text', prefix: 'N', start: 5, step: -1 }],
   });
   assert.deepEqual(generateRows(textNeg).rows.map((r) => r[0]), ['N5', 'N4', 'N3']);
+
+  // Empty prefix → digit string only; fingerprint omits empty prefix (unlike non-empty).
+  const emptyA = normalizePlan({
+    rows: 3, seed: 1, columns: [{ name: 't', kind: 'text', prefix: '', start: 1, step: 1 }],
+  });
+  const emptyB = normalizePlan({
+    rows: 3, seed: 99, columns: [{ name: 't', kind: 'text', prefix: '', start: 1, step: 1 }],
+  });
+  assert.deepEqual(generateRows(emptyA).rows.map((r) => r[0]), ['1', '2', '3']);
+  assert.deepEqual(generateRows(emptyB).rows.map((r) => r[0]), ['1', '2', '3']);
+  assert.equal(
+    canonicalPlan(planForFingerprint(emptyA)),
+    'moondata.generate/1|rows=3|seed=1|columns=[{name=t,kind=text,start=1,step=1}]',
+  );
+  assert.doesNotMatch(canonicalPlan(planForFingerprint(emptyA)), /prefix=/);
 });
 
 test('missing then sequence or text consumes RNG in documented order', () => {

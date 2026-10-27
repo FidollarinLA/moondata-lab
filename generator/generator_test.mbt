@@ -136,6 +136,17 @@ test "sequence and text are seed-independent closed forms" {
     [Json("N4"), Json(true)],
     [Json("N3"), Json(true)],
   ])
+  // Empty prefix → digit string only; still seed-independent.
+  assert_eq(@generator.generate([text_column("", 1.0, 1.0)], 3, 1), [
+    [Json("1"), Json(true)],
+    [Json("2"), Json(true)],
+    [Json("3"), Json(true)],
+  ])
+  assert_eq(@generator.generate([text_column("", 1.0, 1.0)], 3, 99), [
+    [Json("1"), Json(true)],
+    [Json("2"), Json(true)],
+    [Json("3"), Json(true)],
+  ])
 }
 
 ///|
