@@ -25,7 +25,7 @@
 | `planCanonical` / `queryCanonical` 进 provenance、报告 `evidence`、UI 指纹行 | 生成、explore、报告、工作台 |
 | 工具轨迹 `trace.contract` / `evidence.toolsValidated`（MoonBit 白名单，非模型自述） | Agent / builtin / local-planner |
 | 拒答评测（精确文案：shell / 空 datasetId / 非法 propose） | `test/agent-reject.test.mjs` |
-| `propose_generation` 不落库 + 指纹≡generate；非法方案不写库 | workbench-agent + demo-jury / fingerprint-check |
+| `propose_generation` 不落库 + 指纹≡generate；非法方案不写库（评委脚本断言） | workbench-agent + demo-jury / fingerprint-check |
 | 独立期望值（number/linear/integer/category/date/missing 次序等） | `generator_test` + `generate-contract` |
 | 离线自检 | `scripts/fingerprint-check.mjs` |
 | 5 分钟演示 | `scripts/demo-jury.mjs` |

@@ -45,6 +45,22 @@ try {
 } catch (e) {
   emptyDatasetIdMessage = e instanceof AppError ? e.message : null;
 }
+const rejectStore = new DatasetStore();
+const rejectTools = workbenchTools(rejectStore, null);
+let invalidProposeEmptyCols = null;
+try {
+  rejectTools.execute('propose_generation', { rows: 5, seed: 1, columns: [] });
+} catch (e) {
+  invalidProposeEmptyCols = e instanceof AppError ? e.message : null;
+}
+let invalidProposeBadRows = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 0, seed: 1, columns: [{ name: 'id', kind: 'sequence', start: 1, step: 1 }],
+  });
+} catch (e) {
+  invalidProposeBadRows = e instanceof AppError ? e.message : null;
+}
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -64,6 +80,10 @@ const checks = {
   reportMarkdownCitesQueryCanonical: report.markdown.includes(expectedQuery),
   allowlistRejectsShellExact: rejectShellMessage === 'Tool not allowlisted: run_shell',
   emptyDatasetIdRejectExact: emptyDatasetIdMessage === 'plan_chart requires non-empty datasetId',
+  invalidProposeEmptyColumnsExact: invalidProposeEmptyCols === 'Plan requires 1..32 columns'
+    && rejectStore.list().length === 0,
+  invalidProposeOutOfRangeRowsExact: invalidProposeBadRows === 'Plan rows/seed out of generation contract range'
+    && rejectStore.list().length === 0,
   agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
     && agent.trace[0].contract.allowlisted === true,
   agentEvidenceToolsValidated: agent.evidence?.toolAllowlistValidator === TOOL_ALLOWLIST_VALIDATOR

@@ -101,6 +101,7 @@
 - [x] v0.6.36：fingerprint-check / status 暴露 propose 不落库指针。
 - [x] v0.6.37：评委材料与 status 测试同步 propose/精确拒答。
 - [x] v0.6.38：非法 propose_generation 稳定拒答且不写库。
+- [x] v0.6.39：demo-jury / fingerprint-check 断言非法 propose 拒答。
 
 ## 下一版本候选（不作为已完成能力）
 

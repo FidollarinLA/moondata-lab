@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.39
+
+- Jury path (`demo-jury` / `fingerprint-check`) asserts invalid propose rejects with exact messages and empty store.
+
 ## 0.6.38
 
 - Stable MoonBit reject messages for invalid `propose_generation` plans; store stays empty.

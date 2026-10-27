@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { DatasetStore } from '../server/datasets.mjs';
 import { templates, generateDataset, explore, dataReport, downloadDataset } from '../server/data.mjs';
 import { validateToolCall, AppError, canonicalExploreQuery, TOOL_ALLOWLIST_VALIDATOR } from '../server/core.mjs';
-import { workbenchAgent } from '../server/workbench-agent.mjs';
+import { workbenchAgent, workbenchTools } from '../server/workbench-agent.mjs';
 
 const store = new DatasetStore();
 const plan = templates.find(t => t.id === 'sales');
@@ -72,6 +72,19 @@ if (!proposed.evidence?.toolsValidated?.includes('propose_generation')) {
 if (proposed.artifacts[0].planCanonical !== canon) {
   throw new Error('propose_generation planCanonical must match sales generate provenance');
 }
+const beforeInvalid = store.list().length;
+const tools = workbenchTools(store, null);
+let invalidProposeOk = false;
+try {
+  tools.execute('propose_generation', { rows: 5, seed: 1, columns: [] });
+} catch (e) {
+  invalidProposeOk = e instanceof AppError
+    && e.message === 'Plan requires 1..32 columns'
+    && store.list().length === beforeInvalid;
+}
+if (!invalidProposeOk) {
+  throw new Error('invalid propose_generation must reject with Plan requires 1..32 columns and leave store unchanged');
+}
 
 const east = group.table.find(r => r.group === '华东');
 console.log(JSON.stringify({
@@ -85,6 +98,7 @@ console.log(JSON.stringify({
   emptyDatasetIdRejectOk: true,
   allowlistEvidenceOk: true,
   proposeGenerationNoStoreOk: true,
+  invalidProposeNoStoreOk: true,
   proposeMatchesGenerateCanon: proposed.artifacts[0].planCanonical === canon,
   proposePlanCanonical: proposed.artifacts[0].planCanonical,
   toolsValidated: agent.evidence.toolsValidated,
