@@ -89,6 +89,7 @@
 - [x] v0.6.24：demo-jury 断言白名单 evidence；README 评委三步更新。
 - [x] v0.6.25：missing×category RNG 次序独立期望值 + METHODS。
 - [x] v0.6.26：missing×date RNG 次序（保留格用行下标）+ METHODS。
+- [x] v0.6.27：linear 列 missing 次序独立期望值 + METHODS。
 
 ## 下一版本候选（不作为已完成能力）
 

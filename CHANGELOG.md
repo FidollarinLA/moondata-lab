@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.27
+
+- Independent expected values for linear column `missing` (`(1,null),(2,null),(3,7),(4,9),(5,null)`).
+- METHODS.md documents missing-then-linear (null skips noise; kept cells still draw when noise=0).
+
 ## 0.6.26
 
 - Independent expected values for missing×date RNG order (`null,null,2026-01-03..05`; kept cells use row index).

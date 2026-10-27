@@ -181,6 +181,68 @@ test "linear with noise matches independent Park Miller closed form" {
 }
 
 ///|
+fn linear_missing_pair(missing : Double) -> Array[@generator.ColumnSpec] {
+  [
+    {
+      name: "x",
+      kind: "sequence",
+      source: "",
+      min: 0.0,
+      max: 10.0,
+      start: 1.0,
+      step: 1.0,
+      decimals: 2,
+      prefix: "",
+      choices: ["A", "B"],
+      probability: 0.5,
+      missing: 0.0,
+      start_day: 0,
+      slope: 2.0,
+      intercept: 1.0,
+      noise: 0.0,
+    },
+    {
+      name: "y",
+      kind: "linear",
+      source: "x",
+      min: 0.0,
+      max: 10.0,
+      start: 1.0,
+      step: 1.0,
+      decimals: 2,
+      prefix: "",
+      choices: ["A", "B"],
+      probability: 0.5,
+      missing,
+      start_day: 0,
+      slope: 2.0,
+      intercept: 1.0,
+      noise: 0.0,
+    },
+  ]
+}
+
+///|
+/// linear column missing draw first; null skips the noise draw (noise=0 still consumes when kept).
+/// seed=1, y=2x+1, missing=0.3, five rows → (1,null),(2,null),(3,7),(4,9),(5,null).
+test "missing then linear consumes RNG in documented order" {
+  assert_eq(@generator.generate(linear_missing_pair(0.3), 5, 1), [
+    [Json(1.0), Json::null(), Json(true)],
+    [Json(2.0), Json::null(), Json(true)],
+    [Json(3.0), Json(7.0), Json(true)],
+    [Json(4.0), Json(9.0), Json(true)],
+    [Json(5.0), Json::null(), Json(true)],
+  ])
+  assert_eq(@generator.generate(linear_missing_pair(0.8), 5, 1), [
+    [Json(1.0), Json::null(), Json(true)],
+    [Json(2.0), Json::null(), Json(true)],
+    [Json(3.0), Json::null(), Json(true)],
+    [Json(4.0), Json::null(), Json(true)],
+    [Json(5.0), Json::null(), Json(true)],
+  ])
+}
+
+///|
 fn integer_column(min : Double, max : Double) -> @generator.ColumnSpec {
   {
     name: "n",

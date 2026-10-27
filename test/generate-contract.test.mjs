@@ -227,6 +227,32 @@ test('linear with noise matches independent Park–Miller closed form', () => {
   assert.deepEqual(generateRows(quiet).rows.map((r) => r[1]), [3, 5, 7]);
 });
 
+test('missing then linear consumes RNG in documented order', () => {
+  // linear missing draw first; null skips noise (noise=0 still draws when kept). seed=1 → (1,null)…
+  const plan = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [
+      { name: 'x', kind: 'sequence', start: 1, step: 1 },
+      { name: 'y', kind: 'linear', source: 'x', slope: 2, intercept: 1, noise: 0, decimals: 2, missing: 0.3 },
+    ],
+  });
+  assert.deepEqual(
+    generateRows(plan).rows.map((r) => [r[0], r[1]]),
+    [[1, null], [2, null], [3, 7], [4, 9], [5, null]],
+  );
+  const heavy = normalizePlan({
+    rows: 5, seed: 1,
+    columns: [
+      { name: 'x', kind: 'sequence', start: 1, step: 1 },
+      { name: 'y', kind: 'linear', source: 'x', slope: 2, intercept: 1, noise: 0, decimals: 2, missing: 0.8 },
+    ],
+  });
+  assert.deepEqual(
+    generateRows(heavy).rows.map((r) => [r[0], r[1]]),
+    [[1, null], [2, null], [3, null], [4, null], [5, null]],
+  );
+});
+
 test('missing then number consumes RNG in documented order', () => {
   // missing draw first; null skips number lerp. seed=1, missing=0.3, [0,10]@2 → null,null,4.59,2.19,null
   const plan = normalizePlan({
