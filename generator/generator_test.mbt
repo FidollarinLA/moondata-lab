@@ -592,6 +592,28 @@ test "date zero step repeats start day closed form" {
 }
 
 ///|
+/// date negative step: start_day + i*step; no RNG when missing=0 (seed-independent).
+/// 2026-01-10 → start_day=20463, step=-2 → 20463,20461,20459.
+test "date negative step matches day arithmetic closed form" {
+  assert_eq(
+    @generator.generate([typed_column("day", "date", 0.5, 20463, -2.0)], 3, 1),
+    [
+      [Json(20463.0), Json(true)],
+      [Json(20461.0), Json(true)],
+      [Json(20459.0), Json(true)],
+    ],
+  )
+  assert_eq(
+    @generator.generate([typed_column("day", "date", 0.5, 20463, -2.0)], 3, 99),
+    [
+      [Json(20463.0), Json(true)],
+      [Json(20461.0), Json(true)],
+      [Json(20459.0), Json(true)],
+    ],
+  )
+}
+
+///|
 fn date_missing(
   start_day : Int32,
   step : Double,

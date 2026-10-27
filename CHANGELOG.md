@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.55
+
+- Date negative-step closed forms (seed-independent ISO days; fingerprint cites `step=-2`).
+
 ## 0.6.54
 
 - Linear `decimals=0` closed-form expected values (`noise=0` / `0.5` → `3,5,7`; fingerprint cites `decimals=0`).

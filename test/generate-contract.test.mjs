@@ -446,6 +446,28 @@ test('boolean and date rows match independent Park–Miller / day arithmetic', (
   });
   assert.deepEqual(store.get(back.id).records.map(r => r.day), ['2026-01-03', '2026-01-02', '2026-01-01']);
 
+  // Negative step is seed-independent (no RNG); fingerprint cites step=-2 and start_day.
+  const negA = generateDataset(store, {
+    rows: 3, seed: 1, name: 'neg-a',
+    columns: [{ name: 'day', kind: 'date', startDate: '2026-01-10', step: -2 }],
+  });
+  const negB = generateDataset(store, {
+    rows: 3, seed: 99, name: 'neg-b',
+    columns: [{ name: 'day', kind: 'date', startDate: '2026-01-10', step: -2 }],
+  });
+  assert.deepEqual(
+    store.get(negA.id).records.map((r) => r.day),
+    ['2026-01-10', '2026-01-08', '2026-01-06'],
+  );
+  assert.deepEqual(
+    store.get(negB.id).records.map((r) => r.day),
+    ['2026-01-10', '2026-01-08', '2026-01-06'],
+  );
+  assert.match(
+    store.get(negA.id).provenance.planCanonical,
+    /kind=date,step=-2,start_day=20463/,
+  );
+
   // step=0 repeats start day; seed change does not alter rows (no RNG).
   const zeroA = generateDataset(store, {
     rows: 3, seed: 1, name: 'zero-a',
