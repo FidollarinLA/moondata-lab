@@ -108,6 +108,7 @@
 - [x] v0.6.43：group count 无 value 的 queryCanonical 闭式与评委断言。
 - [x] v0.6.44：date step=0 独立闭式期望值与指纹。
 - [x] v0.6.45：propose rows 上限（10001 拒；10000 可）。
+- [x] v0.6.46：propose columns 上限（33 拒；32 可）。
 
 ## 下一版本候选（不作为已完成能力）
 

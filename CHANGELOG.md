@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.46
+
+- Propose columns bounds: 33 columns reject with `Plan requires 1..32 columns`; 32 accepted without store write.
+
 ## 0.6.45
 
 - Propose rows bounds: `10001` rejects with stable range message; `10000` accepted without store write.

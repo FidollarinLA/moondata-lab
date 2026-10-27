@@ -461,3 +461,48 @@ test "propose_generation rejects rows above 10000 with stable message" {
   }
   assert_eq(max_rows, "ok")
 }
+
+///|
+/// Columns must be 1..32; 33 rejects with the same columns-range message.
+test "propose_generation rejects more than 32 columns with stable message" {
+  let columns : Array[Json] = []
+  for i = 0; i < 33; i = i + 1 {
+    columns.push({
+      "name": "c\{i}",
+      "kind": "sequence",
+      "start": 1.0,
+      "step": 1.0,
+    })
+  }
+  let over = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 1.0,
+      "seed": 1.0,
+      "columns": columns,
+    })
+    ""
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(over, "Plan requires 1..32 columns")
+  let ok_cols : Array[Json] = []
+  for i = 0; i < 32; i = i + 1 {
+    ok_cols.push({
+      "name": "c\{i}",
+      "kind": "sequence",
+      "start": 1.0,
+      "step": 1.0,
+    })
+  }
+  let max_cols = try {
+    @contract.validate_tool_call("propose_generation", {
+      "rows": 1.0,
+      "seed": 1.0,
+      "columns": ok_cols,
+    })
+    "ok"
+  } catch {
+    ContractError(msg) => msg
+  }
+  assert_eq(max_cols, "ok")
+}

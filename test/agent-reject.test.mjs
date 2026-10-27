@@ -202,6 +202,19 @@ test('invalid propose_generation rejects with stable messages and never mutates 
   });
   assert.equal(maxRows.storeMutated, false);
   assert.match(maxRows.planCanonical, /\|rows=10000\|/);
+  const cols33 = Array.from({ length: 33 }, (_, i) => ({
+    name: `c${i}`, kind: 'sequence', start: 1, step: 1,
+  }));
+  assert.throws(
+    () => toolkit.execute('propose_generation', { rows: 1, seed: 1, columns: cols33 }),
+    (e) => e instanceof AppError && e.message === 'Plan requires 1..32 columns',
+  );
+  const cols32 = cols33.slice(0, 32);
+  const maxCols = toolkit.execute('propose_generation', {
+    rows: 1, seed: 1, columns: cols32,
+  });
+  assert.equal(maxCols.storeMutated, false);
+  assert.match(maxCols.planCanonical, /kind=sequence/);
   assert.equal(store.list().length, 0);
 });
 

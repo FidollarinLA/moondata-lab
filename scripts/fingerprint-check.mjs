@@ -95,6 +95,18 @@ try {
 const maxRowsPropose = rejectTools.execute('propose_generation', {
   rows: 10000, seed: 1, columns: [{ name: 'id', kind: 'sequence', start: 1, step: 1 }],
 });
+const cols33 = Array.from({ length: 33 }, (_, i) => ({
+  name: `c${i}`, kind: 'sequence', start: 1, step: 1,
+}));
+let invalidProposeTooManyCols = null;
+try {
+  rejectTools.execute('propose_generation', { rows: 1, seed: 1, columns: cols33 });
+} catch (e) {
+  invalidProposeTooManyCols = e instanceof AppError ? e.message : null;
+}
+const maxColsPropose = rejectTools.execute('propose_generation', {
+  rows: 1, seed: 1, columns: cols33.slice(0, 32),
+});
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -130,6 +142,9 @@ const checks = {
   invalidProposeRowsBoundsExact: invalidProposeBadRowsCount === 'Plan rows/seed out of generation contract range'
     && maxRowsPropose.storeMutated === false
     && String(maxRowsPropose.planCanonical || '').includes('|rows=10000|')
+    && rejectStore.list().length === 0,
+  invalidProposeColumnsBoundsExact: invalidProposeTooManyCols === 'Plan requires 1..32 columns'
+    && maxColsPropose.storeMutated === false
     && rejectStore.list().length === 0,
   agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
     && agent.trace[0].contract.allowlisted === true,

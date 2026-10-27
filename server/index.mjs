@@ -66,7 +66,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       if (url.pathname === '/api/status' && req.method === 'GET') {
         send(res, 200, {
           name: 'MoonData Lab',
-          version: '0.6.45',
+          version: '0.6.46',
           engine: 'MoonBit',
           model: modelStatus(env),
           persistence: 'memory+workspace-pack',
