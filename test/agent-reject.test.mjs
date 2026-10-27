@@ -243,6 +243,32 @@ test('invalid propose_generation rejects with stable messages and never mutates 
     }),
     (e) => e instanceof AppError && e.message === '字段类型无效、重名或使用了保留字段 _synthetic',
   );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: 'g', kind: 'category', choices: [] }],
+    }),
+    (e) => e instanceof AppError && e.message === '类别字段需要选项',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1, columns: [{ name: 'n', kind: 'integer', min: 5, max: 1 }],
+    }),
+    (e) => e instanceof AppError && e.message === '数值上下界无效',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1,
+      columns: [{ name: 'x', kind: 'linear', source: 'x', slope: 1, intercept: 0, noise: 0 }],
+    }),
+    (e) => e instanceof AppError && e.message === '线性关联需引用前面的数值字段',
+  );
+  assert.throws(
+    () => toolkit.execute('propose_generation', {
+      rows: 2, seed: 1,
+      columns: [{ name: 'd', kind: 'date', startDate: '2024-02-30', step: 1 }],
+    }),
+    (e) => e instanceof AppError && e.message === '起始日期须为有效的 YYYY-MM-DD',
+  );
   assert.equal(store.list().length, 0);
 });
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.48
+
+- Propose field-shape rejects: empty category choices, min>max, linear self-ref, invalid startDate — exact Chinese messages, no store write.
+
 ## 0.6.47
 
 - Propose rejects sequence/text `step=0` and reserved/duplicate column names with exact Chinese messages; store stays empty.

@@ -123,6 +123,39 @@ try {
 } catch (e) {
   invalidProposeReserved = e instanceof AppError ? e.message : null;
 }
+let invalidProposeEmptyChoices = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 2, seed: 1, columns: [{ name: 'g', kind: 'category', choices: [] }],
+  });
+} catch (e) {
+  invalidProposeEmptyChoices = e instanceof AppError ? e.message : null;
+}
+let invalidProposeBounds = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 2, seed: 1, columns: [{ name: 'n', kind: 'integer', min: 5, max: 1 }],
+  });
+} catch (e) {
+  invalidProposeBounds = e instanceof AppError ? e.message : null;
+}
+let invalidProposeLinearSelf = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 2, seed: 1,
+    columns: [{ name: 'x', kind: 'linear', source: 'x', slope: 1, intercept: 0, noise: 0 }],
+  });
+} catch (e) {
+  invalidProposeLinearSelf = e instanceof AppError ? e.message : null;
+}
+let invalidProposeBadDate = null;
+try {
+  rejectTools.execute('propose_generation', {
+    rows: 2, seed: 1, columns: [{ name: 'd', kind: 'date', startDate: '2024-02-30', step: 1 }],
+  });
+} catch (e) {
+  invalidProposeBadDate = e instanceof AppError ? e.message : null;
+}
 
 const checks = {
   planCanonicalMatchesMoonBit: jsonA.provenance.planCanonical === expectedCanon,
@@ -165,6 +198,11 @@ const checks = {
   invalidProposeSequenceStepZeroExact: invalidProposeSeqStepZero === '序列步长不能为零或导致结果超界'
     && rejectStore.list().length === 0,
   invalidProposeReservedFieldExact: invalidProposeReserved === '字段类型无效、重名或使用了保留字段 _synthetic'
+    && rejectStore.list().length === 0,
+  invalidProposeFieldShapeExact: invalidProposeEmptyChoices === '类别字段需要选项'
+    && invalidProposeBounds === '数值上下界无效'
+    && invalidProposeLinearSelf === '线性关联需引用前面的数值字段'
+    && invalidProposeBadDate === '起始日期须为有效的 YYYY-MM-DD'
     && rejectStore.list().length === 0,
   agentTraceContractValidator: agent.trace?.[0]?.contract?.validator === TOOL_ALLOWLIST_VALIDATOR
     && agent.trace[0].contract.allowlisted === true,

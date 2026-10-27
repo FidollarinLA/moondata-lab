@@ -110,6 +110,7 @@
 - [x] v0.6.45：propose rows 上限（10001 拒；10000 可）。
 - [x] v0.6.46：propose columns 上限（33 拒；32 可）。
 - [x] v0.6.47：sequence/text step=0 与保留/重名字段精确拒答。
+- [x] v0.6.48：propose 字段形状精确拒答（类别/上下界/linear/日期）。
 
 ## 下一版本候选（不作为已完成能力）
 
